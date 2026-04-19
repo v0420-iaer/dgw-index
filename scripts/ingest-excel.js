@@ -1,5 +1,5 @@
 /**
- * Reads the index workbook (Part 3) xlsx, sheet SOUTH AMERICA, and writes data/ingested-excel.json
+ * Reads the index workbook (Part 3) xlsx — sheets SOUTH AMERICA + CENTROAMERICA — and writes data/ingested-excel.json + .js
  * Run: node scripts/ingest-excel.js
  */
 const XLSX = require("xlsx");
@@ -8,8 +8,8 @@ const path = require("path");
 const { categoryFromScore, colorFromScore } = require("./democracy-scale.cjs");
 
 const xlsxPath = path.join(__dirname, "..", "the index", "part 3 democracy.xlsx");
-/** Workbook sheet with South America countries (same layout as former "Full 1"). */
-const DATA_SHEET_NAME = "SOUTH AMERICA";
+/** Regional data sheets (same column layout in each). */
+const DATA_SHEET_NAMES = ["SOUTH AMERICA", "CENTROAMERICA"];
 
 function parsePct(s) {
   if (s == null || s === "") return null;
@@ -24,6 +24,23 @@ function parseIndTo0100(s) {
   if (Number.isNaN(n)) return null;
   if (n <= 1 && n >= 0) return Math.round(n * 1000) / 10;
   return n;
+}
+
+/** Cell text that means the indicator is not reported (weight may be redistributed in the workbook). */
+function isUnavailableIndicatorCell(s) {
+  if (s == null) return true;
+  const t = String(s).trim();
+  if (t === "") return true;
+  const low = t.toLowerCase();
+  return (
+    low === "n/a" ||
+    low === "na" ||
+    low === "#n/a" ||
+    low === "—" ||
+    low === "-" ||
+    low === "not available" ||
+    low === "data not available"
+  );
 }
 
 const DIM_ORDER = [
@@ -75,9 +92,12 @@ function indKeyFromName(name) {
     "civil liberties": "civil_liberties",
     "access to justice": "access_to_justice",
     "division of power index": "division_of_power_index",
+    "separations of powers": "division_of_power_index",
+    "separations of power": "division_of_power_index",
     "high court independence": "high_court_independence",
     "control of corruption": "control_of_corruption",
     "corruption perception index": "corruption_perception_index",
+    "corruption perceptions index": "corruption_perception_index",
     "diagonal accountability index": "diagonal_accountability_index",
     "open government index": "open_government_index",
     "government censorship effort": "government_censorship_effort",
@@ -90,6 +110,7 @@ function indKeyFromName(name) {
     "infant mortality rate (inverted)": "infant_mortality_rate",
     "freedom of academic & cultural expression": "freedom_academic_cultural_expression",
     "access to public services by social group": "access_public_services_social_group",
+    "access to public services by socio-economic position": "access_public_services_social_group",
     "gini coefficient": "gini_coefficient",
     "gini coefficient (inverted)": "gini_coefficient",
     "power distributed by socioeconomic position": "power_distributed_socioeconomic",
@@ -127,72 +148,90 @@ function clamp0100(v) {
   return Math.max(0, Math.min(100, v));
 }
 
+function ensureCountry(countries, curState) {
+  if (!countries[curState]) {
+    countries[curState] = {
+      total: null,
+      dims: {},
+      workbookIndicatorScores0100: {},
+      workbookVariableScores0100: {},
+      workbookIndicatorUnavailable: {},
+    };
+  }
+}
+
+function ingestSheetData(data, countries) {
+  let curState = null;
+  for (let i = 1; i < data.length; i++) {
+    const r = data[i];
+    const state = r[0];
+    const variableCol = r[1];
+    const scoreVar = r[2];
+    const dimHeading = r[4];
+    const scoreDim = r[5];
+    const indName = r[7];
+    const scoreInd = r[8];
+    const totalIdx = r[10];
+
+    if (state) {
+      curState = mapStateName(state);
+      ensureCountry(countries, curState);
+      const t = parsePct(totalIdx);
+      if (t != null) countries[curState].total = t;
+    }
+    if (!curState) continue;
+    ensureCountry(countries, curState);
+    const c = countries[curState];
+
+    if (variableCol) {
+      const d = normDim(variableCol);
+      if (d) {
+        const sv = parsePct(scoreVar);
+        if (sv != null) c.dims[d] = sv;
+      }
+    }
+
+    if (dimHeading) {
+      const bid = BLOCK_HEADING_TO_ID[normHeading(dimHeading)];
+      let sd = parsePct(scoreDim);
+      if (bid && sd != null) {
+        sd = clamp0100(sd);
+        c.workbookVariableScores0100[bid] = sd;
+      }
+    }
+
+    if (indName) {
+      const iid = indKeyFromName(indName);
+      if (iid) {
+        if (isUnavailableIndicatorCell(scoreInd)) {
+          c.workbookIndicatorUnavailable[iid] = true;
+        } else {
+          const si = parseIndTo0100(scoreInd);
+          if (si != null) c.workbookIndicatorScores0100[iid] = si;
+        }
+      }
+    }
+  }
+}
+
 const wb = XLSX.readFile(xlsxPath);
-if (!wb.Sheets[DATA_SHEET_NAME]) {
-  throw new Error(
-    `Sheet "${DATA_SHEET_NAME}" not found in ${path.basename(xlsxPath)}. Available: ${wb.SheetNames.join(", ")}`
-  );
-}
-const data = XLSX.utils.sheet_to_json(wb.Sheets[DATA_SHEET_NAME], { header: 1, defval: null, raw: false });
-
 const countries = {};
-let curState = null;
-
-for (let i = 1; i < data.length; i++) {
-  const r = data[i];
-  const state = r[0];
-  const variableCol = r[1];
-  const scoreVar = r[2];
-  const dimHeading = r[4];
-  const scoreDim = r[5];
-  const indName = r[7];
-  const scoreInd = r[8];
-  const totalIdx = r[10];
-
-  if (state) {
-    curState = mapStateName(state);
-    if (!countries[curState]) {
-      countries[curState] = {
-        total: parsePct(totalIdx),
-        dims: {},
-        workbookIndicatorScores0100: {},
-        workbookVariableScores0100: {},
-      };
-    }
-    countries[curState].total = parsePct(totalIdx) ?? countries[curState].total;
+for (const sheetName of DATA_SHEET_NAMES) {
+  if (!wb.Sheets[sheetName]) {
+    throw new Error(
+      `Sheet "${sheetName}" not found in ${path.basename(xlsxPath)}. Available: ${wb.SheetNames.join(", ")}`
+    );
   }
-  if (!curState) continue;
-  const c = countries[curState];
-
-  if (variableCol) {
-    const d = normDim(variableCol);
-    if (d) {
-      const sv = parsePct(scoreVar);
-      if (sv != null) c.dims[d] = sv;
-    }
-  }
-
-  if (dimHeading) {
-    const bid = BLOCK_HEADING_TO_ID[normHeading(dimHeading)];
-    let sd = parsePct(scoreDim);
-    if (bid && sd != null) {
-      sd = clamp0100(sd);
-      c.workbookVariableScores0100[bid] = sd;
-    }
-  }
-
-  if (indName) {
-    const iid = indKeyFromName(indName);
-    const si = parseIndTo0100(scoreInd);
-    if (iid && si != null) c.workbookIndicatorScores0100[iid] = si;
-  }
+  const data = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, defval: null, raw: false });
+  ingestSheetData(data, countries);
 }
 
-const names = Object.keys(countries).sort((a, b) => countries[b].total - countries[a].total);
+const names = Object.keys(countries).sort((a, b) => (countries[b].total ?? 0) - (countries[a].total ?? 0));
 
 const workbookDimensionScores = {};
 const workbookIndicatorScores0100 = {};
 const workbookVariableScores0100 = {};
+const workbookIndicatorUnavailable = {};
 
 for (const name of names) {
   const co = countries[name];
@@ -202,6 +241,7 @@ for (const name of names) {
   });
   workbookIndicatorScores0100[name] = co.workbookIndicatorScores0100;
   workbookVariableScores0100[name] = co.workbookVariableScores0100;
+  workbookIndicatorUnavailable[name] = co.workbookIndicatorUnavailable || {};
 }
 
 const countryData = {};
@@ -219,6 +259,7 @@ const out = {
   workbookDimensionScores,
   workbookIndicatorScores0100,
   workbookVariableScores0100,
+  workbookIndicatorUnavailable,
 };
 
 const outPath = path.join(__dirname, "..", "data", "ingested-excel.json");
@@ -228,13 +269,15 @@ console.log("Wrote", outPath);
 
 const countryDataForWeb = {};
 for (const [k, v] of Object.entries(countryData)) {
-  countryDataForWeb[k] = { score: v.score, category: v.category, color: v.color };
+  countryDataForWeb[k] = { score: v.score, category: v.category, color: v.color, regionalRank: v.regionalRank };
 }
 const bundle = {
+  countryNamesSorted: names,
   countryData: countryDataForWeb,
   workbookDimensionScores,
   workbookIndicatorScores0100,
   workbookVariableScores0100,
+  workbookIndicatorUnavailable,
 };
 const jsPath = path.join(__dirname, "..", "data", "ingested-excel.js");
 fs.writeFileSync(
@@ -247,8 +290,11 @@ fs.writeFileSync(
 console.log("Wrote", jsPath);
 
 const allIds = new Set();
-for (let i = 1; i < data.length; i++) {
-  if (data[i][7]) allIds.add(String(data[i][7]).trim());
+for (const sheetName of DATA_SHEET_NAMES) {
+  const data = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, defval: null, raw: false });
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][7]) allIds.add(String(data[i][7]).trim());
+  }
 }
 const unmapped = [...allIds].filter((n) => !indKeyFromName(n));
 if (unmapped.length) console.warn("Unmapped indicator labels:", unmapped);

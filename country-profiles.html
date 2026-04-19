@@ -570,7 +570,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
 
 <footer class="bg-surface-container text-primary font-label text-xs uppercase tracking-widest w-full layout-gutter py-12 sm:py-16 mt-12 sm:mt-20 transition-all duration-500 ease-in-out supports-[padding:max(0px)]:pb-[max(3rem,env(safe-area-inset-bottom))]">
 <div class="grid grid-cols-1 md:grid-cols-2 items-end gap-x-8 gap-y-6 w-full max-w-screen-2xl mx-auto">
-<div class="text-lg font-serif italic text-primary font-headline normal-case tracking-normal min-w-0">Democracy Index for Latin America</div>
+<div class="text-lg font-serif italic text-primary font-headline normal-case tracking-normal min-w-0">Democracy Index for Latin America and Central America</div>
 <div class="text-on-background/50 normal-case text-right md:max-w-xl md:ml-auto md:justify-self-end flex flex-col items-end gap-0">
 <div class="font-label not-italic">© COPYRIGHT APRIL 2026 ALL RIGHTS RESERVED.</div>
 <div class="italic font-serif text-on-background/60">Designed and engineered by Ari's group</div>
@@ -614,11 +614,22 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         "Paraguay": { wbPop: 6929153, capital: "Nuestra Señora Santa María de la Asunción", regionalRank: 9, iso2: "PY", president: "Santiago Peña Palacios", capitalLon: -57.5759, capitalLat: -25.2637 },
         "Suriname": { wbPop: 634431, capital: "Paramaribo", regionalRank: 10, iso2: "SR", president: "Chan Santokhi", capitalLon: -55.2038, capitalLat: 5.8520 },
         "Guyana": { wbPop: 831303, capital: "Georgetown", regionalRank: 11, iso2: "GY", president: "Mohamed Irfaan Ali", capitalLon: -58.1551, capitalLat: 6.8013, reparationsExcluded: true },
-        "Venezuela": { wbPop: 28405543, capital: "Caracas", regionalRank: 12, iso2: "VE", president: "Delcy Eloína Rodríguez Gómez, presidenta encargada", capitalLon: -66.9036, capitalLat: 10.4806 }
+        "Venezuela": { wbPop: 28405543, capital: "Caracas", regionalRank: 12, iso2: "VE", president: "Delcy Eloína Rodríguez Gómez, presidenta encargada", capitalLon: -66.9036, capitalLat: 10.4806 },
+        "Mexico": { wbPop: 128000000, capital: "Ciudad de México", iso2: "MX", president: "—", capitalLon: -99.1332, capitalLat: 19.4326 },
+        "Guatemala": { wbPop: 18000000, capital: "Ciudad de Guatemala", iso2: "GT", president: "—", capitalLon: -90.5133, capitalLat: 14.6349 },
+        "Honduras": { wbPop: 10500000, capital: "Tegucigalpa", iso2: "HN", president: "—", capitalLon: -87.2068, capitalLat: 14.0723 },
+        "El Salvador": { wbPop: 6300000, capital: "San Salvador", iso2: "SV", president: "—", capitalLon: -89.2182, capitalLat: 13.6929 },
+        "Nicaragua": { wbPop: 6900000, capital: "Managua", iso2: "NI", president: "—", capitalLon: -86.2514, capitalLat: 12.1364 },
+        "Costa Rica": { wbPop: 5200000, capital: "San José", iso2: "CR", president: "—", capitalLon: -84.0907, capitalLat: 9.9281 },
+        "Panama": { wbPop: 4500000, capital: "Ciudad de Panamá", iso2: "PA", president: "—", capitalLon: -79.5197, capitalLat: 8.9943 },
+        "Dominican Republic": { wbPop: 11300000, capital: "Santo Domingo", iso2: "DO", president: "—", capitalLon: -69.9312, capitalLat: 18.4861 },
+        "Haiti": { wbPop: 11500000, capital: "Port-au-Prince", iso2: "HT", president: "—", capitalLon: -72.3074, capitalLat: 18.5944 },
+        "Cuba": { wbPop: 11000000, capital: "La Habana", iso2: "CU", president: "—", capitalLon: -82.3666, capitalLat: 23.1136 }
     };
 
     /** When true in profileMeta, Reparations (Democratic memory) is not scored — see Indicators page. */
     const REPARATIONS_NA_DISPLAY = "DOES NOT APPLY";
+    const DATA_NOT_AVAILABLE_DISPLAY = "DATA NOT AVAILABLE";
 
     function reparationsExcludedForCountry(name) {
         const m = profileMeta[name];
@@ -660,6 +671,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
     /** Per-variable and per-indicator scores from the index workbook (Part 3). */
     const workbookVariableScores0100 = window.__DGW__.workbookVariableScores0100;
     const workbookIndicatorScores0100 = window.__DGW__.workbookIndicatorScores0100;
+    const workbookIndicatorUnavailable = window.__DGW__.workbookIndicatorUnavailable || {};
 
     const INDEX_BLUEPRINT = [
         {
@@ -1050,7 +1062,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         document.getElementById("profile-population-year").textContent = String(WORLD_BANK_POP_YEAR);
         document.getElementById("profile-president-value").textContent = m.president;
         document.getElementById("profile-rank-regional").textContent =
-            "Regional rank: " + ordinal(m.regionalRank) + " of " + REGION_SIZE;
+            "Regional rank: " + ordinal(d.regionalRank) + " of " + REGION_SIZE;
         globeBox.setAttribute("aria-label", "Globe highlighting " + selectedKey);
 
         updateScrollSummary();
@@ -1082,6 +1094,8 @@ Structure and weights follow the index workbook (Part3); the table above lists e
     }
 
     function indicatorWorkbookValue0100(country, dimensionIdx, blockId, indicatorId) {
+        const un = workbookIndicatorUnavailable[country];
+        if (un && un[indicatorId]) return null;
         const byInd = workbookIndicatorScores0100[country];
         if (byInd && byInd[indicatorId] != null && byInd[indicatorId] !== undefined) return byInd[indicatorId];
         return variableWorkbookValue0100(country, dimensionIdx, blockId);
@@ -1093,9 +1107,16 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         return Number(workbook0100).toFixed(1) + " / 100";
     }
 
-    function formatVariableOrIndicatorScore(dimensionIdx, blockId, workbook0100) {
+    function formatVariableOrIndicatorScore(dimensionIdx, blockId, workbook0100, indicatorId) {
         if (dimensionIdx === 4 && blockId === "reparations" && reparationsExcludedForCountry(selectedKey)) {
             return REPARATIONS_NA_DISPLAY;
+        }
+        if (
+            indicatorId &&
+            workbookIndicatorUnavailable[selectedKey] &&
+            workbookIndicatorUnavailable[selectedKey][indicatorId]
+        ) {
+            return DATA_NOT_AVAILABLE_DISPLAY;
         }
         return formatScoreOutOf100(workbook0100);
     }
@@ -1206,11 +1227,15 @@ Structure and weights follow the index workbook (Part3); the table above lists e
                     "<ul class=\"divide-y divide-outline-variant/10\">";
                 block.indicators.forEach((ind) => {
                     const indVal = indicatorWorkbookValue0100(selectedKey, idx, block.id, ind.id);
-                    const scoreCell = formatVariableOrIndicatorScore(idx, block.id, indVal);
+                    const scoreCell = formatVariableOrIndicatorScore(idx, block.id, indVal, ind.id);
+                    const isIndNa =
+                        workbookIndicatorUnavailable[selectedKey] && workbookIndicatorUnavailable[selectedKey][ind.id];
                     const scoreClass =
                         idx === 4 && block.id === "reparations" && reparationsExcludedForCountry(selectedKey)
                             ? "font-body text-xs sm:text-sm font-semibold text-on-surface-variant tabular-nums shrink-0 text-right max-w-[11rem]"
-                            : "font-body text-sm sm:text-base font-medium text-primary tabular-nums shrink-0 whitespace-nowrap";
+                            : isIndNa
+                              ? "font-body text-[10px] sm:text-xs font-semibold text-on-surface-variant tabular-nums shrink-0 text-right max-w-[min(100%,13rem)] leading-snug"
+                              : "font-body text-sm sm:text-base font-medium text-primary tabular-nums shrink-0 whitespace-nowrap";
                     bodyHtml +=
                         "<li class=\"flex flex-row justify-between items-center gap-4 px-4 py-2.5 sm:px-5 sm:py-3 hover:bg-surface-container-high transition-colors duration-300\">" +
                         "<p class=\"font-body text-sm sm:text-base text-on-surface leading-snug min-w-0\">" +

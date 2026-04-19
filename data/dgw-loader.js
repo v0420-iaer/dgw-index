@@ -9,7 +9,12 @@
     const raw = full.countryData || {};
     for (const k of Object.keys(raw)) {
       const v = raw[k];
-      countryDataForWeb[k] = { score: v.score, category: v.category, color: v.color };
+      countryDataForWeb[k] = {
+        score: v.score,
+        category: v.category,
+        color: v.color,
+        regionalRank: v.regionalRank,
+      };
     }
     return countryDataForWeb;
   }
@@ -20,10 +25,12 @@
 
   function assignBundleFromFullJson(full) {
     window.__DGW__ = {
+      countryNamesSorted: full.countryNamesSorted || [],
       countryData: stripCountryDataForWeb(full),
       workbookDimensionScores: full.workbookDimensionScores || {},
       workbookIndicatorScores0100: full.workbookIndicatorScores0100 || {},
       workbookVariableScores0100: full.workbookVariableScores0100 || {},
+      workbookIndicatorUnavailable: full.workbookIndicatorUnavailable || {},
     };
   }
 
