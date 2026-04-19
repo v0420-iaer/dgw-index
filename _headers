@@ -1,0 +1,6 @@
+# Cloudflare Pages: https://developers.cloudflare.com/pages/configuration/headers/
+/*
+  Content-Security-Policy: upgrade-insecure-requests
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
