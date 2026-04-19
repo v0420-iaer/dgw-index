@@ -1,0 +1,949 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>The Index — Democracy Index</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Public+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-fixed-dim": "#aad1a6",
+                        "surface-tint": "#446744",
+                        "primary-container": "#1e3f20",
+                        "surface-bright": "#fbf9f7",
+                        "on-primary-container": "#86ab83",
+                        "tertiary": "#331e00",
+                        "surface-container-high": "#eae8e6",
+                        "surface": "#fbf9f7",
+                        "on-secondary-fixed-variant": "#703629",
+                        "inverse-on-surface": "#f2f0ee",
+                        "surface-dim": "#dbdad8",
+                        "tertiary-fixed-dim": "#f3bd78",
+                        "on-error-container": "#93000a",
+                        "outline": "#737970",
+                        "on-tertiary-container": "#ca9857",
+                        "surface-container": "#efedec",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#424840",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#ffac9a",
+                        "on-secondary-fixed": "#390c04",
+                        "tertiary-fixed": "#ffddb7",
+                        "inverse-surface": "#30302f",
+                        "on-tertiary-fixed": "#2a1700",
+                        "on-background": "#1b1c1b",
+                        "surface-container-low": "#f5f3f1",
+                        "surface-variant": "#e4e2e0",
+                        "surface-container-highest": "#e4e2e0",
+                        "tertiary-container": "#503100",
+                        "secondary-fixed": "#ffdad3",
+                        "outline-variant": "#c2c8be",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#7a3e31",
+                        "inverse-primary": "#aad1a6",
+                        "primary-fixed": "#c5edc1",
+                        "secondary": "#8d4d3f",
+                        "on-primary-fixed": "#012106",
+                        "secondary-fixed-dim": "#ffb4a4",
+                        "on-surface": "#1b1c1b",
+                        "error": "#ba1a1a",
+                        "background": "#fbf9f7",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#643f03",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#2d4e2e",
+                        "primary": "#07290c",
+                        "on-error": "#ffffff"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "0px"
+                    },
+                    fontFamily: {
+                        "headline": ["Newsreader", "serif"],
+                        "body": ["Newsreader", "serif"],
+                        "label": ["Public Sans", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Globe land — fill is set by D3 (CSS fill would override category colours) */
+        .country {
+            stroke: #fbf9f7;
+            stroke-width: 0.35px;
+            transition: opacity 0.25s ease;
+        }
+
+        .country.colorize {
+            transition: fill 1.35s ease-in-out, opacity 0.25s ease;
+        }
+
+        .country:hover {
+            opacity: 0.88;
+            cursor: pointer;
+        }
+
+        .country.is-latam {
+            cursor: pointer;
+        }
+
+        .country.table-linked-highlight {
+            stroke: #07290c;
+            stroke-width: 2px;
+            opacity: 1 !important;
+            filter: drop-shadow(0 0 8px rgba(7, 41, 12, 0.4));
+        }
+
+        #map-container svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .map-callout-line {
+            stroke: rgba(7, 41, 12, 0.55);
+            stroke-width: 1.35;
+            stroke-linecap: round;
+        }
+
+        .map-callout-anchor {
+            fill: rgba(7, 41, 12, 0.45);
+        }
+
+        #map-tooltip {
+            pointer-events: none;
+            transform-origin: center center;
+            transition: opacity 0.14s ease-out, transform 0.14s ease-out;
+        }
+
+        #map-tooltip.is-visible {
+            pointer-events: auto;
+        }
+
+        details > summary {
+            list-style: none;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        /* Ranking panel: closed until user scrolls; inner fades in for a calmer reveal */
+        #ranking-table-outer {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 1.05s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        #ranking-table-outer.is-open {
+            grid-template-rows: 1fr;
+        }
+
+        #ranking-table-outer > .ranking-table-inner {
+            min-height: 0;
+            overflow: visible;
+            opacity: 0;
+            transform: translate3d(0, 1.125rem, 0) scale(0.992);
+            transform-origin: 50% 0;
+            transition:
+                opacity 1.2s cubic-bezier(0.19, 1, 0.22, 1),
+                transform 1.25s cubic-bezier(0.19, 1, 0.22, 1);
+            transition-delay: 0ms;
+        }
+
+        #ranking-table-outer.is-open > .ranking-table-inner {
+            opacity: 1;
+            transform: translate3d(0, 0, 0) scale(1);
+            transition-delay: 0.1s, 0.08s;
+        }
+
+        #ranking-table-section {
+            isolation: isolate;
+        }
+
+        .results-sticky-head {
+            position: sticky;
+            top: calc(env(safe-area-inset-top, 0px) + 5.75rem);
+            z-index: 40;
+            margin-left: -1rem;
+            margin-right: -1rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-top: 0.65rem;
+            padding-bottom: 1rem;
+            margin-bottom: 0;
+            background-color: #fbf9f7;
+            border-bottom: 1px solid rgba(194, 200, 190, 0.45);
+            box-shadow: 0 10px 28px -10px rgba(27, 28, 27, 0.14);
+        }
+
+        .results-sticky-head + .ranking-table-scroll {
+            padding-top: 0.85rem;
+        }
+
+        #ranking-table tbody tr.is-row-active {
+            background-color: rgba(170, 209, 166, 0.2);
+        }
+
+        @media (min-width: 640px) {
+            .results-sticky-head {
+                top: calc(env(safe-area-inset-top, 0px) + 6.75rem);
+                margin-left: -1.5rem;
+                margin-right: -1.5rem;
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .results-sticky-head {
+                top: calc(env(safe-area-inset-top, 0px) + 7.35rem);
+                margin-left: -2rem;
+                margin-right: -2rem;
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+        }
+
+        .nav-glass {
+            background: rgba(251, 249, 247, 0.58);
+            -webkit-backdrop-filter: blur(18px) saturate(1.45);
+            backdrop-filter: blur(18px) saturate(1.45);
+            border-bottom: 1px solid rgba(194, 200, 190, 0.5);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.75),
+                0 8px 28px -10px rgba(27, 28, 27, 0.14);
+        }
+
+        @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+            .nav-glass {
+                background: rgba(251, 249, 247, 0.94);
+            }
+        }
+
+        /* Slow scroll cue — no snappy motion */
+        @keyframes scroll-cue-drift {
+            0%, 100% {
+                transform: translateY(0);
+                opacity: 0.45;
+            }
+            50% {
+                transform: translateY(14px);
+                opacity: 0.95;
+            }
+        }
+
+        .scroll-cue-arrow {
+            animation: scroll-cue-drift 3.2s ease-in-out infinite;
+            font-size: 2rem;
+            font-weight: 200;
+            color: rgb(66, 72, 64);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .scroll-cue-arrow {
+                animation: none;
+                opacity: 0.7;
+            }
+
+            #ranking-table-outer {
+                transition-duration: 0.01ms;
+            }
+
+            #ranking-table-outer > .ranking-table-inner {
+                transition: none;
+                transform: none;
+            }
+
+            #ranking-table-outer:not(.is-open) > .ranking-table-inner {
+                opacity: 0;
+            }
+
+            #ranking-table-outer.is-open > .ranking-table-inner {
+                opacity: 1;
+            }
+        }
+
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased font-body selection:bg-primary-container selection:text-white min-h-dvh min-h-screen flex flex-col overflow-x-clip">
+<!-- TopNavBar -->
+<nav class="nav-glass text-primary w-full sticky top-0 z-50 transition-opacity duration-200 supports-[padding:max(0px)]:pt-[env(safe-area-inset-top)]">
+<div class="flex items-center justify-between gap-3 w-full px-4 sm:px-6 lg:px-12 py-4 md:py-6 max-w-screen-2xl mx-auto">
+<a class="text-lg sm:text-xl md:text-2xl font-bold font-headline text-primary tracking-tight leading-tight min-w-0 shrink truncate pr-2" href="index.html">Democracy Index</a>
+<div class="hidden md:flex gap-6 lg:gap-8 items-center font-label text-sm tracking-wide">
+<a class="text-primary font-bold border-b border-primary pb-1 hover:text-primary transition-all duration-300" href="index.html" aria-current="page">The Index</a>
+<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300" href="country-profiles.html">Country Profiles</a>
+<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300" href="indicators.html">Indicators</a>
+<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300" href="references.html">References</a>
+</div>
+<div class="flex items-center gap-2 sm:gap-4 md:gap-6 shrink-0">
+<button type="button" class="hidden sm:flex text-on-background/70 hover:text-primary transition-all duration-300 p-2" aria-label="Search">
+<span class="material-symbols-outlined text-2xl">search</span>
+</button>
+<button type="button" class="bg-primary text-on-primary px-3 py-2 sm:px-5 md:px-6 sm:py-2.5 font-label text-[10px] sm:text-xs md:text-sm uppercase tracking-widest hover:bg-primary-container transition-colors whitespace-nowrap">
+                    <span class="hidden min-[360px]:inline">Download </span>Report
+                </button>
+<details class="relative md:hidden group">
+<summary class="flex items-center justify-center w-11 h-11 text-on-background/70 hover:text-primary cursor-pointer border border-outline-variant/30 bg-surface-container-low/80" aria-label="Open menu">
+<span class="material-symbols-outlined text-2xl">menu</span>
+</summary>
+<div class="absolute right-0 top-full mt-2 w-[min(calc(100vw-2rem),18rem)] bg-surface-container-lowest border border-outline-variant/20 shadow-lg py-2 z-[60]">
+<a class="block px-4 py-3 font-label text-sm text-primary font-semibold border-b border-outline-variant/15" href="index.html" aria-current="page">The Index</a>
+<a class="block px-4 py-3 font-label text-sm text-on-background/80 hover:bg-surface-container-high" href="country-profiles.html">Country Profiles</a>
+<a class="block px-4 py-3 font-label text-sm text-on-background/80 hover:bg-surface-container-high" href="indicators.html">Indicators</a>
+<a class="block px-4 py-3 font-label text-sm text-on-background/80 hover:bg-surface-container-high" href="references.html">References</a>
+</div>
+</details>
+</div>
+</div>
+</nav>
+<div id="dgw-load-error" class="hidden w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-3 bg-error-container text-on-error-container font-label text-sm border-b border-error/30" role="alert"></div>
+<!-- Main: globe left, definition + ranking right (lg); stacked on small screens -->
+<main class="flex-grow w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 pt-8 sm:pt-12 lg:pt-16 pb-16 sm:pb-24 lg:pb-32 overflow-x-clip">
+<div class="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-16 relative w-full min-w-0 max-w-full">
+<!-- Left: globe (sticky on all breakpoints so it stays in view while reading the right column) -->
+<div class="w-full min-w-0 max-w-full lg:w-3/5 h-[min(52vh,28rem)] sm:h-[min(56vh,32rem)] md:h-[min(60vh,36rem)] lg:h-[calc(100dvh-8rem)] lg:min-h-[min(100dvh-8rem,40rem)] relative sticky top-20 sm:top-24 z-10 shrink-0 self-start">
+<div class="w-full h-full bg-surface-container-lowest border border-outline-variant/20 p-2 sm:p-4 relative group min-h-[240px] shadow-[0_28px_56px_-16px_rgba(27,28,27,0.14),0_10px_22px_-12px_rgba(27,28,27,0.08),0_2px_6px_-2px_rgba(27,28,27,0.05)]">
+<div id="map-container" class="w-full h-full bg-surface-container flex items-center justify-center overflow-visible" role="img" aria-label="Animated globe of world land masses">
+</div>
+<div id="map-tooltip" class="absolute z-30 flex flex-col bg-surface-container-lowest shadow-[0px_8px_24px_rgba(27,28,27,0.08)] border border-outline-variant/20 px-3 py-2.5 sm:px-3.5 sm:py-3 max-w-[min(100%,12.5rem)] opacity-0 invisible will-change-[opacity,transform]" role="status" aria-live="polite">
+<span id="tooltip-country" class="font-label text-[9px] sm:text-[10px] uppercase tracking-widest text-on-surface-variant mb-1 leading-snug">Country: --</span>
+<div class="flex items-baseline gap-1.5">
+<span class="font-label text-xs text-on-surface-variant">Score:</span>
+<span id="tooltip-score" class="font-headline text-xl sm:text-2xl text-primary font-medium tracking-tight">--</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right: definition + table -->
+<div class="w-full lg:w-2/5 flex flex-col gap-12 sm:gap-16 md:gap-20 lg:gap-24 relative min-w-0">
+<section class="flex flex-col gap-6 sm:gap-8">
+<h1 class="font-headline text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.08] tracking-[-0.02em] text-primary-container">
+                        Democracy Index&nbsp;</h1>
+<div class="flex flex-col gap-6">
+<h3 class="font-label text-sm uppercase tracking-widest text-on-surface-variant">Definition of Democracy</h3>
+<div class="font-body text-base sm:text-lg leading-[1.6] text-on-surface space-y-6">
+<p class="first-letter:text-4xl sm:first-letter:text-5xl first-letter:font-bold first-letter:mr-2 first-letter:float-left first-letter:text-primary"><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-kerning: none;">Democracy is a political system by which people, by voting in&nbsp;</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-weight: 700; font-kerning: none;">free and fair elections</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-kerning: none;">,&nbsp;</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-weight: 700; font-kerning: none;">delegate their decision-making power to representatives</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-kerning: none;">&nbsp;who must&nbsp;</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-weight: 700; font-kerning: none;">produce outputs</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-kerning: none;">&nbsp;through&nbsp;</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-weight: 700; font-kerning: none;">deliberation</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-kerning: none;">. It is built upon constitutionally enshrined&nbsp;</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-weight: 700; font-kerning: none;">fundamental human, political, and civil rights</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-kerning: none;">;&nbsp;</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-weight: 700; font-kerning: none;">separation of powers</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-kerning: none;">;&nbsp;</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-weight: 700; font-kerning: none;">transparency and accountability</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-kerning: none;">&nbsp;that actively safeguard the system; and is developed and sustained through&nbsp;</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-weight: 700; font-kerning: none;">democratic memory</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-kerning: none;">&nbsp;and&nbsp;</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-weight: 700; font-kerning: none;">welfare frameworks</span><span class="a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none" style="color: rgb(0, 0, 0); caret-color: rgb(0, 0, 0); font-kerning: none;">.</span><br></p>
+<p class=""><br></p>
+</div>
+</div>
+</section>
+<div id="scroll-hint-block" class="flex flex-col items-center gap-5 py-6 sm:py-8 select-none pointer-events-none" aria-label="Scroll down to reveal the results">
+<span class="font-label text-[11px] sm:text-xs uppercase tracking-[0.35em] text-on-surface-variant/90">Scroll</span>
+<span class="material-symbols-outlined scroll-cue-arrow" aria-hidden="true">expand_more</span>
+</div>
+<div id="ranking-table-outer" class="-mx-1 sm:mx-0 scroll-mt-36 sm:scroll-mt-40 md:scroll-mt-44">
+<div class="ranking-table-inner">
+<section id="ranking-table-section" class="relative bg-surface-container-lowest p-4 sm:p-6 md:p-8 border border-outline-variant/15 shadow-[0_32px_64px_-20px_rgba(27,28,27,0.12),0_12px_28px_-14px_rgba(27,28,27,0.08),0_4px_10px_-4px_rgba(27,28,27,0.05)]">
+<div id="scroll-trigger" class="absolute top-0 w-full h-[1px]"></div>
+<header class="results-sticky-head">
+<h2 id="ranking-table-heading" class="font-headline text-2xl sm:text-3xl tracking-tight text-primary m-0 p-0 border-0">
+<span id="ranking-heading-text">Results</span>
+</h2>
+</header>
+<div class="ranking-table-scroll overflow-x-auto max-w-full min-w-0 -mx-2 px-2 sm:mx-0 sm:px-0 overscroll-x-contain [contain:inline-size]">
+<table class="w-full min-w-[min(100%,36rem)] sm:min-w-0 text-left border-collapse text-sm sm:text-base" id="ranking-table">
+<thead>
+<tr class="border-b border-outline-variant/15">
+<th class="font-label text-xs uppercase tracking-widest text-on-surface-variant font-normal py-4 px-2">Country</th>
+<th class="font-label text-xs uppercase tracking-widest text-on-surface-variant font-normal py-4 px-2 text-right">Score</th>
+<th class="font-label text-xs uppercase tracking-widest text-on-surface-variant font-normal py-4 px-2 pl-6">Category</th>
+</tr>
+</thead>
+<tbody class="font-body text-sm sm:text-base md:text-lg text-on-surface">
+<tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
+<td class="py-5 px-2">Uruguay</td>
+<td class="py-5 px-2 text-right font-medium">85</td>
+<td class="py-5 px-2 pl-6">
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-white" style="background-color: rgb(30, 63, 32);">Consolidated democracy</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
+<td class="py-5 px-2">Chile</td>
+<td class="py-5 px-2 text-right font-medium">81</td>
+<td class="py-5 px-2 pl-6">
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-white" style="background-color: rgb(30, 63, 32);">Consolidated democracy</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
+<td class="py-5 px-2">Brazil</td>
+<td class="py-5 px-2 text-right font-medium">72</td>
+<td class="py-5 px-2 pl-6">
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-primary" style="background-color: rgb(155, 176, 152);">Electoral democracy</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
+<td class="py-5 px-2">Argentina</td>
+<td class="py-5 px-2 text-right font-medium">71</td>
+<td class="py-5 px-2 pl-6">
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-primary" style="background-color: rgb(155, 176, 152);">Electoral democracy</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
+<td class="py-5 px-2">Colombia</td>
+<td class="py-5 px-2 text-right font-medium">70</td>
+<td class="py-5 px-2 pl-6">
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-primary" style="background-color: rgb(155, 176, 152);">Electoral democracy</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
+<td class="py-5 px-2">Ecuador</td>
+<td class="py-5 px-2 text-right font-medium">60</td>
+<td class="py-5 px-2 pl-6">
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-primary" style="background-color: rgb(155, 176, 152);">Electoral democracy</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
+<td class="py-5 px-2">Peru</td>
+<td class="py-5 px-2 text-right font-medium">60</td>
+<td class="py-5 px-2 pl-6">
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-primary" style="background-color: rgb(155, 176, 152);">Electoral democracy</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
+<td class="py-5 px-2">Bolivia</td>
+<td class="py-5 px-2 text-right font-medium">58</td>
+<td class="py-5 px-2 pl-6">
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-primary" style="background-color: rgb(155, 176, 152);">Electoral democracy</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
+<td class="py-5 px-2">Paraguay</td>
+<td class="py-5 px-2 text-right font-medium">58</td>
+<td class="py-5 px-2 pl-6">
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-primary" style="background-color: rgb(155, 176, 152);">Electoral democracy</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
+<td class="py-5 px-2">Suriname</td>
+<td class="py-5 px-2 text-right font-medium">57</td>
+<td class="py-5 px-2 pl-6">
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-primary" style="background-color: rgb(155, 176, 152);">Electoral democracy</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
+<td class="py-5 px-2">Guyana</td>
+<td class="py-5 px-2 text-right font-medium">48</td>
+<td class="py-5 px-2 pl-6">
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest" style="background-color: rgb(216, 164, 98); color: #07290c;">Initial stage democracy</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
+<td class="py-5 px-2">Venezuela</td>
+<td class="py-5 px-2 text-right font-medium">26</td>
+<td class="py-5 px-2 pl-6">
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-white" style="background-color: rgb(196, 122, 106);">No democracy</span>
+</td>
+</tr></tbody>
+</table>
+</div>
+</section>
+</div>
+</div>
+<div class="h-32 sm:h-48 lg:h-64"></div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container text-primary font-label text-xs uppercase tracking-widest w-full px-4 sm:px-6 lg:px-12 py-12 sm:p-16 mt-12 sm:mt-20 transition-all duration-500 ease-in-out supports-[padding:max(0px)]:pb-[max(3rem,env(safe-area-inset-bottom))]">
+<div class="grid grid-cols-1 md:grid-cols-2 items-end w-full max-w-screen-2xl mx-auto gap-8">
+<div class="flex flex-col gap-4">
+<div class="text-lg font-serif italic text-primary font-headline normal-case tracking-normal">
+                    Democracy Index for Latin America
+                </div>
+<div class="text-on-background/50">
+                    © 2024 Digital Curator Monograph. All Rights Reserved. Democracy Index for Latin America.
+                </div>
+</div>
+<div class="flex flex-wrap md:justify-end gap-8">
+<a class="text-on-background/50 hover:underline decoration-primary underline-offset-8 transition-all" href="#">Institutional Press</a>
+<a class="text-on-background/50 hover:underline decoration-primary underline-offset-8 transition-all" href="#">Data Privacy</a>
+<a class="text-on-background/50 hover:underline decoration-primary underline-offset-8 transition-all" href="#">Accessibility Archiving</a>
+<a class="text-on-background/50 hover:underline decoration-primary underline-offset-8 transition-all" href="#">Citation Guide</a>
+</div>
+</div>
+</footer>
+
+<script src="data/dgw-loader.js"></script>
+<script src="data/ingested-excel.js"></script>
+<script>
+(function () {
+    __ensureDGW(function (err, dgw) {
+        if (err) {
+            console.error(err);
+            var banner = document.getElementById("dgw-load-error");
+            if (banner) {
+                banner.textContent = err.message;
+                banner.classList.remove("hidden");
+            }
+            return;
+        }
+        var countryData = dgw.countryData;
+
+    const latAmSet = new Set(Object.keys(countryData));
+    const NEUTRAL = "#dbdad8";
+    const OCEAN = "#efedec";
+    const GLOBE_EDGE = "rgba(194, 200, 190, 0.5)";
+    const GRATICULE = "rgba(115, 121, 112, 0.22)";
+
+    const mapContainer = document.getElementById("map-container");
+    const tooltip = document.getElementById("map-tooltip");
+    const tooltipCountry = document.getElementById("tooltip-country");
+    const tooltipScore = document.getElementById("tooltip-score");
+
+    const targetView = { lon: -66, lat: -16 };
+    const SCROLL_TABLE_REVEAL = 96;
+    const SCROLL_FOCUS_START = 96;
+    const SCROLL_FOCUS_SPAN = 900;
+    const SPIN_IDLE0 = 48;
+    const IDLE_SPIN_SPEED = 0.045;
+
+    function easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function min(a, b) { return a < b ? a : b; }
+
+    function featureName(d) {
+        const p = d.properties || {};
+        return p.name || p.NAME || p.NAME_EN || "";
+    }
+
+    let width = 0;
+    let height = 0;
+    let radius = 0;
+    let projection;
+    let path;
+    let svg;
+    let gMain;
+    let oceanPath;
+    let graticulePath;
+    let outlinePath;
+    let landPaths;
+    let calloutG;
+    let calloutLine;
+    let calloutAnchor;
+    let calloutShowTimer = null;
+    let calloutHideTimer = null;
+    let indexedFeatures = [];
+    let spinIdle = SPIN_IDLE0;
+    let spinFrozen = null;
+    let rankingUnlocked = false;
+    let peakScrollY = 0;
+    let colorsLatched = false;
+    let focusProgress = 0;
+    let revealed = false;
+    let lastRevealed = false;
+    let tableLinkedCountry = null;
+    let graticule = d3.geoGraticule().step([20, 20]);
+    let rafId = 0;
+    const reduceMotion = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function clamp01(x) {
+        return Math.max(0, Math.min(1, x));
+    }
+
+    function updateFocusProgress() {
+        const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+        peakScrollY = Math.max(peakScrollY, scrollY);
+        if (peakScrollY >= SCROLL_FOCUS_START && spinFrozen === null) {
+            spinFrozen = spinIdle;
+        }
+        const outer = document.getElementById("ranking-table-outer");
+        const hint = document.getElementById("scroll-hint-block");
+        if (!rankingUnlocked && peakScrollY >= SCROLL_TABLE_REVEAL) rankingUnlocked = true;
+        if (rankingUnlocked) {
+            if (outer) outer.classList.add("is-open");
+            if (hint) hint.classList.add("hidden");
+        } else {
+            if (outer) outer.classList.remove("is-open");
+            if (hint) hint.classList.remove("hidden");
+        }
+        const span = SCROLL_FOCUS_SPAN;
+        focusProgress = span > 0 ? clamp01((peakScrollY - SCROLL_FOCUS_START) / span) : 0;
+    }
+
+    function getViewCenterLonLat() {
+        const p = easeInOutCubic(focusProgress);
+        const lonBase = spinFrozen !== null ? spinFrozen : spinIdle;
+        const lon = lonBase * (1 - p) + targetView.lon * p;
+        const lat = -11 * (1 - p) + targetView.lat * p;
+        return [lon, lat];
+    }
+
+    function anyIndexedLandVisibleOnGlobe() {
+        if (!path || !indexedFeatures.length) return false;
+        for (let i = 0; i < indexedFeatures.length; i++) {
+            const f = indexedFeatures[i];
+            const dStr = path(f);
+            const len = typeof path.measure === "function" ? path.measure(f) : 0;
+            if (len > 0) return true;
+            if (dStr && typeof dStr === "string" && dStr.length > 40) return true;
+        }
+        return false;
+    }
+
+    function landFill(d) {
+        const name = featureName(d);
+        if (!revealed || !countryData[name]) return NEUTRAL;
+        return countryData[name].color;
+    }
+
+    function svgUserToParentLocal(svgEl, parentEl, x, y) {
+        if (!svgEl || !parentEl) return [0, 0];
+        const pt = svgEl.createSVGPoint();
+        pt.x = x;
+        pt.y = y;
+        const ctm = svgEl.getScreenCTM();
+        if (!ctm) return [x, y];
+        const g = pt.matrixTransform(ctm);
+        const pr = parentEl.getBoundingClientRect();
+        return [g.x - pr.left, g.y - pr.top];
+    }
+
+    function hideCountryCallout() {
+        if (calloutShowTimer) {
+            clearTimeout(calloutShowTimer);
+            calloutShowTimer = null;
+        }
+        if (calloutHideTimer) {
+            clearTimeout(calloutHideTimer);
+            calloutHideTimer = null;
+        }
+        if (calloutLine) calloutLine.interrupt();
+        if (calloutG) calloutG.interrupt();
+        if (calloutG) calloutG.style("opacity", 0);
+        if (calloutLine) {
+            calloutLine.attr("stroke-dasharray", null).attr("stroke-dashoffset", null);
+            calloutLine.attr("x1", 0).attr("y1", 0).attr("x2", 0).attr("y2", 0);
+        }
+        if (calloutAnchor) calloutAnchor.attr("cx", -9999).attr("cy", -9999);
+        if (tooltip) {
+            tooltip.classList.remove("is-visible");
+            tooltip.style.opacity = "0";
+            tooltip.style.visibility = "hidden";
+            tooltip.classList.add("invisible");
+        }
+    }
+
+    function scheduleHideCallout() {
+        if (calloutHideTimer) clearTimeout(calloutHideTimer);
+        calloutHideTimer = setTimeout(() => {
+            calloutHideTimer = null;
+            hideCountryCallout();
+        }, 140);
+    }
+
+    function showCountryCallout(event, d) {
+        if (!revealed || !calloutG || !svg) return;
+        const name = featureName(d);
+        if (!countryData[name]) return;
+
+        if (calloutHideTimer) {
+            clearTimeout(calloutHideTimer);
+            calloutHideTimer = null;
+        }
+
+        hideCountryCallout();
+
+        const c = d3.geoCentroid(d);
+        let p0 = projection(c);
+        if (!p0 || !isFinite(p0[0]) || !isFinite(p0[1])) {
+            p0 = d3.pointer(event, svg.node());
+        }
+        if (!p0 || !isFinite(p0[0]) || !isFinite(p0[1])) return;
+
+        const cx = width / 2;
+        const cy = height / 2;
+        let dx = p0[0] - cx;
+        let dy = p0[1] - cy;
+        let dist = Math.hypot(dx, dy);
+        if (dist < 1e-3) {
+            dx = 1;
+            dy = 0;
+            dist = 1;
+        }
+        const ux = dx / dist;
+        const uy = dy / dist;
+        const L = min(92, min(width, height) * 0.2);
+        const p1 = [p0[0] + ux * L, p0[1] + uy * L];
+
+        const parentEl = mapContainer.parentElement;
+        const svgEl = svg.node();
+
+        tooltipCountry.textContent = "Country: " + name;
+        tooltipScore.textContent = String(countryData[name].score);
+
+        const revealCard = () => {
+            const gap = 16;
+            const [lx, ly] = svgUserToParentLocal(svgEl, parentEl, p1[0] + ux * gap, p1[1] + uy * gap);
+            tooltip.style.left = `${lx}px`;
+            tooltip.style.top = `${ly}px`;
+            tooltip.style.transform = "translate(-50%, -50%) scale(0.96)";
+            tooltip.style.visibility = "visible";
+            tooltip.classList.remove("invisible");
+            requestAnimationFrame(() => {
+                tooltip.style.opacity = "1";
+                tooltip.style.transform = "translate(-50%, -50%) scale(1)";
+                tooltip.classList.add("is-visible");
+            });
+        };
+
+        calloutG.style("opacity", 1);
+        calloutAnchor.attr("cx", p0[0]).attr("cy", p0[1]);
+        calloutLine
+            .attr("x1", p0[0]).attr("y1", p0[1])
+            .attr("x2", p1[0]).attr("y2", p1[1]);
+
+        if (reduceMotion) {
+            revealCard();
+            return;
+        }
+
+        calloutLine
+            .attr("stroke-dasharray", `${L} ${L}`)
+            .attr("stroke-dashoffset", L)
+            .transition()
+            .duration(185)
+            .ease(d3.easeCubicOut)
+            .attr("stroke-dashoffset", 0);
+
+        calloutShowTimer = setTimeout(() => {
+            calloutShowTimer = null;
+            revealCard();
+        }, 198);
+    }
+
+    function handleMouseOver(event, d) {
+        showCountryCallout(event, d);
+    }
+
+    function handleMouseOut() {
+        scheduleHideCallout();
+    }
+
+    function handleCountryClick(event, d) {
+        event.stopPropagation();
+        showCountryCallout(event, d);
+    }
+
+    function measure() {
+        width = mapContainer.clientWidth || 400;
+        height = mapContainer.clientHeight || 300;
+        radius = min(width, height) / 2.15;
+    }
+
+    function applyProjection() {
+        const p = easeInOutCubic(focusProgress);
+        const scale = radius * (0.95 + 0.52 * p);
+        const [lon, lat] = getViewCenterLonLat();
+        projection.scale(scale).rotate([-lon, -lat, 0]).translate([width / 2, height / 2]);
+        path.projection(projection);
+    }
+
+    function redrawStaticLayers() {
+        oceanPath.attr("d", path({ type: "Sphere" }));
+        graticulePath.attr("d", path(graticule()));
+        outlinePath.attr("d", path({ type: "Sphere" }));
+        if (landPaths) landPaths.attr("d", path);
+    }
+
+    function updateTableLinkedHighlight() {
+        if (!landPaths) return;
+        landPaths.classed("table-linked-highlight", d => !!tableLinkedCountry && featureName(d) === tableLinkedCountry);
+        landPaths.sort((a, b) => {
+            const aH = featureName(a) === tableLinkedCountry ? 1 : 0;
+            const bH = featureName(b) === tableLinkedCountry ? 1 : 0;
+            return aH - bH;
+        });
+        if (path) landPaths.attr("d", path);
+    }
+
+    function bindRankingTableHighlight() {
+        const table = document.getElementById("ranking-table");
+        if (!table) return;
+        const tbody = table.querySelector("tbody");
+        if (!tbody) return;
+        tbody.querySelectorAll("tr").forEach((row) => {
+            const firstTd = row.querySelector("td");
+            if (!firstTd) return;
+            const name = firstTd.textContent.trim();
+            if (!countryData[name]) return;
+            row.setAttribute("tabindex", "0");
+            row.classList.add("cursor-pointer");
+            const on = () => {
+                tableLinkedCountry = name;
+                tbody.querySelectorAll("tr.is-row-active").forEach((r) => r.classList.remove("is-row-active"));
+                row.classList.add("is-row-active");
+                updateTableLinkedHighlight();
+            };
+            const off = () => {
+                row.classList.remove("is-row-active");
+                if (tableLinkedCountry === name) {
+                    tableLinkedCountry = null;
+                    updateTableLinkedHighlight();
+                }
+            };
+            row.addEventListener("pointerenter", on);
+            row.addEventListener("pointerout", (e) => {
+                const rel = e.relatedTarget;
+                if (!rel || !row.contains(rel)) off();
+            });
+            row.addEventListener("click", on);
+            row.addEventListener("focusin", on);
+            row.addEventListener("focusout", (e) => {
+                const rel = e.relatedTarget;
+                if (!rel || !row.contains(rel)) off();
+            });
+        });
+    }
+
+    function applyRevealUi() {
+        const mapEl = document.getElementById("map-container");
+        const heading = document.getElementById("ranking-heading-text");
+        if (revealed) {
+            if (mapEl) mapEl.setAttribute("aria-label", "Globe tilted toward the Americas; index countries are coloured by democracy category.");
+            if (heading) heading.textContent = "Latin America — Results";
+        } else {
+            if (mapEl) mapEl.setAttribute("aria-label", "Animated globe of world land masses");
+            if (heading) heading.textContent = "Results";
+        }
+    }
+
+    function tick() {
+        updateFocusProgress();
+        if (!reduceMotion && peakScrollY < SCROLL_FOCUS_START && spinFrozen === null) {
+            spinIdle += IDLE_SPIN_SPEED;
+        }
+        applyProjection();
+        if (!colorsLatched) {
+            if (indexedFeatures.length && anyIndexedLandVisibleOnGlobe()) colorsLatched = true;
+            else if (focusProgress >= 1) colorsLatched = true;
+        }
+        revealed = colorsLatched || (!indexedFeatures.length && focusProgress >= 0.76);
+        redrawStaticLayers();
+
+        if (revealed !== lastRevealed) {
+            lastRevealed = revealed;
+            applyRevealUi();
+            landPaths.classed("colorize", revealed);
+            landPaths.interrupt().transition().duration(revealed ? 1400 : 900).attr("fill", landFill);
+        }
+
+        rafId = requestAnimationFrame(tick);
+    }
+
+    function initChart(world) {
+        measure();
+        projection = d3.geoOrthographic()
+            .clipAngle(90)
+            .precision(0.35);
+        path = d3.geoPath(projection);
+
+        svg = d3.select(mapContainer).append("svg")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("viewBox", [0, 0, width, height])
+            .attr("preserveAspectRatio", "xMidYMid meet");
+
+        gMain = svg.append("g").attr("class", "globe-root");
+
+        oceanPath = gMain.append("path")
+            .datum({ type: "Sphere" })
+            .attr("fill", OCEAN)
+            .attr("stroke", "none");
+
+        graticulePath = gMain.append("path")
+            .attr("fill", "none")
+            .attr("stroke", GRATICULE)
+            .attr("stroke-width", 0.45);
+
+        landPaths = gMain.selectAll("path.land")
+            .data(world.features)
+            .join("path")
+            .attr("class", d => {
+                const n = featureName(d);
+                return latAmSet.has(n) ? "country land is-latam" : "country land";
+            })
+            .attr("fill", NEUTRAL)
+            .on("mouseover", handleMouseOver)
+            .on("mouseleave", handleMouseOut)
+            .on("click", handleCountryClick);
+
+        indexedFeatures = world.features.filter(d => countryData[featureName(d)]);
+
+        outlinePath = gMain.append("path")
+            .datum({ type: "Sphere" })
+            .attr("fill", "none")
+            .attr("stroke", GLOBE_EDGE)
+            .attr("stroke-width", 1.1);
+
+        calloutG = gMain.append("g")
+            .attr("class", "map-callout")
+            .attr("pointer-events", "none")
+            .style("opacity", 0);
+
+        calloutAnchor = calloutG.append("circle")
+            .attr("class", "map-callout-anchor")
+            .attr("r", 3.8)
+            .attr("cx", -9999)
+            .attr("cy", -9999);
+
+        calloutLine = calloutG.append("line")
+            .attr("class", "map-callout-line")
+            .attr("x1", 0).attr("y1", 0).attr("x2", 0).attr("y2", 0);
+
+        applyProjection();
+        redrawStaticLayers();
+        landPaths.attr("d", path);
+
+        bindRankingTableHighlight();
+
+        cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(tick);
+    }
+
+    function onResize() {
+        measure();
+        if (!svg) return;
+        svg.attr("viewBox", [0, 0, width, height]);
+        applyProjection();
+        redrawStaticLayers();
+    }
+
+    window.addEventListener("resize", onResize);
+
+    if (tooltip) {
+        tooltip.addEventListener("mouseenter", () => {
+            if (calloutHideTimer) {
+                clearTimeout(calloutHideTimer);
+                calloutHideTimer = null;
+            }
+        });
+        tooltip.addEventListener("mouseleave", () => scheduleHideCallout());
+    }
+
+    d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+        .then(initChart)
+        .catch(() => {
+            mapContainer.innerHTML = "<p class=\"font-label text-sm text-on-surface-variant p-6 text-center\">Unable to load map data. Check your connection.</p>";
+        });
+    });
+})();
+</script>
+</body></html>

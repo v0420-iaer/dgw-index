@@ -1,0 +1,1149 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Country Profiles — Democracy Index</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Public+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+                    "on-tertiary-fixed": "#2a1700",
+                    "on-error-container": "#93000a",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#e4e2e0",
+                    "on-primary-fixed": "#012106",
+                    "inverse-surface": "#30302f",
+                    "outline": "#737970",
+                    "outline-variant": "#c2c8be",
+                    "on-tertiary-container": "#ca9857",
+                    "inverse-on-surface": "#f2f0ee",
+                    "surface-tint": "#446744",
+                    "tertiary-container": "#503100",
+                    "primary-fixed": "#c5edc1",
+                    "on-tertiary-fixed-variant": "#643f03",
+                    "tertiary": "#331e00",
+                    "inverse-primary": "#aad1a6",
+                    "on-secondary-fixed-variant": "#703629",
+                    "primary-fixed-dim": "#aad1a6",
+                    "tertiary-fixed": "#ffddb7",
+                    "primary": "#07290c",
+                    "on-primary": "#ffffff",
+                    "on-surface-variant": "#424840",
+                    "surface-variant": "#e4e2e0",
+                    "surface": "#fbf9f7",
+                    "secondary": "#8d4d3f",
+                    "surface-container-low": "#f5f3f1",
+                    "surface-bright": "#fbf9f7",
+                    "on-error": "#ffffff",
+                    "surface-container": "#efedec",
+                    "on-background": "#1b1c1b",
+                    "on-surface": "#1b1c1b",
+                    "on-primary-container": "#86ab83",
+                    "background": "#fbf9f7",
+                    "secondary-container": "#ffac9a",
+                    "primary-container": "#1e3f20",
+                    "on-secondary-fixed": "#390c04",
+                    "secondary-fixed": "#ffdad3",
+                    "surface-container-high": "#eae8e6",
+                    "on-secondary-container": "#7a3e31",
+                    "surface-dim": "#dbdad8",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed-dim": "#ffb4a4",
+                    "on-primary-fixed-variant": "#2d4e2e",
+                    "tertiary-fixed-dim": "#f3bd78",
+                    "error": "#ba1a1a"
+            },
+            borderRadius: { DEFAULT: "0px", lg: "0px", xl: "0px", full: "0px" },
+            fontFamily: {
+                    headline: ["Newsreader", "serif"],
+                    body: ["Newsreader", "serif"],
+                    label: ["Public Sans", "sans-serif"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .ghost-border-b {
+            border-bottom: 1px solid color-mix(in srgb, #c2c8be 15%, transparent);
+        }
+        .ghost-border-t {
+            border-top: 1px solid color-mix(in srgb, #c2c8be 15%, transparent);
+        }
+
+        .ambient-shadow {
+            box-shadow: 0px 12px 32px rgba(27, 28, 27, 0.06);
+        }
+
+        details > summary {
+            list-style: none;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .nav-glass {
+            background: rgba(251, 249, 247, 0.58);
+            -webkit-backdrop-filter: blur(18px) saturate(1.45);
+            backdrop-filter: blur(18px) saturate(1.45);
+            border-bottom: 1px solid rgba(194, 200, 190, 0.5);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.75),
+                0 8px 28px -10px rgba(27, 28, 27, 0.14);
+        }
+
+        @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+            .nav-glass {
+                background: rgba(251, 249, 247, 0.94);
+            }
+        }
+
+        .profile-globe .country-land {
+            stroke: #fbf9f7;
+            stroke-width: 0.35px;
+            transition: fill 0.45s ease, opacity 0.25s ease;
+        }
+
+        #profile-globe-container svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .profile-category[open] {
+            box-shadow: 0 16px 40px -16px rgba(27, 28, 27, 0.12);
+        }
+
+        #country-select-trigger .country-select-chevron {
+            transition: transform 0.25s ease;
+        }
+
+        #country-select-wrap.is-open #country-select-trigger .country-select-chevron {
+            transform: rotate(180deg);
+        }
+
+        #country-select-menu {
+            scrollbar-width: thin;
+            scrollbar-color: color-mix(in srgb, #737970 45%, transparent) transparent;
+        }
+
+        .profile-expand-icon {
+            font-size: 1.5rem;
+            font-weight: 300;
+            line-height: 1;
+            color: #07290c;
+            width: 2rem;
+            text-align: center;
+            font-family: "Public Sans", system-ui, sans-serif;
+        }
+
+        .profile-category[open] > summary .profile-expand-icon {
+            font-size: 1.35rem;
+        }
+
+        .profile-category[open] > summary .profile-expand-icon::before {
+            content: "−";
+        }
+
+        .profile-category:not([open]) > summary .profile-expand-icon::before {
+            content: "+";
+        }
+
+        .capital-callout {
+            pointer-events: none;
+        }
+
+        /* Fixed landscape frame (4:3) so wide flags are never cropped into a “vertical slice”. */
+        .profile-flag-tile {
+            width: 7.35rem;
+            aspect-ratio: 4 / 3;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eae8e6;
+        }
+
+        @media (min-width: 640px) {
+            .profile-flag-tile {
+                width: 8.25rem;
+            }
+        }
+
+        #profile-flag-display {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            display: block;
+        }
+
+        .profile-scroll-summary {
+            position: fixed;
+            left: 0;
+            right: 0;
+            z-index: 40;
+            background: rgba(251, 249, 247, 0.92);
+            -webkit-backdrop-filter: blur(16px) saturate(1.35);
+            backdrop-filter: blur(16px) saturate(1.35);
+            border-bottom: 1px solid rgba(194, 200, 190, 0.55);
+            box-shadow: 0 6px 20px -8px rgba(27, 28, 27, 0.12);
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            transition: transform 0.28s ease, opacity 0.28s ease, visibility 0.28s;
+        }
+
+        .profile-scroll-summary.is-visible {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+
+        @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+            .profile-scroll-summary {
+                background: rgba(251, 249, 247, 0.98);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .profile-scroll-summary {
+                transition: none;
+            }
+        }
+
+        .profile-scroll-summary-flag-wrap {
+            width: 2.75rem;
+            aspect-ratio: 4 / 3;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eae8e6;
+            border: 1px solid rgba(194, 200, 190, 0.45);
+            overflow: hidden;
+        }
+
+        .profile-scroll-summary-flag-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            display: block;
+        }
+    </style>
+</head>
+<body class="min-h-dvh min-h-screen flex flex-col bg-surface text-on-surface antialiased font-body selection:bg-primary-container selection:text-white overflow-x-clip">
+<nav class="nav-glass text-primary font-headline leading-tight tracking-tight w-full sticky top-0 z-50 transition-opacity duration-200 supports-[padding:max(0px)]:pt-[env(safe-area-inset-top)]">
+<div class="flex items-center justify-between gap-3 w-full px-4 sm:px-6 lg:px-12 py-4 md:py-6 max-w-screen-2xl mx-auto">
+<a class="text-lg sm:text-xl md:text-2xl font-bold font-headline text-primary tracking-tight min-w-0 shrink truncate pr-2" href="index.html">Democracy Index</a>
+<div class="hidden md:flex gap-6 lg:gap-8 items-center font-label text-sm tracking-wide">
+<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300" href="index.html">The Index</a>
+<a class="text-primary font-bold border-b border-primary pb-1" href="country-profiles.html" aria-current="page">Country Profiles</a>
+<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300" href="indicators.html">Indicators</a>
+<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300" href="references.html">References</a>
+</div>
+<div class="flex items-center gap-2 sm:gap-4 md:gap-6 shrink-0">
+<details class="relative md:hidden group">
+<summary class="flex items-center justify-center w-11 h-11 text-on-background/70 hover:text-primary cursor-pointer border border-outline-variant/30 bg-surface-container-low/80" aria-label="Open menu">
+<span class="material-symbols-outlined text-2xl">menu</span>
+</summary>
+<div class="absolute right-0 top-full mt-2 w-[min(calc(100vw-2rem),18rem)] bg-surface-container-lowest border border-outline-variant/20 shadow-lg py-2 z-[60]">
+<a class="block px-4 py-3 font-label text-sm text-on-background/80 hover:bg-surface-container-high" href="index.html">The Index</a>
+<a class="block px-4 py-3 font-label text-sm text-primary font-semibold border-b border-outline-variant/15" href="country-profiles.html" aria-current="page">Country Profiles</a>
+<a class="block px-4 py-3 font-label text-sm text-on-background/80 hover:bg-surface-container-high" href="indicators.html">Indicators</a>
+<a class="block px-4 py-3 font-label text-sm text-on-background/80 hover:bg-surface-container-high" href="references.html">References</a>
+</div>
+</details>
+</div>
+</div>
+</nav>
+<div id="dgw-load-error" class="hidden w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-3 bg-error-container text-on-error-container font-label text-sm border-b border-error/30" role="alert"></div>
+
+<div id="profile-scroll-summary" class="profile-scroll-summary" role="region" aria-label="Selected country summary" aria-hidden="true">
+<div class="flex items-center gap-3 sm:gap-4 min-w-0 w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-2.5 sm:py-3">
+<div class="profile-scroll-summary-flag-wrap" aria-hidden="true">
+<img id="profile-scroll-summary-flag" src="" alt="" width="44" height="33" loading="lazy" decoding="async">
+</div>
+<p class="font-headline text-base sm:text-lg text-primary tracking-tight min-w-0 flex-1 truncate" id="profile-scroll-summary-country">—</p>
+<div class="flex items-baseline gap-1.5 shrink-0 tabular-nums">
+<span id="profile-scroll-summary-score" class="font-headline text-lg sm:text-xl text-primary">—</span>
+<span class="font-headline text-sm text-outline-variant">/ 100</span>
+</div>
+<span id="profile-scroll-summary-regime" class="font-label text-[10px] sm:text-xs font-semibold uppercase tracking-wider px-2.5 py-1 border border-outline-variant/20 shrink-0 text-end leading-snug max-w-[42%] sm:max-w-[13.5rem]">—</span>
+</div>
+</div>
+
+<main class="flex-grow pb-32 min-w-0 w-full max-w-full overflow-x-clip">
+<header class="max-w-screen-2xl mx-auto w-full min-w-0 px-4 sm:px-8 md:px-12 py-12 sm:py-16 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-16 md:gap-20 items-start">
+<div class="lg:col-span-5 flex flex-col gap-10 min-w-0 max-w-full">
+<div class="w-full min-w-0 max-w-xl">
+<label class="font-label text-on-surface-variant text-xs uppercase tracking-widest mb-2 block" id="country-select-label" for="country-select-trigger">Select country</label>
+<div id="country-select-wrap" class="relative w-full">
+<button type="button" id="country-select-trigger" class="group w-full flex items-center justify-between gap-3 font-headline text-lg sm:text-xl tracking-tight text-primary bg-surface-container-low border border-outline-variant/25 px-4 py-3 shadow-[0_6px_18px_-10px_rgba(27,28,27,0.12)] hover:border-primary/35 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:ring-offset-2 focus-visible:ring-offset-surface transition-colors" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="country-select-label" aria-controls="country-select-menu">
+<span id="country-select-value" class="min-w-0 truncate text-left">—</span>
+<span class="material-symbols-outlined country-select-chevron text-outline-variant group-hover:text-primary text-xl shrink-0" aria-hidden="true">expand_more</span>
+</button>
+<div id="country-select-menu" class="hidden absolute z-[70] left-0 right-0 mt-1 max-h-52 overflow-y-auto border border-outline-variant/20 bg-surface-container-lowest shadow-[0_20px_48px_-16px_rgba(27,28,27,0.18)]" role="listbox" aria-labelledby="country-select-label" tabindex="-1"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-8 sm:p-10 ambient-shadow border border-outline-variant/10 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary-container/5 opacity-50 pointer-events-none"></div>
+<div class="relative z-10 flex flex-col items-start">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-5">Index score</span>
+<div class="flex items-baseline gap-3 mb-2">
+<span id="profile-score-big" class="font-headline text-6xl sm:text-7xl md:text-8xl tracking-tighter text-primary leading-none">—</span>
+<span class="font-headline text-2xl text-outline-variant">/ 100</span>
+</div>
+<div class="mt-8 pt-6 border-t border-outline-variant/20 w-full flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+<span class="font-label text-sm text-on-surface-variant">Regime type</span>
+<span id="profile-regime" class="font-label text-xs font-semibold uppercase tracking-wider text-primary px-3 py-1.5 border border-outline-variant/20 bg-surface-container-high/80">—</span>
+</div>
+<div class="mt-8 pt-6 border-t border-outline-variant/20 w-full">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-3">Dimension scores (workbook)</span>
+<div class="w-full overflow-x-auto -mx-1">
+<table class="w-full min-w-[300px] font-label text-sm border border-outline-variant/20 text-left">
+<thead>
+<tr class="bg-surface-container-high/70 text-on-surface-variant uppercase tracking-wider text-[10px]">
+<th class="px-3 py-2 font-medium">Variable</th>
+<th class="px-3 py-2 font-medium text-right whitespace-nowrap">Score / 100</th>
+<th class="px-3 py-2 font-medium text-right whitespace-nowrap">%</th>
+</tr>
+</thead>
+<tbody id="profile-dimensions-body" class="text-on-surface"></tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="lg:col-span-7 flex flex-col gap-4 min-w-0 max-w-full">
+<div class="w-full bg-surface-container-lowest border border-outline-variant/20 p-3 sm:p-4 shadow-[0_28px_56px_-16px_rgba(27,28,27,0.12),0_10px_22px_-12px_rgba(27,28,27,0.07)]">
+<p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 px-1">Regional view</p>
+<div id="profile-globe-container" class="profile-globe w-full h-[min(52vh,22rem)] sm:h-[min(56vh,26rem)] md:h-[min(60vh,30rem)] bg-surface-container overflow-hidden min-h-[220px]" role="img" aria-label="Orthographic globe highlighting the selected country"></div>
+</div>
+<div class="px-1 font-label text-xs text-on-surface-variant">
+<span id="profile-rank-regional">Regional rank: —</span>
+</div>
+<div class="mt-2 border border-outline-variant/15 bg-surface-container-low/50 p-4 sm:p-5 shadow-[0_8px_24px_-12px_rgba(27,28,27,0.06)]">
+<div class="flex gap-5 items-start min-w-0">
+<div id="profile-info-flag-tile" class="profile-flag-tile border border-outline-variant/25 overflow-hidden" aria-hidden="true">
+<img id="profile-flag-display" src="" alt="" width="160" height="120" loading="lazy" decoding="async">
+</div>
+<div class="min-w-0 flex-1 flex flex-col justify-center gap-4 py-0.5">
+<div>
+<p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1.5">Capital</p>
+<p id="profile-capital" class="font-headline text-lg sm:text-xl text-primary tracking-tight leading-snug">
+<span id="profile-capital-name">—</span>
+</p>
+</div>
+<div>
+<p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1.5">Population</p>
+<p class="font-label text-sm text-on-surface leading-relaxed">
+<span id="profile-population-value">—</span><span class="text-on-surface-variant/70 font-normal normal-case tracking-normal text-xs"> · World Bank, <span id="profile-population-year">2024</span></span>
+</p>
+</div>
+<div>
+<p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1.5">President</p>
+<p id="profile-president-value" class="font-label text-sm text-on-surface leading-relaxed">—</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+
+<section class="max-w-screen-md mx-auto px-4 sm:px-8 md:px-0 mt-8 md:mt-16 pb-8">
+<header class="mb-10 md:mb-14">
+<h2 class="font-headline text-3xl md:text-4xl text-primary tracking-tight mb-3">Index variables &amp; indicators</h2>
+<p class="font-body text-base md:text-lg text-on-surface-variant leading-relaxed max-w-2xl">
+Structure and weights follow the index workbook (Part3); the table above lists each pillar’s <span class="font-label text-on-surface">%</span> weight. Below, every pillar, variable block, and indicator shows the country’s score on the same 0–100 workbook scale (finer values can be set per level in the data when available). Tap <span class="font-label text-primary">+</span> to expand.
+</p>
+</header>
+<div id="categories-root" class="flex flex-col gap-4 md:gap-5"></div>
+</section>
+</main>
+
+<footer class="bg-surface-container text-primary font-label text-xs uppercase tracking-widest w-full px-4 sm:px-6 lg:px-12 py-12 sm:py-16 mt-12 sm:mt-20 transition-all duration-500 ease-in-out supports-[padding:max(0px)]:pb-[max(3rem,env(safe-area-inset-bottom))]">
+<div class="grid grid-cols-1 md:grid-cols-2 items-end w-full max-w-screen-2xl mx-auto gap-8">
+<div class="flex flex-col gap-4">
+<div class="text-lg font-serif italic text-primary font-headline normal-case tracking-normal">Democracy Index for Latin America</div>
+<div class="text-on-background/50 normal-case">© 2024 The Digital Monograph: Democracy Index for Latin America. All rights reserved.</div>
+</div>
+<div class="flex flex-wrap md:justify-end gap-8">
+<a class="text-on-background/50 hover:underline decoration-primary underline-offset-8 transition-all" href="#">Institutional Access</a>
+<a class="text-on-background/50 hover:underline decoration-primary underline-offset-8 transition-all" href="#">Data Citations</a>
+<a class="text-on-background/50 hover:underline decoration-primary underline-offset-8 transition-all" href="#">Archive</a>
+<a class="text-on-background/50 hover:underline decoration-primary underline-offset-8 transition-all" href="#">Contact</a>
+</div>
+</div>
+</footer>
+
+<script src="data/dgw-loader.js"></script>
+<script src="data/ingested-excel.js"></script>
+<script>
+(function () {
+    __ensureDGW(function (err, dgw) {
+        if (err) {
+            console.error(err);
+            var banner = document.getElementById("dgw-load-error");
+            if (banner) {
+                banner.textContent = err.message;
+                banner.classList.remove("hidden");
+            }
+            return;
+        }
+        var countryData = dgw.countryData;
+
+    const REGION_SIZE = Object.keys(countryData).length;
+    const GLOBE_ZOOM_FOCUS = 1.9;
+    const GLOBE_ANIM_MS = 1550;
+    /** World Development Indicators SP.POP.TOTL — latest year returned by the World Bank API (retrieved 2026-04-18). */
+    const WORLD_BANK_POP_YEAR = 2024;
+
+    /* Set reparationsExcluded: true on a country when the Reparations sub-component (Democratic memory) is not used — see the note on indicators.html. */
+    const profileMeta = {
+        "Uruguay": { wbPop: 3386588, capital: "Montevideo", regionalRank: 1, iso2: "UY", president: "Yamandú Alberto Antonio Orsi Benítez", capitalLon: -56.1645, capitalLat: -34.9011 },
+        "Chile": { wbPop: 19764771, capital: "Santiago de Chile", regionalRank: 2, iso2: "CL", president: "José Antonio Kast Rist", capitalLon: -70.6483, capitalLat: -33.4489 },
+        "Brazil": { wbPop: 211998573, capital: "Brasília", regionalRank: 3, iso2: "BR", president: "Luiz Inácio Lula da Silva", capitalLon: -47.8828, capitalLat: -15.7939 },
+        "Argentina": { wbPop: 45696159, capital: "Ciudad Autónoma de Buenos Aires", regionalRank: 4, iso2: "AR", president: "Javier Gerardo Milei", capitalLon: -58.3816, capitalLat: -34.6037 },
+        "Colombia": { wbPop: 52886363, capital: "Bogotá, Distrito Capital", regionalRank: 5, iso2: "CO", president: "Gustavo Francisco Petro Urrego", capitalLon: -74.0721, capitalLat: 4.7110 },
+        "Ecuador": { wbPop: 18135478, capital: "San Francisco de Quito", regionalRank: 6, iso2: "EC", president: "Daniel Roy Gilchrist Noboa Azín", capitalLon: -78.4678, capitalLat: -0.1807 },
+        "Peru": { wbPop: 34217848, capital: "Lima", regionalRank: 7, iso2: "PE", president: "Dina Ercilia Boluarte Zegarra", capitalLon: -77.0428, capitalLat: -12.0464 },
+        "Bolivia": { wbPop: 12413315, capital: "Sucre (capital constitucional) y La Paz (sede de gobierno)", regionalRank: 8, iso2: "BO", president: "Luis Alberto Arce Catacora", capitalLon: -68.1193, capitalLat: -16.4897 },
+        "Paraguay": { wbPop: 6929153, capital: "Nuestra Señora Santa María de la Asunción", regionalRank: 9, iso2: "PY", president: "Santiago Peña Palacios", capitalLon: -57.5759, capitalLat: -25.2637 },
+        "Suriname": { wbPop: 634431, capital: "Paramaribo", regionalRank: 10, iso2: "SR", president: "Chan Santokhi", capitalLon: -55.2038, capitalLat: 5.8520 },
+        "Guyana": { wbPop: 831303, capital: "Georgetown", regionalRank: 11, iso2: "GY", president: "Mohamed Irfaan Ali", capitalLon: -58.1551, capitalLat: 6.8013, reparationsExcluded: true },
+        "Venezuela": { wbPop: 28405543, capital: "Caracas", regionalRank: 12, iso2: "VE", president: "Delcy Eloína Rodríguez Gómez, presidenta encargada", capitalLon: -66.9036, capitalLat: 10.4806 }
+    };
+
+    /** When true in profileMeta, Reparations (Democratic memory) is not scored — see Indicators page. */
+    const REPARATIONS_NA_DISPLAY = "DOES NOT APPLY";
+
+    function reparationsExcludedForCountry(name) {
+        const m = profileMeta[name];
+        return !!(m && m.reparationsExcluded);
+    }
+
+    function formatWbPopulation(n) {
+        const m = n / 1e6;
+        if (m >= 100) return Math.round(m) + "M";
+        if (m >= 10) {
+            const v = Math.round(m * 10) / 10;
+            return (Number.isInteger(v) ? String(v) : v.toFixed(1)) + "M";
+        }
+        const v = Math.round(m * 100) / 100;
+        return String(v) + "M";
+    }
+
+    function flagSvgUrl(iso2) {
+        const cc = String(iso2).toLowerCase().replace(/[^a-z]/g, "");
+        if (cc.length !== 2) return "";
+        return "https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/" + cc + ".svg";
+    }
+
+    /** Workbook (Part3) variable weights and hierarchy; dimension % scores where the extract lists that country. */
+    const DIMENSION_LABELS = [
+        "Institutional integrity",
+        "Socio-economic development",
+        "Responsiveness",
+        "Electoral integrity",
+        "Democratic memory"
+    ];
+    const DIMENSION_WEIGHTS_PCT = [30, 20, 20, 20, 10];
+
+    const workbookDimensionScores = window.__DGW__.workbookDimensionScores;
+
+    /** Optional 0–100 overrides per dimension index (0–4), same scale as workbookDimensionScores. */
+    const workbookDimensionScores0100 = {};
+
+    /** Per-variable and per-indicator scores from the index workbook (Part 3). */
+    const workbookVariableScores0100 = window.__DGW__.workbookVariableScores0100;
+    const workbookIndicatorScores0100 = window.__DGW__.workbookIndicatorScores0100;
+
+    const INDEX_BLUEPRINT = [
+        {
+            label: "Variable 1",
+            title: "Institutional integrity",
+            weightPct: 30,
+            blocks: [
+                {
+                    id: "rule_of_law",
+                    heading: "Rule of Law",
+                    dimWeightPct: 30,
+                    indicators: [
+                        { id: "equal_protection_index", name: "Equal protection index", weightInDimPct: 15 },
+                        { id: "rule_of_law_index", name: "Rule of law index", weightInDimPct: 50 },
+                        { id: "civil_liberties", name: "Civil liberties", weightInDimPct: 15 },
+                        { id: "access_to_justice", name: "Access to justice", weightInDimPct: 20 }
+                    ]
+                },
+                {
+                    id: "separation_of_powers",
+                    heading: "Separation of powers",
+                    dimWeightPct: 25,
+                    indicators: [
+                        { id: "division_of_power_index", name: "Division of power index", weightInDimPct: 70 },
+                        { id: "high_court_independence", name: "High court independence", weightInDimPct: 30 }
+                    ]
+                },
+                {
+                    id: "accountability",
+                    heading: "Accountability",
+                    dimWeightPct: 30,
+                    indicators: [
+                        { id: "control_of_corruption", name: "Control of corruption", weightInDimPct: 35 },
+                        { id: "corruption_perception_index", name: "Corruption perception index", weightInDimPct: 30 },
+                        { id: "diagonal_accountability_index", name: "Diagonal accountability index", weightInDimPct: 35 }
+                    ]
+                },
+                {
+                    id: "transparency",
+                    heading: "Transparency",
+                    dimWeightPct: 15,
+                    indicators: [
+                        { id: "open_government_index", name: "Open government index", weightInDimPct: 60 },
+                        { id: "government_censorship_effort", name: "Government censorship effort", weightInDimPct: 40 }
+                    ]
+                }
+            ]
+        },
+        {
+            label: "Variable 2",
+            title: "Socio-economic development",
+            weightPct: 20,
+            blocks: [
+                {
+                    id: "welfare_frameworks",
+                    heading: "Welfare Frameworks",
+                    dimWeightPct: 35,
+                    indicators: [
+                        { id: "social_safety_nets", name: "Social safety nets", weightInDimPct: 30 },
+                        { id: "educational_equality", name: "Educational equality", weightInDimPct: 20 },
+                        { id: "health_equality", name: "Health equality", weightInDimPct: 20 },
+                        { id: "exclusion_socioeconomic_group_inv", name: "Exclusion by socio-economic group (inverted)", weightInDimPct: 30 }
+                    ]
+                },
+                {
+                    id: "living_standards",
+                    heading: "Living Standards",
+                    dimWeightPct: 40,
+                    indicators: [
+                        { id: "hdi", name: "HDI", weightInDimPct: 30 },
+                        { id: "infant_mortality_rate", name: "Infant mortality rate (inverted)", weightInDimPct: 20 },
+                        { id: "freedom_academic_cultural_expression", name: "Freedom of academic & cultural expression", weightInDimPct: 25 },
+                        { id: "access_public_services_social_group", name: "Access to public services by social group", weightInDimPct: 25 }
+                    ]
+                },
+                {
+                    id: "distribution_of_resources",
+                    heading: "Distribution of Resources",
+                    dimWeightPct: 25,
+                    indicators: [
+                        { id: "gini_coefficient", name: "Gini Coefficient (inverted)", weightInDimPct: 25 },
+                        { id: "power_distributed_socioeconomic", name: "Power distributed by socioeconomic position", weightInDimPct: 50 },
+                        { id: "poverty_headcount_ratio", name: "Poverty headcount ratio (inverted)", weightInDimPct: 25 }
+                    ]
+                }
+            ]
+        },
+        {
+            label: "Variable 3",
+            title: "Responsiveness",
+            weightPct: 20,
+            blocks: [
+                {
+                    id: "discourse",
+                    heading: "Discourse",
+                    dimWeightPct: 45,
+                    indicators: [
+                        { id: "deliberative_component_index", name: "Deliberative component index", weightInDimPct: 60 },
+                        { id: "reasoned_justification", name: "Reasoned justification", weightInDimPct: 40 }
+                    ]
+                },
+                {
+                    id: "policies_and_legitimacy",
+                    heading: "Policies and legitimacy",
+                    dimWeightPct: 55,
+                    indicators: [
+                        { id: "steering_capacity", name: "Steering capability", weightInDimPct: 60 },
+                        { id: "political_culture", name: "Approval of democracy", weightInDimPct: 40 }
+                    ]
+                }
+            ]
+        },
+        {
+            label: "Variable 4",
+            title: "Electoral integrity",
+            weightPct: 20,
+            blocks: [
+                {
+                    id: "free_and_fair_elections",
+                    heading: "Free and fair elections",
+                    dimWeightPct: 55,
+                    indicators: [
+                        { id: "clean_elections_index", name: "Clean elections index", weightInDimPct: 35 },
+                        { id: "election_free_and_fair", name: "Election free and fair", weightInDimPct: 35 },
+                        { id: "opposition_parties_autonomy", name: "Opposition parties autonomy", weightInDimPct: 15 },
+                        { id: "share_population_suffrage", name: "Share of population with suffrage", weightInDimPct: 15 }
+                    ]
+                },
+                {
+                    id: "peaceful_transition_of_power",
+                    heading: "Peaceful transition of power",
+                    dimWeightPct: 45,
+                    indicators: [
+                        { id: "election_other_electoral_violence", name: "Election other electoral violence", weightInDimPct: 30 },
+                        { id: "election_losers_accept_results", name: "Election losers accept results", weightInDimPct: 30 },
+                        { id: "election_government_intimidation", name: "Election government intimidation", weightInDimPct: 40 }
+                    ]
+                }
+            ]
+        },
+        {
+            label: "Variable 5",
+            title: "Democratic memory",
+            weightPct: 10,
+            blocks: [
+                {
+                    id: "reparations",
+                    heading: "Reparations",
+                    dimWeightPct: 60,
+                    indicators: [
+                        { id: "truth_commission", name: "Truth commission", weightInDimPct: 50 },
+                        { id: "reparatory_policies", name: "Reparatory policies", weightInDimPct: 50 }
+                    ]
+                },
+                {
+                    id: "legal",
+                    heading: "Legal",
+                    dimWeightPct: 40,
+                    indicators: [
+                        { id: "amnesty_law", name: "Amnesty law", weightInDimPct: 60 },
+                        { id: "domestic_trials", name: "Domestic trials", weightInDimPct: 40 }
+                    ]
+                }
+            ]
+        }
+    ];
+
+    const NEUTRAL = "#dbdad8";
+    const OCEAN = "#efedec";
+    const GLOBE_EDGE = "rgba(194, 200, 190, 0.5)";
+    const GRATICULE = "rgba(115, 121, 112, 0.22)";
+
+    function featureName(d) {
+        const p = d.properties || {};
+        return p.name || p.NAME || p.NAME_EN || "";
+    }
+
+    function ordinal(n) {
+        const s = ["th", "st", "nd", "rd"];
+        const v = n % 100;
+        return n + (s[(v - 20) % 10] || s[v] || s[0]);
+    }
+
+    const countrySelectWrap = document.getElementById("country-select-wrap");
+    const countrySelectTrigger = document.getElementById("country-select-trigger");
+    const countrySelectMenu = document.getElementById("country-select-menu");
+    const countrySelectValue = document.getElementById("country-select-value");
+    const globeBox = document.getElementById("profile-globe-container");
+    let worldFeatures = [];
+    let projection;
+    let path;
+    let svg;
+    let gMain;
+    let landPaths;
+    let oceanPath;
+    let graticulePath;
+    let outlinePath;
+    let capitalCallout;
+    let width = 400;
+    let height = 300;
+    let selectedKey = "Uruguay";
+    let globeRaf = null;
+
+    function stopGlobeAnim() {
+        if (globeRaf != null) {
+            cancelAnimationFrame(globeRaf);
+            globeRaf = null;
+        }
+    }
+
+    function buildCountryMenu() {
+        countrySelectMenu.innerHTML = "";
+        const sorted = Object.keys(countryData).sort((a, b) => countryData[b].score - countryData[a].score);
+        sorted.forEach((name) => {
+            const row = document.createElement("button");
+            row.type = "button";
+            row.setAttribute("role", "option");
+            row.className = "w-full text-left px-4 py-2.5 font-label text-sm text-on-surface hover:bg-surface-container-high border-b border-outline-variant/10 last:border-b-0 transition-colors flex items-center justify-between gap-2";
+            row.dataset.value = name;
+            const src = flagSvgUrl(profileMeta[name].iso2);
+            row.innerHTML = "<span class=\"truncate\">" + name + "</span><img src=\"" + src + "\" alt=\"\" width=\"44\" height=\"33\" class=\"w-11 aspect-[4/3] object-contain border border-outline-variant/25 shrink-0 bg-surface-container-high\" loading=\"lazy\" decoding=\"async\">";
+            row.addEventListener("click", () => selectCountryFromMenu(name));
+            countrySelectMenu.appendChild(row);
+        });
+    }
+
+    function openCountryMenu() {
+        countrySelectMenu.classList.remove("hidden");
+        countrySelectWrap.classList.add("is-open");
+        countrySelectTrigger.setAttribute("aria-expanded", "true");
+    }
+
+    function closeCountryMenu() {
+        countrySelectMenu.classList.add("hidden");
+        countrySelectWrap.classList.remove("is-open");
+        countrySelectTrigger.setAttribute("aria-expanded", "false");
+    }
+
+    function toggleCountryMenu() {
+        if (countrySelectMenu.classList.contains("hidden")) openCountryMenu();
+        else closeCountryMenu();
+    }
+
+    function selectCountryFromMenu(name) {
+        selectedKey = name;
+        countrySelectValue.textContent = name;
+        closeCountryMenu();
+        updateHero({ animateGlobe: true });
+    }
+
+    function baseGlobeRadiusPx() {
+        return Math.min(width, height) / 2.12;
+    }
+
+    function globeTargetForSelection() {
+        const m = profileMeta[selectedKey];
+        return { lon: m.capitalLon, lat: m.capitalLat, scaleMul: GLOBE_ZOOM_FOCUS };
+    }
+
+    function isCapitalTowardCamera(lon, lat) {
+        const rot = projection.rotate();
+        const cLon = -rot[0];
+        const cLat = -rot[1];
+        return d3.geoDistance([lon, lat], [cLon, cLat]) < Math.PI / 2 - 0.035;
+    }
+
+    function redrawGlobe() {
+        path.projection(projection);
+        oceanPath.attr("d", path({ type: "Sphere" }));
+        graticulePath.attr("d", path(d3.geoGraticule().step([20, 20])()));
+        landPaths.attr("d", path).attr("fill", (d) =>
+            featureName(d) === selectedKey ? countryData[selectedKey].color : NEUTRAL
+        );
+        outlinePath.attr("d", path({ type: "Sphere" }));
+        updateCapitalCallout();
+        svg.attr("viewBox", [0, 0, width, height]);
+    }
+
+    function shortestLonDelta(a, b) {
+        let d = b - a;
+        while (d > 180) d -= 360;
+        while (d < -180) d += 360;
+        return d;
+    }
+
+    function applyGlobeView(animate) {
+        if (!projection || !landPaths || !worldFeatures.length) return;
+        measureGlobe();
+        const tgt = globeTargetForSelection();
+        const lon = tgt.lon;
+        const lat = tgt.lat;
+        const r = baseGlobeRadiusPx();
+        const targetScale = r * tgt.scaleMul;
+        if (!animate) {
+            stopGlobeAnim();
+            projection.scale(targetScale).rotate([-lon, -lat, 0]).translate([width / 2, height / 2]);
+            redrawGlobe();
+            return;
+        }
+        const startRot = projection.rotate();
+        const startLon = -startRot[0];
+        const startLat = -startRot[1];
+        const startScale = projection.scale();
+        stopGlobeAnim();
+        const startTime = performance.now();
+        function tick(now) {
+            const u = Math.min(1, (now - startTime) / GLOBE_ANIM_MS);
+            const e = d3.easeCubicInOut(u);
+            const lonI = startLon + shortestLonDelta(startLon, lon) * e;
+            const latI = startLat + (lat - startLat) * e;
+            const scI = startScale + (targetScale - startScale) * e;
+            projection.rotate([-lonI, -latI, 0]).scale(scI).translate([width / 2, height / 2]);
+            redrawGlobe();
+            if (u < 1) globeRaf = requestAnimationFrame(tick);
+            else globeRaf = null;
+        }
+        globeRaf = requestAnimationFrame(tick);
+    }
+
+    function measureGlobe() {
+        width = globeBox.clientWidth || 400;
+        height = globeBox.clientHeight || 300;
+    }
+
+    function updateCapitalCallout() {
+        if (!capitalCallout) return;
+        const m = profileMeta[selectedKey];
+        const p = projection([m.capitalLon, m.capitalLat]);
+        const vis = isCapitalTowardCamera(m.capitalLon, m.capitalLat);
+        if (!p || p[0] !== p[0] || !vis) {
+            capitalCallout.attr("opacity", 0);
+            return;
+        }
+        const x = p[0];
+        const y = p[1];
+        const rDot = 2.6;
+        let dx = 46;
+        let dy = -40;
+        if (x + dx + 58 > width - 4) dx = -46;
+        if (x + dx < 52) dx = Math.abs(dx);
+        if (y + dy < 14) dy = 36;
+        if (y + dy > height - 14) dy = -36;
+        const ang = Math.atan2(dy, dx);
+        const x1 = x + Math.cos(ang) * rDot;
+        const y1 = y + Math.sin(ang) * rDot;
+        const x2 = x + dx;
+        const y2 = y + dy;
+        capitalCallout.select(".capital-callout-line")
+            .attr("x1", x1).attr("y1", y1)
+            .attr("x2", x2).attr("y2", y2);
+        capitalCallout.select(".capital-marker-dot")
+            .attr("cx", x).attr("cy", y)
+            .attr("fill", countryData[selectedKey].color);
+        capitalCallout.select(".capital-callout-label")
+            .attr("x", x2 + 5)
+            .attr("y", y2)
+            .attr("dominant-baseline", "middle");
+        capitalCallout.attr("opacity", 1);
+    }
+
+    function updateHero(opts) {
+        opts = opts || {};
+        const d = countryData[selectedKey];
+        const m = profileMeta[selectedKey];
+        document.getElementById("profile-score-big").textContent = d.score.toFixed(1);
+        const regimeEl = document.getElementById("profile-regime");
+        regimeEl.textContent = d.category;
+        regimeEl.style.backgroundColor = d.color;
+        regimeEl.style.color =
+            d.category === "Electoral democracy" || d.category === "Initial stage democracy" ? "#07290c" : "#ffffff";
+
+        document.getElementById("profile-capital-name").textContent = m.capital;
+        const flagImg = document.getElementById("profile-flag-display");
+        flagImg.src = flagSvgUrl(m.iso2);
+        flagImg.alt = "Flag of " + selectedKey;
+        document.getElementById("profile-population-value").textContent = formatWbPopulation(m.wbPop);
+        document.getElementById("profile-population-year").textContent = String(WORLD_BANK_POP_YEAR);
+        document.getElementById("profile-president-value").textContent = m.president;
+        document.getElementById("profile-rank-regional").textContent =
+            "Regional rank: " + ordinal(m.regionalRank) + " of " + REGION_SIZE;
+        globeBox.setAttribute("aria-label", "Globe highlighting " + selectedKey);
+
+        updateScrollSummary();
+        renderDimensionTable();
+        renderCategories();
+        applyGlobeView(!!opts.animateGlobe);
+    }
+
+    function escHtml(s) {
+        return String(s)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
+    function dimensionWorkbookValue0100(country, dimensionIdx) {
+        const o = workbookDimensionScores0100[country];
+        if (o && o[dimensionIdx] != null && o[dimensionIdx] !== undefined) return o[dimensionIdx];
+        const row = workbookDimensionScores[country];
+        if (!row || row[dimensionIdx] == null || row[dimensionIdx] === undefined) return null;
+        return row[dimensionIdx];
+    }
+
+    function variableWorkbookValue0100(country, dimensionIdx, blockId) {
+        const byVar = workbookVariableScores0100[country];
+        if (byVar && byVar[blockId] != null && byVar[blockId] !== undefined) return byVar[blockId];
+        return dimensionWorkbookValue0100(country, dimensionIdx);
+    }
+
+    function indicatorWorkbookValue0100(country, dimensionIdx, blockId, indicatorId) {
+        const byInd = workbookIndicatorScores0100[country];
+        if (byInd && byInd[indicatorId] != null && byInd[indicatorId] !== undefined) return byInd[indicatorId];
+        return variableWorkbookValue0100(country, dimensionIdx, blockId);
+    }
+
+    /** Format a 0–100 workbook value for display. */
+    function formatScoreOutOf100(workbook0100) {
+        if (workbook0100 === null || workbook0100 === undefined || Number.isNaN(Number(workbook0100))) return "—";
+        return Number(workbook0100).toFixed(1) + " / 100";
+    }
+
+    function formatVariableOrIndicatorScore(dimensionIdx, blockId, workbook0100) {
+        if (dimensionIdx === 4 && blockId === "reparations" && reparationsExcludedForCountry(selectedKey)) {
+            return REPARATIONS_NA_DISPLAY;
+        }
+        return formatScoreOutOf100(workbook0100);
+    }
+
+    function renderDimensionTable() {
+        const tbody = document.getElementById("profile-dimensions-body");
+        if (!tbody) return;
+        const parts = [];
+        for (let i = 0; i < DIMENSION_LABELS.length; i++) {
+            const label = DIMENSION_LABELS[i];
+            const w = DIMENSION_WEIGHTS_PCT[i];
+            const v = dimensionWorkbookValue0100(selectedKey, i);
+            const scoreCell = formatScoreOutOf100(v);
+            const weightCell = w + "%";
+            parts.push(
+                "<tr class=\"border-t border-outline-variant/10\">" +
+                "<td class=\"px-3 py-2.5\">" + escHtml(label) + "</td>" +
+                "<td class=\"px-3 py-2.5 text-right tabular-nums\">" + escHtml(scoreCell) + "</td>" +
+                "<td class=\"px-3 py-2.5 text-right tabular-nums\">" + weightCell + "</td>" +
+                "</tr>"
+            );
+        }
+        tbody.innerHTML = parts.join("");
+    }
+
+    const scrollSummaryEl = document.getElementById("profile-scroll-summary");
+    let profileFlagObserver = null;
+
+    function syncScrollSummaryTop() {
+        const nav = document.querySelector("body > nav");
+        if (nav && scrollSummaryEl) scrollSummaryEl.style.top = nav.offsetHeight + "px";
+    }
+
+    function updateScrollSummary() {
+        const d = countryData[selectedKey];
+        const m = profileMeta[selectedKey];
+        const sImg = document.getElementById("profile-scroll-summary-flag");
+        sImg.src = flagSvgUrl(m.iso2);
+        sImg.alt = "";
+        document.getElementById("profile-scroll-summary-country").textContent = selectedKey;
+        document.getElementById("profile-scroll-summary-score").textContent = d.score.toFixed(1);
+        const sReg = document.getElementById("profile-scroll-summary-regime");
+        sReg.textContent = d.category;
+        sReg.style.backgroundColor = d.color;
+        sReg.style.color =
+            d.category === "Electoral democracy" || d.category === "Initial stage democracy" ? "#07290c" : "#ffffff";
+    }
+
+    function bindProfileFlagScrollSummary() {
+        const tile = document.getElementById("profile-info-flag-tile");
+        const nav = document.querySelector("body > nav");
+        if (!tile || !scrollSummaryEl) return;
+        if (profileFlagObserver) {
+            profileFlagObserver.disconnect();
+            profileFlagObserver = null;
+        }
+        const topInset = nav ? -nav.offsetHeight : -56;
+        profileFlagObserver = new IntersectionObserver(
+            (entries) => {
+                const vis = entries[0].isIntersecting;
+                scrollSummaryEl.classList.toggle("is-visible", !vis);
+                scrollSummaryEl.setAttribute("aria-hidden", vis ? "true" : "false");
+            },
+            { threshold: 0, rootMargin: topInset + "px 0px 0px 0px" }
+        );
+        profileFlagObserver.observe(tile);
+    }
+
+    function renderCategories() {
+        const root = document.getElementById("categories-root");
+        root.innerHTML = "";
+        INDEX_BLUEPRINT.forEach((bp, idx) => {
+            const dimVal = dimensionWorkbookValue0100(selectedKey, idx);
+            const dimScoreHtml =
+                "<span class=\"font-headline font-medium tracking-tight leading-none text-3xl sm:text-4xl md:text-[2.75rem] text-primary tabular-nums shrink-0 whitespace-nowrap\">" +
+                escHtml(formatScoreOutOf100(dimVal)) +
+                "</span>";
+
+            const det = document.createElement("details");
+            det.className = "profile-category bg-surface-container-lowest ambient-shadow border border-outline-variant/10 transition-shadow duration-300";
+            if (idx === 0) det.open = true;
+
+            let bodyHtml = "<div class=\"space-y-8 md:space-y-10\">";
+            if (idx === 4 && reparationsExcludedForCountry(selectedKey)) {
+                bodyHtml +=
+                    "<p class=\"font-label text-xs sm:text-sm text-on-surface-variant leading-relaxed border border-outline-variant/20 bg-surface-container-low/60 px-4 py-3 sm:px-5\">" +
+                    "The <span class=\"text-on-surface font-medium\">Reparations</span> sub-component is not included for this country " +
+                    "(no relevant transition from authoritarian rule). Scores below apply only to <span class=\"text-on-surface font-medium\">Legal</span>." +
+                    "</p>";
+            }
+            bp.blocks.forEach((block) => {
+                const varVal = variableWorkbookValue0100(selectedKey, idx, block.id);
+                const varScoreCell = formatVariableOrIndicatorScore(idx, block.id, varVal);
+                bodyHtml +=
+                    "<div class=\"border border-outline-variant/15 bg-surface-container-lowest overflow-hidden shadow-[0_12px_32px_-16px_rgba(27,28,27,0.06)]\">" +
+                    "<div class=\"flex flex-row justify-between items-baseline gap-3 px-4 py-3 sm:px-5 sm:py-3.5 border-b border-outline-variant/15 bg-surface-container-low/40\">" +
+                    "<h4 class=\"font-label text-[10px] uppercase tracking-widest text-on-surface-variant min-w-0 pr-2\">" +
+                    escHtml(block.heading) +
+                    "</h4>" +
+                    "<span class=\"font-headline font-medium tracking-tight leading-none text-xl sm:text-2xl text-primary tabular-nums shrink-0 whitespace-nowrap\">" +
+                    escHtml(varScoreCell) +
+                    "</span>" +
+                    "</div>" +
+                    "<ul class=\"divide-y divide-outline-variant/10\">";
+                block.indicators.forEach((ind) => {
+                    const indVal = indicatorWorkbookValue0100(selectedKey, idx, block.id, ind.id);
+                    const scoreCell = formatVariableOrIndicatorScore(idx, block.id, indVal);
+                    const scoreClass =
+                        idx === 4 && block.id === "reparations" && reparationsExcludedForCountry(selectedKey)
+                            ? "font-body text-xs sm:text-sm font-semibold text-on-surface-variant tabular-nums shrink-0 text-right max-w-[11rem]"
+                            : "font-body text-sm sm:text-base font-medium text-primary tabular-nums shrink-0 whitespace-nowrap";
+                    bodyHtml +=
+                        "<li class=\"flex flex-row justify-between items-center gap-4 px-4 py-2.5 sm:px-5 sm:py-3 hover:bg-surface-container-high transition-colors duration-300\">" +
+                        "<p class=\"font-body text-sm sm:text-base text-on-surface leading-snug min-w-0\">" +
+                        escHtml(ind.name) +
+                        "</p>" +
+                        "<span class=\"" +
+                        scoreClass +
+                        "\">" +
+                        escHtml(scoreCell) +
+                        "</span>" +
+                        "</li>";
+                });
+                bodyHtml += "</ul></div>";
+            });
+            bodyHtml += "</div>";
+
+            det.innerHTML =
+                "<summary class=\"p-6 md:p-8 flex flex-col sm:flex-row justify-between sm:items-end gap-4 cursor-pointer list-none group hover:bg-surface-container-low/40 transition-colors border-b border-outline-variant/15\">" +
+                "<div class=\"flex flex-col gap-2 min-w-0 text-left\">" +
+                "<h3 class=\"font-headline text-xl md:text-2xl text-on-surface group-hover:text-primary transition-colors\">" +
+                escHtml(bp.title) +
+                "</h3>" +
+                "</div>" +
+                "<div class=\"flex items-center gap-3 sm:gap-4 shrink-0\">" +
+                dimScoreHtml +
+                "<span class=\"profile-expand-icon shrink-0\" aria-hidden=\"true\"></span>" +
+                "</div></summary>" +
+                "<div class=\"px-6 md:px-8 pb-6 md:pb-8 pt-0 border-t border-outline-variant/10 bg-surface-container-lowest\">" +
+                bodyHtml +
+                "</div>";
+
+            root.appendChild(det);
+        });
+    }
+
+    function initGlobe(world) {
+        worldFeatures = world.features;
+        measureGlobe();
+        projection = d3.geoOrthographic().clipAngle(90).precision(0.35);
+        path = d3.geoPath(projection);
+        globeBox.innerHTML = "";
+        svg = d3.select(globeBox).append("svg")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("viewBox", [0, 0, width, height])
+            .attr("preserveAspectRatio", "xMidYMid meet");
+
+        gMain = svg.append("g").attr("class", "profile-globe-root");
+
+        oceanPath = gMain.append("path")
+            .datum({ type: "Sphere" })
+            .attr("fill", OCEAN)
+            .attr("stroke", "none");
+
+        graticulePath = gMain.append("path")
+            .attr("fill", "none")
+            .attr("stroke", GRATICULE)
+            .attr("stroke-width", 0.45);
+
+        landPaths = gMain.selectAll("path.country-land")
+            .data(world.features)
+            .join("path")
+            .attr("class", "country-land")
+            .attr("fill", NEUTRAL);
+
+        outlinePath = gMain.append("path")
+            .datum({ type: "Sphere" })
+            .attr("fill", "none")
+            .attr("stroke", GLOBE_EDGE)
+            .attr("stroke-width", 1.1);
+
+        capitalCallout = gMain.append("g")
+            .attr("class", "capital-callout")
+            .attr("opacity", 0);
+
+        capitalCallout.append("line")
+            .attr("class", "capital-callout-line")
+            .attr("stroke", "rgba(27, 28, 27, 0.48)")
+            .attr("stroke-width", 1)
+            .attr("stroke-linecap", "round");
+
+        capitalCallout.append("circle")
+            .attr("class", "capital-marker-dot")
+            .attr("r", 2.6)
+            .attr("fill", "#07290c")
+            .attr("stroke", "#fbf9f7")
+            .attr("stroke-width", 0.85);
+
+        capitalCallout.append("text")
+            .attr("class", "capital-callout-label")
+            .attr("fill", "#424840")
+            .attr("font-size", "10px")
+            .attr("font-weight", "500")
+            .attr("font-family", "Public Sans, system-ui, sans-serif")
+            .attr("letter-spacing", "0.06em")
+            .text("Capital");
+
+        applyGlobeView(false);
+    }
+
+    countrySelectTrigger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleCountryMenu();
+    });
+    countrySelectMenu.addEventListener("click", (e) => e.stopPropagation());
+    document.addEventListener("click", () => closeCountryMenu());
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeCountryMenu();
+    });
+
+    window.addEventListener("resize", () => {
+        syncScrollSummaryTop();
+        bindProfileFlagScrollSummary();
+        if (!projection) return;
+        stopGlobeAnim();
+        applyGlobeView(false);
+    });
+
+    syncScrollSummaryTop();
+    bindProfileFlagScrollSummary();
+
+    buildCountryMenu();
+    countrySelectValue.textContent = selectedKey;
+    updateHero({ animateGlobe: false });
+
+
+    d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+        .then(initGlobe)
+        .catch(() => {
+            globeBox.innerHTML = "<p class=\"font-label text-sm text-on-surface-variant p-6 text-center\">Unable to load map data.</p>";
+        });
+    });
+})();
+</script>
+</body></html>
