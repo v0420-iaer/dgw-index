@@ -1,6 +1,6 @@
 <!DOCTYPE html><html class="light" lang="en"><head>
 <meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport">
 <title>References &amp; Bibliography - Democracy Index</title>
 <!-- Google Fonts -->
 <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -102,6 +102,28 @@
             .nav-glass {
                 background: rgba(251, 249, 247, 0.94);
             }
+        }
+
+        .layout-gutter {
+            padding-left: max(1rem, env(safe-area-inset-left, 0px));
+            padding-right: max(1rem, env(safe-area-inset-right, 0px));
+        }
+        @media (min-width: 640px) {
+            .layout-gutter {
+                padding-left: max(1.5rem, env(safe-area-inset-left, 0px));
+                padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
+            }
+        }
+        @media (min-width: 1024px) {
+            .layout-gutter {
+                padding-left: max(3rem, env(safe-area-inset-left, 0px));
+                padding-right: max(3rem, env(safe-area-inset-right, 0px));
+            }
+        }
+
+        .smooth-x-scroll {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
         }
 
         .nav-mobile-menu {
@@ -237,7 +259,7 @@
 <body class="bg-surface text-on-surface font-body antialiased selection:bg-primary-container selection:text-white min-h-dvh min-h-screen flex flex-col overflow-x-hidden">
 <!-- TopNavBar -->
 <nav class="nav-glass text-primary w-full sticky top-0 z-50 overflow-visible transition-opacity duration-200 supports-[padding:max(0px)]:pt-[env(safe-area-inset-top)]">
-<div class="flex items-center gap-3 sm:gap-4 w-full px-4 sm:px-6 lg:px-12 py-4 md:py-6 max-w-screen-2xl mx-auto overflow-visible">
+<div class="flex items-center gap-3 sm:gap-4 w-full layout-gutter py-4 md:py-6 max-w-screen-2xl mx-auto overflow-visible">
 <a class="font-bold font-headline text-primary tracking-tight leading-none shrink-0 min-w-0" href="index.html" aria-label="Democracy Index home"><span class="md:hidden text-xl sm:text-2xl tabular-nums">DI</span><span class="hidden md:inline text-lg md:text-xl lg:text-2xl whitespace-nowrap">Democracy Index</span></a>
 <div class="flex-1 min-w-0 flex justify-center">
 <div class="hidden md:flex gap-6 lg:gap-8 items-center font-label text-sm tracking-wide whitespace-nowrap">
@@ -264,12 +286,12 @@
 </div>
 </nav>
 <!-- Main Content Canvas -->
-<main class="flex-grow flex flex-col w-full min-w-0 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-16 md:py-24">
+<main class="flex-grow flex flex-col w-full min-w-0 max-w-screen-2xl mx-auto layout-gutter py-12 sm:py-16 md:py-24">
 <!-- Page Header -->
 <header class="mb-20 max-w-4xl">
 <p class="font-label text-sm uppercase tracking-[0.15em] text-on-surface-variant mb-4">Documentation</p>
-<h1 class="font-headline text-5xl md:text-6xl lg:text-[3.5rem] leading-tight tracking-[-0.02em] text-primary mb-6">References &amp; Bibliography</h1>
-<p class="font-body text-lg text-on-surface-variant leading-[1.6] max-w-2xl">
+<h1 class="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-[3.5rem] leading-tight tracking-[-0.02em] text-primary mb-6 text-balance">References &amp; Bibliography</h1>
+<p class="font-body text-base sm:text-lg text-on-surface-variant leading-[1.65] max-w-2xl text-pretty">
                 A comprehensive collection of primary datasets, institutional reports, and secondary literature utilized in the construction of the Democracy Index for Latin America.
             </p>
 </header>
@@ -349,7 +371,7 @@
 </div>
 </main>
 <!-- Footer -->
-<footer class="bg-surface-container text-primary font-label text-xs uppercase tracking-widest w-full px-4 sm:px-6 lg:px-12 py-12 sm:py-16 mt-12 sm:mt-20 transition-all duration-500 ease-in-out supports-[padding:max(0px)]:pb-[max(3rem,env(safe-area-inset-bottom))]">
+<footer class="bg-surface-container text-primary font-label text-xs uppercase tracking-widest w-full layout-gutter py-12 sm:py-16 mt-12 sm:mt-20 transition-all duration-500 ease-in-out supports-[padding:max(0px)]:pb-[max(3rem,env(safe-area-inset-bottom))]">
 <div class="grid grid-cols-1 md:grid-cols-2 items-end gap-x-8 gap-y-6 w-full max-w-screen-2xl mx-auto">
 <div class="text-lg font-serif italic text-primary font-headline normal-case tracking-normal min-w-0">Democracy Index for Latin America</div>
 <div class="text-on-background/50 normal-case text-right md:max-w-xl md:ml-auto md:justify-self-end flex flex-col items-end gap-0">

@@ -5,6 +5,7 @@
 const XLSX = require("xlsx");
 const fs = require("fs");
 const path = require("path");
+const { categoryFromScore, colorFromScore } = require("./democracy-scale.cjs");
 
 const xlsxPath = path.join(__dirname, "..", "the index", "part 3 democracy.xlsx");
 /** Workbook sheet with South America countries (same layout as former "Full 1"). */
@@ -121,13 +122,6 @@ function mapStateName(state) {
   return state;
 }
 
-function categoryFromScore(score) {
-  if (score >= 76) return { category: "Consolidated democracy", color: "rgb(30, 63, 32)" };
-  if (score >= 56) return { category: "Electoral democracy", color: "rgb(155, 176, 152)" };
-  if (score >= 36) return { category: "Initial stage democracy", color: "rgb(216, 164, 98)" };
-  return { category: "No democracy", color: "rgb(196, 122, 106)" };
-}
-
 function clamp0100(v) {
   if (v == null) return null;
   return Math.max(0, Math.min(100, v));
@@ -214,7 +208,8 @@ const countryData = {};
 let rank = 1;
 for (const name of names) {
   const t = countries[name].total;
-  const { category, color } = categoryFromScore(t);
+  const category = categoryFromScore(t);
+  const color = colorFromScore(t);
   countryData[name] = { score: t, category, color, regionalRank: rank++ };
 }
 

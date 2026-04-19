@@ -1,6 +1,6 @@
 <!DOCTYPE html><html class="light" lang="en"><head>
 <meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport">
 <title>Country Profiles — Democracy Index</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -109,6 +109,62 @@
             .nav-glass {
                 background: rgba(251, 249, 247, 0.94);
             }
+        }
+
+        .layout-gutter {
+            padding-left: max(1rem, env(safe-area-inset-left, 0px));
+            padding-right: max(1rem, env(safe-area-inset-right, 0px));
+        }
+        @media (min-width: 640px) {
+            .layout-gutter {
+                padding-left: max(1.5rem, env(safe-area-inset-left, 0px));
+                padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
+            }
+        }
+        @media (min-width: 1024px) {
+            .layout-gutter {
+                padding-left: max(3rem, env(safe-area-inset-left, 0px));
+                padding-right: max(3rem, env(safe-area-inset-right, 0px));
+            }
+        }
+
+        .profile-hero-gutter {
+            padding-left: max(1rem, env(safe-area-inset-left, 0px));
+            padding-right: max(1rem, env(safe-area-inset-right, 0px));
+        }
+        @media (min-width: 640px) {
+            .profile-hero-gutter {
+                padding-left: max(2rem, env(safe-area-inset-left, 0px));
+                padding-right: max(2rem, env(safe-area-inset-right, 0px));
+            }
+        }
+        @media (min-width: 768px) {
+            .profile-hero-gutter {
+                padding-left: max(3rem, env(safe-area-inset-left, 0px));
+                padding-right: max(3rem, env(safe-area-inset-right, 0px));
+            }
+        }
+
+        .profile-article-gutter {
+            padding-left: max(1rem, env(safe-area-inset-left, 0px));
+            padding-right: max(1rem, env(safe-area-inset-right, 0px));
+        }
+        @media (min-width: 640px) {
+            .profile-article-gutter {
+                padding-left: max(2rem, env(safe-area-inset-left, 0px));
+                padding-right: max(2rem, env(safe-area-inset-right, 0px));
+            }
+        }
+        @media (min-width: 768px) {
+            .profile-article-gutter {
+                padding-left: max(env(safe-area-inset-left, 0px), 0px);
+                padding-right: max(env(safe-area-inset-right, 0px), 0px);
+            }
+        }
+
+        .smooth-x-scroll {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
         }
 
         .nav-mobile-menu {
@@ -379,7 +435,7 @@
 </head>
 <body class="min-h-dvh min-h-screen flex flex-col bg-surface text-on-surface antialiased font-body selection:bg-primary-container selection:text-white overflow-x-clip">
 <nav class="nav-glass text-primary font-headline leading-tight tracking-tight w-full sticky top-0 z-50 overflow-visible transition-opacity duration-200 supports-[padding:max(0px)]:pt-[env(safe-area-inset-top)]">
-<div class="flex items-center gap-3 sm:gap-4 w-full px-4 sm:px-6 lg:px-12 py-4 md:py-6 max-w-screen-2xl mx-auto overflow-visible">
+<div class="flex items-center gap-3 sm:gap-4 w-full layout-gutter py-4 md:py-6 max-w-screen-2xl mx-auto overflow-visible">
 <a class="font-bold font-headline text-primary tracking-tight leading-none shrink-0 min-w-0" href="index.html" aria-label="Democracy Index home"><span class="md:hidden text-xl sm:text-2xl tabular-nums">DI</span><span class="hidden md:inline text-lg md:text-xl lg:text-2xl whitespace-nowrap">Democracy Index</span></a>
 <div class="flex-1 min-w-0 flex justify-center">
 <div class="hidden md:flex gap-6 lg:gap-8 items-center font-label text-sm tracking-wide whitespace-nowrap">
@@ -405,10 +461,10 @@
 </div>
 </div>
 </nav>
-<div id="dgw-load-error" class="hidden w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-3 bg-error-container text-on-error-container font-label text-sm border-b border-error/30" role="alert"></div>
+<div id="dgw-load-error" class="hidden w-full max-w-screen-2xl mx-auto layout-gutter py-3 bg-error-container text-on-error-container font-label text-sm border-b border-error/30" role="alert"></div>
 
 <div id="profile-scroll-summary" class="profile-scroll-summary" role="region" aria-label="Selected country summary" aria-hidden="true">
-<div class="flex items-center gap-3 sm:gap-4 min-w-0 w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-2.5 sm:py-3">
+<div class="flex items-center gap-3 sm:gap-4 min-w-0 w-full max-w-screen-2xl mx-auto layout-gutter py-2.5 sm:py-3">
 <div class="profile-scroll-summary-flag-wrap" aria-hidden="true">
 <img id="profile-scroll-summary-flag" src="" alt="" width="44" height="33" loading="lazy" decoding="async">
 </div>
@@ -422,7 +478,7 @@
 </div>
 
 <main class="flex-grow pb-32 min-w-0 w-full max-w-full overflow-x-clip">
-<header class="max-w-screen-2xl mx-auto w-full min-w-0 px-4 sm:px-8 md:px-12 py-12 sm:py-16 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-16 md:gap-20 items-start">
+<header class="max-w-screen-2xl mx-auto w-full min-w-0 profile-hero-gutter py-12 sm:py-16 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-16 md:gap-20 items-start">
 <div class="lg:col-span-5 flex flex-col gap-10 min-w-0 max-w-full">
 <div class="w-full min-w-0 max-w-xl">
 <label class="font-label text-on-surface-variant text-xs uppercase tracking-widest mb-2 block" id="country-select-label" for="country-select-trigger">Select country</label>
@@ -448,7 +504,7 @@
 </div>
 <div class="mt-8 pt-6 border-t border-outline-variant/20 w-full">
 <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-3">Dimension scores (workbook)</span>
-<div class="w-full overflow-x-auto -mx-1">
+<div class="w-full overflow-x-auto smooth-x-scroll -mx-1 min-w-0">
 <table class="w-full min-w-[300px] font-label text-sm border border-outline-variant/20 text-left">
 <thead>
 <tr class="bg-surface-container-high/70 text-on-surface-variant uppercase tracking-wider text-[10px]">
@@ -501,10 +557,10 @@
 </div>
 </header>
 
-<section class="max-w-screen-md mx-auto px-4 sm:px-8 md:px-0 mt-8 md:mt-16 pb-8">
+<section class="max-w-screen-md mx-auto profile-article-gutter mt-8 md:mt-16 pb-8 min-w-0">
 <header class="mb-10 md:mb-14">
-<h2 class="font-headline text-3xl md:text-4xl text-primary tracking-tight mb-3">Index variables &amp; indicators</h2>
-<p class="font-body text-base md:text-lg text-on-surface-variant leading-relaxed max-w-2xl">
+<h2 class="font-headline text-2xl sm:text-3xl md:text-4xl text-primary tracking-tight mb-3 text-balance">Index variables &amp; indicators</h2>
+<p class="font-body text-base md:text-lg text-on-surface-variant leading-relaxed max-w-2xl text-pretty">
 Structure and weights follow the index workbook (Part3); the table above lists each pillar’s <span class="font-label text-on-surface">%</span> weight. Below, every pillar, variable block, and indicator shows the country’s score on the same 0–100 workbook scale (finer values can be set per level in the data when available). Tap <span class="font-label text-primary">+</span> to expand.
 </p>
 </header>
@@ -512,7 +568,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
 </section>
 </main>
 
-<footer class="bg-surface-container text-primary font-label text-xs uppercase tracking-widest w-full px-4 sm:px-6 lg:px-12 py-12 sm:py-16 mt-12 sm:mt-20 transition-all duration-500 ease-in-out supports-[padding:max(0px)]:pb-[max(3rem,env(safe-area-inset-bottom))]">
+<footer class="bg-surface-container text-primary font-label text-xs uppercase tracking-widest w-full layout-gutter py-12 sm:py-16 mt-12 sm:mt-20 transition-all duration-500 ease-in-out supports-[padding:max(0px)]:pb-[max(3rem,env(safe-area-inset-bottom))]">
 <div class="grid grid-cols-1 md:grid-cols-2 items-end gap-x-8 gap-y-6 w-full max-w-screen-2xl mx-auto">
 <div class="text-lg font-serif italic text-primary font-headline normal-case tracking-normal min-w-0">Democracy Index for Latin America</div>
 <div class="text-on-background/50 normal-case text-right md:max-w-xl md:ml-auto md:justify-self-end flex flex-col items-end gap-0">
@@ -522,6 +578,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
 </div>
 </footer>
 
+<script src="data/democracy-scale.js"></script>
 <script src="data/dgw-loader.js"></script>
 <script src="data/ingested-excel.js"></script>
 <script>
@@ -780,6 +837,13 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         return p.name || p.NAME || p.NAME_EN || "";
     }
 
+    function scoreFillColor(row) {
+        if (row && typeof DGWScale !== "undefined" && DGWScale.colorFromScore) {
+            return DGWScale.colorFromScore(row.score);
+        }
+        return row ? row.color : NEUTRAL;
+    }
+
     function ordinal(n) {
         const s = ["th", "st", "nd", "rd"];
         const v = n % 100;
@@ -874,7 +938,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         oceanPath.attr("d", path({ type: "Sphere" }));
         graticulePath.attr("d", path(d3.geoGraticule().step([20, 20])()));
         landPaths.attr("d", path).attr("fill", (d) =>
-            featureName(d) === selectedKey ? countryData[selectedKey].color : NEUTRAL
+            featureName(d) === selectedKey ? scoreFillColor(countryData[selectedKey]) : NEUTRAL
         );
         outlinePath.attr("d", path({ type: "Sphere" }));
         updateCapitalCallout();
@@ -955,7 +1019,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
             .attr("x2", x2).attr("y2", y2);
         capitalCallout.select(".capital-marker-dot")
             .attr("cx", x).attr("cy", y)
-            .attr("fill", countryData[selectedKey].color);
+            .attr("fill", scoreFillColor(countryData[selectedKey]));
         capitalCallout.select(".capital-callout-label")
             .attr("x", x2 + 5)
             .attr("y", y2)
@@ -970,9 +1034,13 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         document.getElementById("profile-score-big").textContent = d.score.toFixed(1);
         const regimeEl = document.getElementById("profile-regime");
         regimeEl.textContent = d.category;
-        regimeEl.style.backgroundColor = d.color;
+        const regimeBg =
+            typeof DGWScale !== "undefined" && DGWScale.flatCategoryColor && d.category
+                ? DGWScale.flatCategoryColor(d.category)
+                : d.color;
+        regimeEl.style.backgroundColor = regimeBg;
         regimeEl.style.color =
-            d.category === "Electoral democracy" || d.category === "Initial stage democracy" ? "#07290c" : "#ffffff";
+            typeof DGWScale !== "undefined" ? DGWScale.contrastTextColor(regimeBg) : "#07290c";
 
         document.getElementById("profile-capital-name").textContent = m.capital;
         const flagImg = document.getElementById("profile-flag-display");
@@ -1071,9 +1139,13 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         document.getElementById("profile-scroll-summary-score").textContent = d.score.toFixed(1);
         const sReg = document.getElementById("profile-scroll-summary-regime");
         sReg.textContent = d.category;
-        sReg.style.backgroundColor = d.color;
+        const sumBg =
+            typeof DGWScale !== "undefined" && DGWScale.flatCategoryColor && d.category
+                ? DGWScale.flatCategoryColor(d.category)
+                : d.color;
+        sReg.style.backgroundColor = sumBg;
         sReg.style.color =
-            d.category === "Electoral democracy" || d.category === "Initial stage democracy" ? "#07290c" : "#ffffff";
+            typeof DGWScale !== "undefined" ? DGWScale.contrastTextColor(sumBg) : "#07290c";
     }
 
     function bindProfileFlagScrollSummary() {

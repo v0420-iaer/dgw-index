@@ -1,6 +1,6 @@
 <!DOCTYPE html><html class="light" lang="en"><head>
 <meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport">
 <title>The Index — Democracy Index</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -89,8 +89,9 @@
             transition: opacity 0.25s ease;
         }
 
+        /* Do not transition SVG fill here — D3 sets fills; CSS fill transitions broke score vs regime toggles. */
         .country.colorize {
-            transition: fill 1.35s ease-in-out, opacity 0.25s ease;
+            transition: opacity 0.25s ease;
         }
 
         .country:hover {
@@ -125,6 +126,46 @@
             fill: rgba(7, 41, 12, 0.45);
         }
 
+        .map-mode-header .map-mode-track {
+            box-shadow: inset 0 1px 2px rgba(27, 28, 27, 0.06);
+        }
+
+        /* Safe horizontal gutters (notched phones, tablets) */
+        .layout-gutter {
+            padding-left: max(1rem, env(safe-area-inset-left, 0px));
+            padding-right: max(1rem, env(safe-area-inset-right, 0px));
+        }
+        @media (min-width: 640px) {
+            .layout-gutter {
+                padding-left: max(1.5rem, env(safe-area-inset-left, 0px));
+                padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
+            }
+        }
+        @media (min-width: 1024px) {
+            .layout-gutter {
+                padding-left: max(3rem, env(safe-area-inset-left, 0px));
+                padding-right: max(3rem, env(safe-area-inset-right, 0px));
+            }
+        }
+
+        .smooth-x-scroll {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
+        }
+
+        /* Short landscape: don’t trap the map in a tiny sticky strip — flow with content */
+        @media (max-height: 520px) and (orientation: landscape) and (max-width: 1023px) {
+            .index-globe-column {
+                position: relative !important;
+                top: auto !important;
+                height: auto !important;
+                min-height: min(78vh, 30rem);
+                max-height: none;
+                align-self: stretch;
+            }
+        }
+
+        /* Legend: full tick row only when there is room */
         #map-tooltip {
             pointer-events: none;
             transform-origin: center center;
@@ -411,7 +452,7 @@
 <body class="bg-surface text-on-surface antialiased font-body selection:bg-primary-container selection:text-white min-h-dvh min-h-screen flex flex-col overflow-x-clip">
 <!-- TopNavBar -->
 <nav class="nav-glass text-primary w-full sticky top-0 z-50 overflow-visible transition-opacity duration-200 supports-[padding:max(0px)]:pt-[env(safe-area-inset-top)]">
-<div class="flex items-center gap-3 sm:gap-4 w-full px-4 sm:px-6 lg:px-12 py-4 md:py-6 max-w-screen-2xl mx-auto overflow-visible">
+<div class="flex items-center gap-3 sm:gap-4 w-full layout-gutter py-4 md:py-6 max-w-screen-2xl mx-auto overflow-visible">
 <a class="font-bold font-headline text-primary tracking-tight leading-none shrink-0 min-w-0" href="index.html" aria-label="Democracy Index home"><span class="md:hidden text-xl sm:text-2xl tabular-nums">DI</span><span class="hidden md:inline text-lg md:text-xl lg:text-2xl whitespace-nowrap">Democracy Index</span></a>
 <div class="flex-1 min-w-0 flex justify-center">
 <div class="hidden md:flex gap-6 lg:gap-8 items-center font-label text-sm tracking-wide whitespace-nowrap">
@@ -437,14 +478,30 @@
 </div>
 </div>
 </nav>
-<div id="dgw-load-error" class="hidden w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-3 bg-error-container text-on-error-container font-label text-sm border-b border-error/30" role="alert"></div>
+<div id="dgw-load-error" class="hidden w-full max-w-screen-2xl mx-auto layout-gutter py-3 bg-error-container text-on-error-container font-label text-sm border-b border-error/30" role="alert"></div>
 <!-- Main: globe left, definition + ranking right (lg); stacked on small screens -->
-<main class="flex-grow w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 pt-8 sm:pt-12 lg:pt-16 pb-16 sm:pb-24 lg:pb-32 overflow-x-clip">
+<main class="flex-grow w-full max-w-screen-2xl mx-auto layout-gutter pt-8 sm:pt-12 lg:pt-16 pb-16 sm:pb-24 lg:pb-32 overflow-x-clip min-w-0">
 <div class="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-16 relative w-full min-w-0 max-w-full">
 <!-- Left: globe (sticky on all breakpoints so it stays in view while reading the right column) -->
-<div class="w-full min-w-0 max-w-full lg:w-3/5 h-[min(52vh,28rem)] sm:h-[min(56vh,32rem)] md:h-[min(60vh,36rem)] lg:h-[calc(100dvh-8rem)] lg:min-h-[min(100dvh-8rem,40rem)] relative sticky top-20 sm:top-24 z-10 shrink-0 self-start">
-<div class="w-full h-full bg-surface-container-lowest border border-outline-variant/20 p-2 sm:p-4 relative group min-h-[240px] shadow-[0_28px_56px_-16px_rgba(27,28,27,0.14),0_10px_22px_-12px_rgba(27,28,27,0.08),0_2px_6px_-2px_rgba(27,28,27,0.05)]">
-<div id="map-container" class="w-full h-full bg-surface-container flex items-center justify-center overflow-visible" role="img" aria-label="Animated globe of world land masses">
+<div class="index-globe-column w-full min-w-0 max-w-full lg:w-3/5 h-[min(52vh,28rem)] sm:h-[min(56vh,32rem)] md:h-[min(60vh,36rem)] lg:h-[calc(100dvh-8rem)] lg:min-h-[min(100dvh-8rem,40rem)] relative sticky top-20 sm:top-24 z-10 shrink-0 self-start">
+<div class="w-full h-full bg-surface-container-lowest border border-outline-variant/20 p-3 sm:p-4 relative group min-h-[240px] shadow-[0_28px_56px_-16px_rgba(27,28,27,0.14),0_10px_22px_-12px_rgba(27,28,27,0.08),0_2px_6px_-2px_rgba(27,28,27,0.05)] flex flex-col min-h-0">
+<header class="map-mode-header shrink-0 mb-3 sm:mb-4 px-0 sm:px-0.5 pb-4 border-b border-outline-variant/15">
+<p class="font-label text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-on-surface-variant/90">How to read this map</p>
+<div class="mt-3.5 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
+<div class="min-w-0 flex-1 space-y-2 lg:max-w-[28rem]">
+<h3 id="map-mode-title" class="font-headline text-lg sm:text-[1.35rem] text-primary leading-[1.2] tracking-[-0.02em] text-balance">Continuous scores across the 0–100 scale</h3>
+<p id="map-mode-blurb" class="font-body text-[13px] sm:text-[0.9375rem] text-on-surface-variant leading-[1.55] text-pretty" aria-live="polite">This map is driven by exact index values: a smooth colour ramp so neighbouring scores read as subtly different on the globe. The full 0–100 scale, regime bands, and colour key are on the <a href="indicators.html" class="text-primary font-medium underline decoration-primary/30 underline-offset-2 hover:decoration-primary">Indicators</a> page.</p>
+</div>
+<div class="flex flex-col gap-2.5 shrink-0 w-full sm:w-auto sm:min-w-[17rem] lg:min-w-[18rem] lg:pt-0.5">
+<span class="font-label text-[9px] uppercase tracking-[0.18em] text-on-surface-variant/75 sm:text-right">View</span>
+<div class="map-mode-track flex p-1 rounded-sm bg-surface-container-low/90 border border-outline-variant/25 gap-1" role="group" aria-label="Choose how countries are coloured on the map">
+<button type="button" id="map-mode-score" class="map-mode-btn flex min-h-[44px] sm:min-h-0 items-center justify-center flex-1 px-3 py-2.5 sm:py-2 text-[11px] sm:text-xs font-label font-medium uppercase tracking-[0.12em] rounded-sm transition-all duration-200 bg-primary text-on-primary shadow-[0_1px_2px_rgba(7,41,12,0.12)]" aria-pressed="true">Exact scores</button>
+<button type="button" id="map-mode-category" class="map-mode-btn flex min-h-[44px] sm:min-h-0 items-center justify-center flex-1 px-3 py-2.5 sm:py-2 text-[11px] sm:text-xs font-label font-medium uppercase tracking-[0.12em] rounded-sm transition-all duration-200 text-on-background/65 hover:text-primary hover:bg-surface-container-high/70" aria-pressed="false">Regime types</button>
+</div>
+</div>
+</div>
+</header>
+<div id="map-container" class="w-full flex-1 min-h-[160px] bg-surface-container flex items-center justify-center overflow-visible" role="img" aria-label="Animated globe of world land masses">
 </div>
 <div id="map-tooltip" class="absolute z-30 flex flex-col bg-surface-container-lowest shadow-[0px_8px_24px_rgba(27,28,27,0.08)] border border-outline-variant/20 px-3 py-2.5 sm:px-3.5 sm:py-3 max-w-[min(100%,12.5rem)] opacity-0 invisible will-change-[opacity,transform]" role="status" aria-live="polite">
 <span id="tooltip-country" class="font-label text-[9px] sm:text-[10px] uppercase tracking-widest text-on-surface-variant mb-1 leading-snug">Country: --</span>
@@ -458,7 +515,7 @@
 <!-- Right: definition + table -->
 <div class="w-full lg:w-2/5 flex flex-col gap-12 sm:gap-16 md:gap-20 lg:gap-24 relative min-w-0">
 <section class="flex flex-col gap-6 sm:gap-8">
-<h1 class="font-headline text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.08] tracking-[-0.02em] text-primary-container">
+<h1 class="font-headline text-[1.65rem] sm:text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.08] tracking-[-0.02em] text-primary-container text-balance">
                         Democracy Index&nbsp;</h1>
 <div class="flex flex-col gap-6">
 <h3 class="font-label text-sm uppercase tracking-widest text-on-surface-variant">Definition of Democracy</h3>
@@ -481,7 +538,7 @@
 <span id="ranking-heading-text">Results</span>
 </h2>
 </header>
-<div class="ranking-table-scroll overflow-x-auto max-w-full min-w-0 -mx-2 px-2 sm:mx-0 sm:px-0 overscroll-x-contain [contain:inline-size]">
+<div class="ranking-table-scroll smooth-x-scroll overflow-x-auto max-w-full min-w-0 -mx-2 px-2 sm:mx-0 sm:px-0 overscroll-x-contain [contain:inline-size]">
 <table class="w-full min-w-[min(100%,36rem)] sm:min-w-0 text-left border-collapse text-sm sm:text-base" id="ranking-table">
 <thead>
 <tr class="border-b border-outline-variant/15">
@@ -495,84 +552,84 @@
 <td class="py-5 px-2">Uruguay</td>
 <td class="py-5 px-2 text-right font-medium">85</td>
 <td class="py-5 px-2 pl-6">
-<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-white" style="background-color: rgb(30, 63, 32);">Consolidated democracy</span>
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest" style="background-color: #003d5b; color: #ffffff;">Consolidated democracy</span>
 </td>
 </tr>
 <tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
 <td class="py-5 px-2">Chile</td>
 <td class="py-5 px-2 text-right font-medium">81</td>
 <td class="py-5 px-2 pl-6">
-<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-white" style="background-color: rgb(30, 63, 32);">Consolidated democracy</span>
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest" style="background-color: #003d5b; color: #ffffff;">Consolidated democracy</span>
 </td>
 </tr>
 <tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
 <td class="py-5 px-2">Brazil</td>
 <td class="py-5 px-2 text-right font-medium">72</td>
 <td class="py-5 px-2 pl-6">
-<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-primary" style="background-color: rgb(155, 176, 152);">Electoral democracy</span>
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest" style="background-color: #30638e; color: #ffffff;">Electoral democracy</span>
 </td>
 </tr>
 <tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
 <td class="py-5 px-2">Argentina</td>
 <td class="py-5 px-2 text-right font-medium">71</td>
 <td class="py-5 px-2 pl-6">
-<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-primary" style="background-color: rgb(155, 176, 152);">Electoral democracy</span>
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest" style="background-color: #30638e; color: #ffffff;">Electoral democracy</span>
 </td>
 </tr>
 <tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
 <td class="py-5 px-2">Colombia</td>
 <td class="py-5 px-2 text-right font-medium">70</td>
 <td class="py-5 px-2 pl-6">
-<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-primary" style="background-color: rgb(155, 176, 152);">Electoral democracy</span>
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest" style="background-color: #30638e; color: #ffffff;">Electoral democracy</span>
 </td>
 </tr>
 <tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
 <td class="py-5 px-2">Ecuador</td>
 <td class="py-5 px-2 text-right font-medium">60</td>
 <td class="py-5 px-2 pl-6">
-<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-primary" style="background-color: rgb(155, 176, 152);">Electoral democracy</span>
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest" style="background-color: #30638e; color: #ffffff;">Electoral democracy</span>
 </td>
 </tr>
 <tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
 <td class="py-5 px-2">Peru</td>
 <td class="py-5 px-2 text-right font-medium">60</td>
 <td class="py-5 px-2 pl-6">
-<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-primary" style="background-color: rgb(155, 176, 152);">Electoral democracy</span>
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest" style="background-color: #30638e; color: #ffffff;">Electoral democracy</span>
 </td>
 </tr>
 <tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
 <td class="py-5 px-2">Bolivia</td>
 <td class="py-5 px-2 text-right font-medium">58</td>
 <td class="py-5 px-2 pl-6">
-<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-primary" style="background-color: rgb(155, 176, 152);">Electoral democracy</span>
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest" style="background-color: #edae49; color: #1b1c1b;">Initial stage democracy</span>
 </td>
 </tr>
 <tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
 <td class="py-5 px-2">Paraguay</td>
 <td class="py-5 px-2 text-right font-medium">58</td>
 <td class="py-5 px-2 pl-6">
-<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-primary" style="background-color: rgb(155, 176, 152);">Electoral democracy</span>
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest" style="background-color: #edae49; color: #1b1c1b;">Initial stage democracy</span>
 </td>
 </tr>
 <tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
 <td class="py-5 px-2">Suriname</td>
 <td class="py-5 px-2 text-right font-medium">57</td>
 <td class="py-5 px-2 pl-6">
-<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-primary" style="background-color: rgb(155, 176, 152);">Electoral democracy</span>
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest" style="background-color: #edae49; color: #1b1c1b;">Initial stage democracy</span>
 </td>
 </tr>
 <tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
 <td class="py-5 px-2">Guyana</td>
 <td class="py-5 px-2 text-right font-medium">48</td>
 <td class="py-5 px-2 pl-6">
-<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest" style="background-color: rgb(216, 164, 98); color: #07290c;">Initial stage democracy</span>
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest" style="background-color: #edae49; color: #1b1c1b;">Initial stage democracy</span>
 </td>
 </tr>
 <tr class="border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300">
 <td class="py-5 px-2">Venezuela</td>
 <td class="py-5 px-2 text-right font-medium">26</td>
 <td class="py-5 px-2 pl-6">
-<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest text-white" style="background-color: rgb(196, 122, 106);">No democracy</span>
+<span class="inline-block px-3 py-1 font-serif text-xs uppercase tracking-widest" style="background-color: #d1495b; color: #ffffff;">No democracy</span>
 </td>
 </tr></tbody>
 </table>
@@ -585,7 +642,7 @@
 </div>
 </main>
 <!-- Footer -->
-<footer class="bg-surface-container text-primary font-label text-xs uppercase tracking-widest w-full px-4 sm:px-6 lg:px-12 py-12 sm:p-16 mt-12 sm:mt-20 transition-all duration-500 ease-in-out supports-[padding:max(0px)]:pb-[max(3rem,env(safe-area-inset-bottom))]">
+<footer class="bg-surface-container text-primary font-label text-xs uppercase tracking-widest w-full layout-gutter py-12 sm:p-16 mt-12 sm:mt-20 transition-all duration-500 ease-in-out supports-[padding:max(0px)]:pb-[max(3rem,env(safe-area-inset-bottom))]">
 <div class="grid grid-cols-1 md:grid-cols-2 items-end gap-x-8 gap-y-6 w-full max-w-screen-2xl mx-auto">
 <div class="text-lg font-serif italic text-primary font-headline normal-case tracking-normal min-w-0">Democracy Index for Latin America</div>
 <div class="text-on-background/50 normal-case text-right md:max-w-xl md:ml-auto md:justify-self-end flex flex-col items-end gap-0">
@@ -595,6 +652,7 @@
 </div>
 </footer>
 
+<script src="data/democracy-scale.js"></script>
 <script src="data/dgw-loader.js"></script>
 <script src="data/ingested-excel.js"></script>
 <script>
@@ -665,6 +723,8 @@
     let focusProgress = 0;
     let revealed = false;
     let lastRevealed = false;
+    /** "score" = gradient by exact score; "category" = flat four regime colours. */
+    let mapColorMode = "score";
     let tableLinkedCountry = null;
     let graticule = d3.geoGraticule().step([20, 20]);
     let rafId = 0;
@@ -714,10 +774,118 @@
         return false;
     }
 
+    function regimeCategoryForName(name) {
+        const row = countryData[name];
+        if (!row) return null;
+        if (row.category) return row.category;
+        const S = typeof window !== "undefined" && window.DGWScale && window.DGWScale.categoryFromScore;
+        return S ? window.DGWScale.categoryFromScore(row.score) : null;
+    }
+
     function landFill(d) {
         const name = featureName(d);
         if (!revealed || !countryData[name]) return NEUTRAL;
+        if (mapColorMode === "category") {
+            const cat = regimeCategoryForName(name);
+            if (cat && window.DGWScale && window.DGWScale.flatCategoryColor) {
+                return window.DGWScale.flatCategoryColor(cat);
+            }
+            return countryData[name].color;
+        }
+        if (window.DGWScale && typeof window.DGWScale.colorFromScore === "function") {
+            return window.DGWScale.colorFromScore(countryData[name].score);
+        }
         return countryData[name].color;
+    }
+
+    /** D3 must set fill per path — batch .attr('fill', fn) is unreliable with transitions. */
+    function applyAllLandFills(opts) {
+        const animate = opts && opts.animate;
+        const duration = (opts && opts.duration != null) ? opts.duration : 450;
+        if (!landPaths) return;
+        landPaths.interrupt();
+        if (!revealed) {
+            landPaths.each(function () {
+                d3.select(this).attr("fill", NEUTRAL);
+            });
+            return;
+        }
+        if (animate && !reduceMotion) {
+            landPaths.each(function (d) {
+                const next = landFill(d);
+                d3.select(this).transition().duration(duration).ease(d3.easeCubicInOut).attr("fill", next);
+            });
+        } else {
+            landPaths.each(function (d) {
+                d3.select(this).attr("fill", landFill(d));
+            });
+        }
+    }
+
+    const linkCls = "text-primary font-medium underline decoration-primary/30 underline-offset-2 hover:decoration-primary";
+    const MAP_MODE_COPY = {
+        score: {
+            title: "Continuous scores across the 0–100 scale",
+            blurbHtml:
+                "This map is driven by exact index values: a smooth colour ramp so neighbouring scores read as subtly different on the globe. The full 0–100 scale, regime bands, and colour key are on the <a href=\"indicators.html\" class=\"" +
+                linkCls +
+                "\">Indicators</a> page."
+        },
+        category: {
+            title: "Four regime types, one solid colour each",
+            blurbHtml:
+                "Each country uses one flat colour for its regime class. The same regime categories, score ranges, and legend as the map are detailed on the <a href=\"indicators.html\" class=\"" +
+                linkCls +
+                "\">Indicators</a> page."
+        }
+    };
+
+    function applyMapColorModeUi(opts) {
+        const animate = opts && opts.animate;
+        const btnScore = document.getElementById("map-mode-score");
+        const btnCat = document.getElementById("map-mode-category");
+        const titleEl = document.getElementById("map-mode-title");
+        const blurbEl = document.getElementById("map-mode-blurb");
+        const isScore = mapColorMode === "score";
+        const copyKey = isScore ? "score" : "category";
+        if (titleEl) titleEl.textContent = MAP_MODE_COPY[copyKey].title;
+        if (blurbEl) blurbEl.innerHTML = MAP_MODE_COPY[copyKey].blurbHtml;
+        if (btnScore) {
+            btnScore.setAttribute("aria-pressed", isScore ? "true" : "false");
+            btnScore.classList.toggle("bg-primary", isScore);
+            btnScore.classList.toggle("text-on-primary", isScore);
+            btnScore.classList.toggle("text-on-background/65", !isScore);
+            btnScore.classList.toggle("hover:text-primary", !isScore);
+            btnScore.classList.toggle("hover:bg-surface-container-high/70", !isScore);
+            btnScore.classList.toggle("shadow-[0_1px_2px_rgba(7,41,12,0.12)]", isScore);
+        }
+        if (btnCat) {
+            btnCat.setAttribute("aria-pressed", isScore ? "false" : "true");
+            btnCat.classList.toggle("bg-primary", !isScore);
+            btnCat.classList.toggle("text-on-primary", !isScore);
+            btnCat.classList.toggle("text-on-background/65", isScore);
+            btnCat.classList.toggle("hover:text-primary", isScore);
+            btnCat.classList.toggle("hover:bg-surface-container-high/70", isScore);
+            btnCat.classList.toggle("shadow-[0_1px_2px_rgba(7,41,12,0.12)]", !isScore);
+        }
+        applyRevealUi();
+        applyAllLandFills({ animate: animate && revealed, duration: 450 });
+    }
+
+    function setupMapModeToggle() {
+        const btnScore = document.getElementById("map-mode-score");
+        const btnCat = document.getElementById("map-mode-category");
+        if (!btnScore || !btnCat) return;
+        btnScore.addEventListener("click", function () {
+            if (mapColorMode === "score") return;
+            mapColorMode = "score";
+            applyMapColorModeUi({ animate: true });
+        });
+        btnCat.addEventListener("click", function () {
+            if (mapColorMode === "category") return;
+            mapColorMode = "category";
+            applyMapColorModeUi({ animate: true });
+        });
     }
 
     function svgUserToParentLocal(svgEl, parentEl, x, y) {
@@ -861,12 +1029,12 @@
     function measure() {
         width = mapContainer.clientWidth || 400;
         height = mapContainer.clientHeight || 300;
-        radius = min(width, height) / 2.15;
+        radius = min(width, height) / 2.05;
     }
 
     function applyProjection() {
         const p = easeInOutCubic(focusProgress);
-        const scale = radius * (0.95 + 0.52 * p);
+        const scale = radius * (1.08 + 0.62 * p);
         const [lon, lat] = getViewCenterLonLat();
         projection.scale(scale).rotate([-lon, -lat, 0]).translate([width / 2, height / 2]);
         path.projection(projection);
@@ -933,7 +1101,13 @@
         const mapEl = document.getElementById("map-container");
         const heading = document.getElementById("ranking-heading-text");
         if (revealed) {
-            if (mapEl) mapEl.setAttribute("aria-label", "Globe tilted toward the Americas; index countries are coloured by democracy category.");
+            if (mapEl) {
+                if (mapColorMode === "category") {
+                    mapEl.setAttribute("aria-label", "Globe tilted toward the Americas; index countries are coloured by regime category (four flat colours).");
+                } else {
+                    mapEl.setAttribute("aria-label", "Globe tilted toward the Americas; index countries are coloured by exact score on the 0–100 democracy scale.");
+                }
+            }
             if (heading) heading.textContent = "Latin America — Results";
         } else {
             if (mapEl) mapEl.setAttribute("aria-label", "Animated globe of world land masses");
@@ -958,7 +1132,7 @@
             lastRevealed = revealed;
             applyRevealUi();
             landPaths.classed("colorize", revealed);
-            landPaths.interrupt().transition().duration(revealed ? 1400 : 900).attr("fill", landFill);
+            applyAllLandFills({ animate: !reduceMotion, duration: revealed ? 1400 : 900 });
         }
 
         rafId = requestAnimationFrame(tick);
@@ -1029,6 +1203,8 @@
         landPaths.attr("d", path);
 
         bindRankingTableHighlight();
+        setupMapModeToggle();
+        applyMapColorModeUi();
 
         cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(tick);
