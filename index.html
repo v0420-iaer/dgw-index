@@ -508,7 +508,7 @@
 <div class="w-full flex-1 min-h-0 flex flex-col bg-surface-container-lowest border border-outline-variant/20 p-2.5 sm:p-4 relative group shadow-[0_28px_56px_-16px_rgba(27,28,27,0.14),0_10px_22px_-12px_rgba(27,28,27,0.08),0_2px_6px_-2px_rgba(27,28,27,0.05)] max-lg:min-h-[min(78svh,34rem)] sm:max-lg:min-h-[min(76svh,36rem)] md:max-lg:min-h-[min(74svh,38rem)] lg:min-h-0 lg:h-full">
 <header class="map-mode-header shrink-0 mb-2 sm:mb-4 px-0 sm:px-0.5 pb-2 sm:pb-4 border-b border-outline-variant/15">
 <p class="font-label text-[9px] sm:text-[11px] uppercase tracking-[0.2em] text-on-surface-variant/90 max-lg:mb-0">How to read this map</p>
-<p class="font-label text-[10px] sm:text-[11px] text-primary font-medium tracking-[0.06em] mt-1.5 mb-0">Latin America &amp; Central America</p>
+<p class="font-label text-[10px] sm:text-[11px] text-primary font-medium tracking-[0.06em] mt-1.5 mb-0">Latin America</p>
 <div class="mt-2 sm:mt-3.5 flex flex-col gap-3 sm:gap-5 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
 <div class="min-w-0 flex-1 space-y-1.5 sm:space-y-2 lg:max-w-[28rem]">
 <h3 id="map-mode-title" class="map-headline-mobile font-headline text-base sm:text-lg md:text-[1.35rem] text-primary leading-[1.2] tracking-[-0.02em] text-balance">Continuous scores across the 0–100 scale</h3>
@@ -583,7 +583,7 @@
 <!-- Footer -->
 <footer class="bg-surface-container text-primary font-label text-xs uppercase tracking-widest w-full layout-gutter py-12 sm:p-16 mt-12 sm:mt-20 transition-all duration-500 ease-in-out supports-[padding:max(0px)]:pb-[max(3rem,env(safe-area-inset-bottom))]">
 <div class="grid grid-cols-1 md:grid-cols-2 items-end gap-x-8 gap-y-6 w-full max-w-screen-2xl mx-auto">
-<div class="text-lg font-serif italic text-primary font-headline normal-case tracking-normal min-w-0">Democracy Index for Latin America and Central America</div>
+<div class="text-lg font-serif italic text-primary font-headline normal-case tracking-normal min-w-0">Democracy Index for Latin America</div>
 <div class="text-on-background/50 normal-case text-right md:max-w-xl md:ml-auto md:justify-self-end flex flex-col items-end gap-0">
 <div class="font-label not-italic">© COPYRIGHT APRIL 2026 ALL RIGHTS RESERVED.</div>
 <div class="italic font-serif text-on-background/60">Designed and engineered by Ari's group</div>
@@ -664,10 +664,7 @@
     const tooltipCountry = document.getElementById("tooltip-country");
     const tooltipScore = document.getElementById("tooltip-score");
 
-    /**
-     * Globe centre [°E, °N]: great-circle midpoint between northern Mexico (~32°N, 106°W) and Tierra del Fuego (~55°S, 68°W)
-     * so Mexico, Central America, Caribbean, and South America through Argentina stay inside one orthographic hemisphere.
-     */
+    /** Fallback centre if geo fit fails (orthographic rotate = [-λ, -φ, 0]). */
     const targetView = { lon: -91, lat: -12 };
     const SCROLL_TABLE_REVEAL = 96;
     const SCROLL_FOCUS_START = 96;
@@ -702,6 +699,8 @@
     let calloutShowTimer = null;
     let calloutHideTimer = null;
     let indexedFeatures = [];
+    /** Cached result of projection.fitExtent on indexedFeatures (invalidated in measure). */
+    let latAmFitCache = { w: -1, h: -1, fit: null };
     let spinIdle = SPIN_IDLE0;
     let spinFrozen = null;
     let rankingUnlocked = false;
@@ -750,13 +749,48 @@
         focusProgress = span > 0 ? clamp01((peakScrollY - SCROLL_FOCUS_START) / span) : 0;
     }
 
-    function getViewCenterLonLat() {
-        const p = easeInOutCubic(focusProgress);
+    /** Spinning idle view only (before scroll / mobile uses full fit elsewhere). */
+    function getIdleCenterLonLat() {
         const lonBase = spinFrozen !== null ? spinFrozen : spinIdle;
-        const lon = lonBase * (1 - p) + targetView.lon * p;
-        const latIdle = -10;
-        const lat = latIdle * (1 - p) + targetView.lat * p;
-        return [lon, lat];
+        return [lonBase, -10];
+    }
+
+    function getLatAmFit() {
+        if (width === latAmFitCache.w && height === latAmFitCache.h && latAmFitCache.fit) {
+            return latAmFitCache.fit;
+        }
+        const pad = 16;
+        const proj = d3.geoOrthographic().clipAngle(90).precision(0.35);
+        if (indexedFeatures.length) {
+            try {
+                proj.fitExtent(
+                    [[pad, pad], [width - pad, height - pad]],
+                    { type: "FeatureCollection", features: indexedFeatures }
+                );
+            } catch (e) {
+                const minSide = min(width, height);
+                proj
+                    .scale(Math.max(52, minSide * 0.47))
+                    .rotate([-targetView.lon, -targetView.lat, 0])
+                    .translate([width / 2, height / 2]);
+            }
+        } else {
+            const minSide = min(width, height);
+            proj
+                .scale(Math.max(52, minSide * 0.47))
+                .rotate([-targetView.lon, -targetView.lat, 0])
+                .translate([width / 2, height / 2]);
+        }
+        latAmFitCache = {
+            w: width,
+            h: height,
+            fit: {
+                scale: proj.scale(),
+                rotate: proj.rotate().slice(),
+                translate: proj.translate().slice()
+            }
+        };
+        return latAmFitCache.fit;
     }
 
     function anyIndexedLandVisibleOnGlobe() {
@@ -1029,18 +1063,34 @@
     function measure() {
         width = mapContainer.clientWidth || 400;
         height = mapContainer.clientHeight || 300;
+        latAmFitCache.w = -1;
     }
 
     function applyProjection() {
-        const p = easeInOutCubic(focusProgress);
         const minSide = min(width, height);
         const pad = 10;
-        /* d3.geoOrthographic: scale = sphere radius in px; 2×scale must stay inside the SVG or the disk clips (e.g. Patagonia lost at the bottom). */
         const maxScale = Math.max(52, min(minSide / 2 - pad, minSide * 0.47));
-        const zoom = 1.02 + 0.38 * p;
-        const scale = min((maxScale / 1.4) * zoom, maxScale);
-        const [lon, lat] = getViewCenterLonLat();
-        projection.scale(scale).rotate([-lon, -lat, 0]).translate([width / 2, height / 2]);
+        const idleScale = min((maxScale / 1.4) * 1.02, maxScale);
+        const [idleLon, idleLat] = getIdleCenterLonLat();
+        const idleRotate = [-idleLon, -idleLat, 0];
+        const idleTranslate = [width / 2, height / 2];
+
+        /* Desktop: blend idle spin → fit-extent of all index countries. Mobile: always use fit (maximize LatAm in frame). */
+        const scrollT = isMobileLayout() ? 1 : focusProgress;
+        const q = easeInOutCubic(scrollT);
+        const fit = getLatAmFit();
+
+        const scale = idleScale * (1 - q) + fit.scale * q;
+        const rotate = [
+            idleRotate[0] * (1 - q) + fit.rotate[0] * q,
+            idleRotate[1] * (1 - q) + fit.rotate[1] * q,
+            idleRotate[2] * (1 - q) + fit.rotate[2] * q
+        ];
+        const translate = [
+            idleTranslate[0] * (1 - q) + fit.translate[0] * q,
+            idleTranslate[1] * (1 - q) + fit.translate[1] * q
+        ];
+        projection.scale(scale).rotate(rotate).translate(translate);
         path.projection(projection);
     }
 
@@ -1109,16 +1159,16 @@
                 if (mapColorMode === "category") {
                     mapEl.setAttribute(
                         "aria-label",
-                        "Globe centred on Latin America and Central America; index countries are coloured by regime category (four flat colours)."
+                        "Globe centred on Latin America; index countries are coloured by regime category (four flat colours)."
                     );
                 } else {
                     mapEl.setAttribute(
                         "aria-label",
-                        "Globe centred on Latin America and Central America; index countries are coloured by exact score on the 0–100 democracy scale."
+                        "Globe centred on Latin America; index countries are coloured by exact score on the 0–100 democracy scale."
                     );
                 }
             }
-            if (heading) heading.textContent = "Latin America & Central America — Results";
+            if (heading) heading.textContent = "Latin America — Results";
         } else {
             if (mapEl) mapEl.setAttribute("aria-label", "Animated globe of world land masses");
             if (heading) heading.textContent = "Results";
