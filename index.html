@@ -664,8 +664,12 @@
     const tooltipCountry = document.getElementById("tooltip-country");
     const tooltipScore = document.getElementById("tooltip-score");
 
-    /** Fallback centre if geo fit fails (orthographic rotate = [-λ, -φ, 0]). */
-    const targetView = { lon: -91, lat: -12 };
+    /**
+     * Focal point [lon, lat] (°, EPSG-like: east+, north+). Centers the visible hemisphere on the land mass
+     * (Andes–Caribbean spine) so Latin America sits in the middle of the disk — not over the Atlantic
+     * (which pulls Africa in and shoves SA to the limb).
+     */
+    const latAmMapCenter = [-78, -14];
     const SCROLL_TABLE_REVEAL = 96;
     const SCROLL_FOCUS_START = 96;
     const SCROLL_FOCUS_SPAN = 900;
@@ -699,8 +703,6 @@
     let calloutShowTimer = null;
     let calloutHideTimer = null;
     let indexedFeatures = [];
-    /** Cached result of projection.fitExtent on indexedFeatures (invalidated in measure). */
-    let latAmFitCache = { w: -1, h: -1, fit: null };
     let spinIdle = SPIN_IDLE0;
     let spinFrozen = null;
     let rankingUnlocked = false;
@@ -753,44 +755,6 @@
     function getIdleCenterLonLat() {
         const lonBase = spinFrozen !== null ? spinFrozen : spinIdle;
         return [lonBase, -10];
-    }
-
-    function getLatAmFit() {
-        if (width === latAmFitCache.w && height === latAmFitCache.h && latAmFitCache.fit) {
-            return latAmFitCache.fit;
-        }
-        const pad = 16;
-        const proj = d3.geoOrthographic().clipAngle(90).precision(0.35);
-        if (indexedFeatures.length) {
-            try {
-                proj.fitExtent(
-                    [[pad, pad], [width - pad, height - pad]],
-                    { type: "FeatureCollection", features: indexedFeatures }
-                );
-            } catch (e) {
-                const minSide = min(width, height);
-                proj
-                    .scale(Math.max(52, minSide * 0.47))
-                    .rotate([-targetView.lon, -targetView.lat, 0])
-                    .translate([width / 2, height / 2]);
-            }
-        } else {
-            const minSide = min(width, height);
-            proj
-                .scale(Math.max(52, minSide * 0.47))
-                .rotate([-targetView.lon, -targetView.lat, 0])
-                .translate([width / 2, height / 2]);
-        }
-        latAmFitCache = {
-            w: width,
-            h: height,
-            fit: {
-                scale: proj.scale(),
-                rotate: proj.rotate().slice(),
-                translate: proj.translate().slice()
-            }
-        };
-        return latAmFitCache.fit;
     }
 
     function anyIndexedLandVisibleOnGlobe() {
@@ -1063,34 +1027,29 @@
     function measure() {
         width = mapContainer.clientWidth || 400;
         height = mapContainer.clientHeight || 300;
-        latAmFitCache.w = -1;
     }
 
     function applyProjection() {
         const minSide = min(width, height);
         const pad = 10;
-        const maxScale = Math.max(52, min(minSide / 2 - pad, minSide * 0.47));
-        const idleScale = min((maxScale / 1.4) * 1.02, maxScale);
+        /* Orthographic scale = sphere radius in px — must stay ≤ ~min/2 or the disk clips. */
+        const maxScale = Math.max(52, min(minSide / 2 - pad, minSide * 0.48));
+        const idleScale = min((maxScale / 1.45) * 1.02, maxScale);
         const [idleLon, idleLat] = getIdleCenterLonLat();
-        const idleRotate = [-idleLon, -idleLat, 0];
-        const idleTranslate = [width / 2, height / 2];
 
-        /* Desktop: blend idle spin → fit-extent of all index countries. Mobile: always use fit (maximize LatAm in frame). */
         const scrollT = isMobileLayout() ? 1 : focusProgress;
         const q = easeInOutCubic(scrollT);
-        const fit = getLatAmFit();
 
-        const scale = idleScale * (1 - q) + fit.scale * q;
-        const rotate = [
-            idleRotate[0] * (1 - q) + fit.rotate[0] * q,
-            idleRotate[1] * (1 - q) + fit.rotate[1] * q,
-            idleRotate[2] * (1 - q) + fit.rotate[2] * q
-        ];
-        const translate = [
-            idleTranslate[0] * (1 - q) + fit.translate[0] * q,
-            idleTranslate[1] * (1 - q) + fit.translate[1] * q
-        ];
-        projection.scale(scale).rotate(rotate).translate(translate);
+        /*
+         * Spherical interpolation between idle view and fixed Americas centre.
+         * Do NOT lerp Euler angles or use fitExtent on orthographic — both skew the continent to the limb
+         * or shove the Atlantic (and Africa) into frame.
+         */
+        const centerPath = d3.geoInterpolate([idleLon, idleLat], latAmMapCenter);
+        const [lon, lat] = centerPath(q);
+        const scale = idleScale * (1 - q) + maxScale * q;
+
+        projection.scale(scale).rotate([-lon, -lat, 0]).translate([width / 2, height / 2]);
         path.projection(projection);
     }
 
