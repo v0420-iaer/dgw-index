@@ -740,7 +740,7 @@
     let spinFrozen = null;
     let rankingUnlocked = false;
     let peakScrollY = 0;
-    let colorsLatched = false;
+    let colorsLatched = isMobileLayout();
     let focusProgress = 0;
     let revealed = false;
     let lastRevealed = false;
@@ -750,6 +750,15 @@
     let graticule = d3.geoGraticule().step([20, 20]);
     let rafId = 0;
     const reduceMotion = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /** Matches Tailwind lg — phones/tablets get coloured countries immediately (no scroll / visibility gate). */
+    function isMobileLayout() {
+        try {
+            return window.matchMedia("(max-width: 1023px)").matches;
+        } catch (e) {
+            return false;
+        }
+    }
 
     function clamp01(x) {
         return Math.max(0, Math.min(1, x));
@@ -1143,7 +1152,8 @@
         }
         applyProjection();
         if (!colorsLatched) {
-            if (indexedFeatures.length && anyIndexedLandVisibleOnGlobe()) colorsLatched = true;
+            if (isMobileLayout()) colorsLatched = true;
+            else if (indexedFeatures.length && anyIndexedLandVisibleOnGlobe()) colorsLatched = true;
             else if (focusProgress >= 1) colorsLatched = true;
         }
         revealed = colorsLatched || (!indexedFeatures.length && focusProgress >= 0.76);
@@ -1153,7 +1163,11 @@
             lastRevealed = revealed;
             applyRevealUi();
             landPaths.classed("colorize", revealed);
-            applyAllLandFills({ animate: !reduceMotion, duration: revealed ? 1400 : 900 });
+            var mobileColourNow = isMobileLayout() && revealed;
+            applyAllLandFills({
+                animate: !reduceMotion && revealed && !mobileColourNow,
+                duration: mobileColourNow ? 0 : (revealed ? 1400 : 900)
+            });
         }
 
         rafId = requestAnimationFrame(tick);
@@ -1222,6 +1236,14 @@
         applyProjection();
         redrawStaticLayers();
         landPaths.attr("d", path);
+
+        revealed = colorsLatched || (!indexedFeatures.length && focusProgress >= 0.76);
+        lastRevealed = revealed;
+        applyRevealUi();
+        if (revealed && landPaths) {
+            landPaths.classed("colorize", true);
+            applyAllLandFills({ animate: false, duration: 0 });
+        }
 
         bindRankingTableHighlight();
         setupMapModeToggle();
