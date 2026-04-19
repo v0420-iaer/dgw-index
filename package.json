@@ -6,7 +6,8 @@
   "scripts": {
     "test:responsive": "node responsive-check.mjs",
     "ingest:excel": "node scripts/ingest-excel.js",
-    "validate:workbook": "node scripts/validate-workbook.js"
+    "validate:workbook": "node scripts/validate-workbook.js",
+    "cloudflare:pages": "bash scripts/cloudflare-pages-build.sh"
   },
   "keywords": [],
   "author": "",

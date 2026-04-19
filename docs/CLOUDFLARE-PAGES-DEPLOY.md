@@ -95,19 +95,22 @@ Replace `YOUR_USERNAME` and `YOUR_REPO` with yours.
 
 ### B3. Configure the build
 
-Use settings that match a **static site at the repository root** (no bundler):
+Use settings that match a **static site at the repository root** — **not** `npx wrangler deploy` (that targets **Workers** and will try to pack `node_modules`, causing **“Asset too large”** errors).
 
 
-| Setting                    | Value                                                                                                                                                                           |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Project name**           | Choose a short name — it becomes part of `**https://<project-name>.pages.dev`**. Example: `dgw-latam`.                                                                          |
-| **Production branch**      | `main` (or `master` if that’s what you use).                                                                                                                                    |
-| **Framework preset**       | **None**.                                                                                                                                                                       |
-| **Build command**          | **Leave empty.** (No `npm run build` required for this project.)                                                                                                                |
-| **Build output directory** | `**/`** or `**.**` or root — meaning “site files live at repo root”. If the UI asks for a folder name, use the option that points at where `index.html` sits (repository root). |
+| Setting | Value |
+|--------|--------|
+| **Project name** | Short name — becomes `https://<name>.pages.dev`. |
+| **Production branch** | `main` |
+| **Framework preset** | **None** (avoid presets that inject `wrangler deploy`). |
+| **Build command** | `npm run cloudflare:pages` **or** `bash scripts/cloudflare-pages-build.sh` **or** `rm -rf node_modules` |
+| **Build output directory** | **`/`** or **`.`** (repo root, where `index.html` lives). |
 
+Cloudflare runs **`npm install`** when it sees `package.json`. The published site does not need `node_modules` (only HTML/JS/data). The build step deletes that folder so the deploy uploads **static files only**.
 
-**Important:** If Cloudflare shows an advanced **Root directory** field and your `index.html` is **not** in a subfolder, leave root empty or `/`.
+**If you already enabled Wrangler:** In **Settings** → **Builds & deployments** → **Edit configuration**, remove **`npx wrangler deploy`**. Delete any committed **`wrangler.jsonc`** from the repo if you added one — it is not required for static **Pages**.
+
+**Important:** If there is a **Root directory** field and `index.html` is at the repo root, leave it empty.
 
 Click **Save and Deploy** (wording may vary).
 
@@ -151,6 +154,12 @@ In the Pages project: **Settings** → **Builds & deployments** → enable **Pre
 
 ## Part E — Troubleshooting
 
+### Build fails: “Asset too large” / `workerd` / `node_modules`
+
+Cause: a step (often **`npx wrangler deploy`**) tried to upload the **whole repo** as Worker assets, including **`node_modules`** (hundreds of MB).
+
+**Fix:** In Pages **build settings**, remove `wrangler deploy`. Set **build command** to `npm run cloudflare:pages` (this repo) or `rm -rf node_modules`, **output** to repo root. Redeploy. Do **not** use Workers-style deploy for this static site.
+
 ### Build fails: “Output directory not found” or “No files”
 
 - Confirm **Build output directory** is the folder that **contains `index.html`** after the build step. Here there is **no** build step — output is the **repository root**, so use `/` or `.` as the docs above describe.
@@ -177,14 +186,14 @@ In the Pages project: **Settings** → **Builds & deployments** → enable **Pre
 
 ## Part F — Optional: deploy from terminal with Wrangler (advanced)
 
-If you prefer the CLI instead of Git integration:
+Use **`wrangler pages deploy`** (Pages), **not** `wrangler deploy` (Workers):
 
 1. Install Wrangler: `npm install -g wrangler`
 2. Log in: `wrangler login` (browser flow).
-3. From the project root (where `index.html` lives):
-  ```bash
+3. From the project root, deploy **only static files** — e.g. copy site to a clean folder **without** `node_modules`, or run `npm run cloudflare:pages` first, then:
+   ```bash
    npx wrangler pages deploy . --project-name=YOUR_PROJECT_NAME
-  ```
+   ```
 
 Use a **Cloudflare API token** only on your machine; never commit it. Git-based deploys (Part B) are simpler for ongoing updates.
 
@@ -193,8 +202,8 @@ Use a **Cloudflare API token** only on your machine; never commit it. Git-based 
 ## Quick checklist
 
 - Repo on GitHub with `index.html` at root and `data/` committed  
-- Pages project: preset **None**, empty build command, output = repo root  
+- Pages project: preset **None**, **build** = `npm run cloudflare:pages` (or `rm -rf node_modules`), **output** = repo root — **not** `npx wrangler deploy`  
 - After Excel edits: `npm run ingest:excel` → commit `data/*` → `git push`  
-- Share `**https://<project-name>.pages.dev`** with readers
+- Share `https://<project-name>.pages.dev` with readers
 
 You’re done when the `pages.dev` URL loads all pages and shows current scores.
