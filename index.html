@@ -512,7 +512,7 @@
 <div class="mt-2 sm:mt-3.5 flex flex-col gap-3 sm:gap-5 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
 <div class="min-w-0 flex-1 space-y-1.5 sm:space-y-2 lg:max-w-[28rem]">
 <h3 id="map-mode-title" class="map-headline-mobile font-headline text-base sm:text-lg md:text-[1.35rem] text-primary leading-[1.2] tracking-[-0.02em] text-balance">Continuous scores across the 0–100 scale</h3>
-<p id="map-mode-blurb" class="font-body text-[12px] sm:text-[0.9375rem] text-on-surface-variant leading-snug sm:leading-[1.55] text-pretty max-lg:line-clamp-4" aria-live="polite">The view is framed on Latin America and Central America (Mexico, the isthmus, the Caribbean, and South America on one globe). Exact index values drive a smooth colour ramp so neighbouring scores read subtly different. The full 0–100 scale, regime bands, and colour key are on the <a href="indicators.html" class="text-primary font-medium underline decoration-primary/30 underline-offset-2 hover:decoration-primary">Indicators</a> page.</p>
+<p id="map-mode-blurb" class="font-body text-[12px] sm:text-[0.9375rem] text-on-surface-variant leading-snug sm:leading-[1.55] text-pretty max-lg:line-clamp-4" aria-live="polite">Exact index values drive a smooth colour ramp so neighbouring scores read subtly different. The full 0–100 scale, regime bands, and colour key are on the <a href="indicators.html" class="text-primary font-medium underline decoration-primary/30 underline-offset-2 hover:decoration-primary">Indicators</a> page.</p>
 </div>
 <div class="flex flex-col gap-2 shrink-0 w-full sm:w-auto sm:min-w-[17rem] lg:min-w-[18rem] lg:pt-0.5 max-lg:flex-row max-lg:items-center max-lg:justify-between max-lg:gap-3">
 <span class="font-label text-[9px] uppercase tracking-[0.18em] text-on-surface-variant/75 max-lg:sr-only sm:text-right">View</span>
@@ -664,8 +664,11 @@
     const tooltipCountry = document.getElementById("tooltip-country");
     const tooltipScore = document.getElementById("tooltip-score");
 
-    /** Globe centre [°E, °N]: Panama/Caribbean gateway so the isthmus, Mexico, the Andes, and the southern cone share one hemisphere. */
-    const targetView = { lon: -81, lat: 7 };
+    /**
+     * Globe centre [°E, °N]: great-circle midpoint between northern Mexico (~32°N, 106°W) and Tierra del Fuego (~55°S, 68°W)
+     * so Mexico, Central America, Caribbean, and South America through Argentina stay inside one orthographic hemisphere.
+     */
+    const targetView = { lon: -91, lat: -12 };
     const SCROLL_TABLE_REVEAL = 96;
     const SCROLL_FOCUS_START = 96;
     const SCROLL_FOCUS_SPAN = 900;
@@ -685,7 +688,6 @@
 
     let width = 0;
     let height = 0;
-    let radius = 0;
     let projection;
     let path;
     let svg;
@@ -752,7 +754,7 @@
         const p = easeInOutCubic(focusProgress);
         const lonBase = spinFrozen !== null ? spinFrozen : spinIdle;
         const lon = lonBase * (1 - p) + targetView.lon * p;
-        const latIdle = 6;
+        const latIdle = -10;
         const lat = latIdle * (1 - p) + targetView.lat * p;
         return [lon, lat];
     }
@@ -822,14 +824,14 @@
         score: {
             title: "Continuous scores across the 0–100 scale",
             blurbHtml:
-                "The view is framed on Latin America and Central America (Mexico, the isthmus, the Caribbean, and South America on one globe). Exact index values drive a smooth colour ramp so neighbouring scores read subtly different. The full 0–100 scale, regime bands, and colour key are on the <a href=\"indicators.html\" class=\"" +
+                "Exact index values drive a smooth colour ramp so neighbouring scores read subtly different. The full 0–100 scale, regime bands, and colour key are on the <a href=\"indicators.html\" class=\"" +
                 linkCls +
                 "\">Indicators</a> page."
         },
         category: {
             title: "Four regime types, one solid colour each",
             blurbHtml:
-                "Framed on Latin America and Central America: each country uses one flat colour for its regime class. Categories, score ranges, and the legend are on the <a href=\"indicators.html\" class=\"" +
+                "Each country uses one flat colour for its regime class. Categories, score ranges, and the legend are on the <a href=\"indicators.html\" class=\"" +
                 linkCls +
                 "\">Indicators</a> page."
         }
@@ -1027,12 +1029,16 @@
     function measure() {
         width = mapContainer.clientWidth || 400;
         height = mapContainer.clientHeight || 300;
-        radius = min(width, height) / 2.05;
     }
 
     function applyProjection() {
         const p = easeInOutCubic(focusProgress);
-        const scale = radius * (1.12 + 0.64 * p);
+        const minSide = min(width, height);
+        const pad = 10;
+        /* d3.geoOrthographic: scale = sphere radius in px; 2×scale must stay inside the SVG or the disk clips (e.g. Patagonia lost at the bottom). */
+        const maxScale = Math.max(52, min(minSide / 2 - pad, minSide * 0.47));
+        const zoom = 1.02 + 0.38 * p;
+        const scale = min((maxScale / 1.4) * zoom, maxScale);
         const [lon, lat] = getViewCenterLonLat();
         projection.scale(scale).rotate([-lon, -lat, 0]).translate([width / 2, height / 2]);
         path.projection(projection);
