@@ -111,6 +111,135 @@
             }
         }
 
+        .nav-mobile-menu {
+            -webkit-tap-highlight-color: transparent;
+        }
+        .nav-mobile-menu > summary {
+            transition:
+                background-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.28s ease,
+                box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                color 0.2s ease;
+        }
+        .nav-mobile-menu[open] > summary {
+            color: rgb(7, 41, 12);
+            background-color: rgba(255, 255, 255, 0.92);
+            border-color: rgba(7, 41, 12, 0.22);
+            box-shadow:
+                0 12px 32px -10px rgba(27, 28, 27, 0.14),
+                inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        }
+        .nav-mobile-icon-close {
+            display: none;
+        }
+        .nav-mobile-menu[open] .nav-mobile-icon-open {
+            display: none;
+        }
+        .nav-mobile-menu[open] .nav-mobile-icon-close {
+            display: inline-block;
+        }
+        .nav-mobile-menu[open]::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 45;
+            background: rgba(27, 28, 27, 0.1);
+            animation: nav-mobile-backdrop-in 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            pointer-events: none;
+        }
+        @keyframes nav-mobile-backdrop-in {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .nav-mobile-panel {
+            transform-origin: top right;
+            will-change: transform, opacity;
+            -webkit-backdrop-filter: blur(22px) saturate(1.5);
+            backdrop-filter: blur(22px) saturate(1.5);
+            background: rgba(255, 255, 255, 0.94) !important;
+            box-shadow:
+                0 28px 56px -16px rgba(27, 28, 27, 0.2),
+                0 12px 28px -10px rgba(27, 28, 27, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            opacity: 0;
+            transform: translate3d(0, -0.6rem, 0) scale(0.97);
+            visibility: hidden;
+            pointer-events: none;
+            transition:
+                opacity 0.01ms step-end,
+                transform 0.01ms step-end,
+                visibility 0.01ms step-end;
+        }
+        .nav-mobile-menu[open] .nav-mobile-panel {
+            visibility: visible;
+            pointer-events: auto;
+            animation: nav-mobile-panel-in 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes nav-mobile-panel-in {
+            from {
+                opacity: 0;
+                transform: translate3d(0, -0.6rem, 0) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0) scale(1);
+            }
+        }
+        @keyframes nav-mobile-link-in {
+            from {
+                opacity: 0;
+                transform: translate3d(0.35rem, 0, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+        .nav-mobile-menu[open] .nav-mobile-panel .nav-mobile-link {
+            animation: nav-mobile-link-in 0.42s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+        }
+        .nav-mobile-menu[open] .nav-mobile-panel .nav-mobile-link:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+        .nav-mobile-menu[open] .nav-mobile-panel .nav-mobile-link:nth-child(2) {
+            animation-delay: 0.09s;
+        }
+        .nav-mobile-menu[open] .nav-mobile-panel .nav-mobile-link:nth-child(3) {
+            animation-delay: 0.13s;
+        }
+        .nav-mobile-menu[open] .nav-mobile-panel .nav-mobile-link:nth-child(4) {
+            animation-delay: 0.17s;
+        }
+        .nav-mobile-link {
+            transition:
+                background-color 0.22s ease,
+                color 0.2s ease,
+                transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nav-mobile-link:active {
+            transform: scale(0.99);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .nav-mobile-menu[open]::before {
+                animation: none;
+                opacity: 1;
+            }
+            .nav-mobile-menu[open] .nav-mobile-panel {
+                animation: none;
+                opacity: 1;
+                transform: none;
+                visibility: visible;
+            }
+            .nav-mobile-menu[open] .nav-mobile-panel .nav-mobile-link {
+                animation: none;
+            }
+        }
+
         .profile-globe .country-land {
             stroke: #fbf9f7;
             stroke-width: 0.35px;
@@ -249,25 +378,28 @@
     </style>
 </head>
 <body class="min-h-dvh min-h-screen flex flex-col bg-surface text-on-surface antialiased font-body selection:bg-primary-container selection:text-white overflow-x-clip">
-<nav class="nav-glass text-primary font-headline leading-tight tracking-tight w-full sticky top-0 z-50 transition-opacity duration-200 supports-[padding:max(0px)]:pt-[env(safe-area-inset-top)]">
-<div class="flex items-center justify-between gap-3 w-full px-4 sm:px-6 lg:px-12 py-4 md:py-6 max-w-screen-2xl mx-auto">
-<a class="text-lg sm:text-xl md:text-2xl font-bold font-headline text-primary tracking-tight min-w-0 shrink truncate pr-2" href="index.html">Democracy Index</a>
-<div class="hidden md:flex gap-6 lg:gap-8 items-center font-label text-sm tracking-wide">
-<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300" href="index.html">The Index</a>
-<a class="text-primary font-bold border-b border-primary pb-1" href="country-profiles.html" aria-current="page">Country Profiles</a>
-<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300" href="indicators.html">Indicators</a>
-<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300" href="references.html">References</a>
+<nav class="nav-glass text-primary font-headline leading-tight tracking-tight w-full sticky top-0 z-50 overflow-visible transition-opacity duration-200 supports-[padding:max(0px)]:pt-[env(safe-area-inset-top)]">
+<div class="flex items-center gap-3 sm:gap-4 w-full px-4 sm:px-6 lg:px-12 py-4 md:py-6 max-w-screen-2xl mx-auto overflow-visible">
+<a class="font-bold font-headline text-primary tracking-tight leading-none shrink-0 min-w-0" href="index.html" aria-label="Democracy Index home"><span class="md:hidden text-xl sm:text-2xl tabular-nums">DI</span><span class="hidden md:inline text-lg md:text-xl lg:text-2xl whitespace-nowrap">Democracy Index</span></a>
+<div class="flex-1 min-w-0 flex justify-center">
+<div class="hidden md:flex gap-6 lg:gap-8 items-center font-label text-sm tracking-wide whitespace-nowrap">
+<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300 shrink-0" href="index.html">The Index</a>
+<a class="text-primary font-bold border-b border-primary pb-1 shrink-0" href="country-profiles.html" aria-current="page">Country Profiles</a>
+<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300 shrink-0" href="indicators.html">Indicators</a>
+<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300 shrink-0" href="references.html">References</a>
+</div>
 </div>
 <div class="flex items-center gap-2 sm:gap-4 md:gap-6 shrink-0">
-<details class="relative md:hidden group">
-<summary class="flex items-center justify-center w-11 h-11 text-on-background/70 hover:text-primary cursor-pointer border border-outline-variant/30 bg-surface-container-low/80" aria-label="Open menu">
-<span class="material-symbols-outlined text-2xl">menu</span>
+<details class="nav-mobile-menu relative z-[60] md:hidden group">
+<summary class="flex items-center justify-center w-11 h-11 text-on-background/70 hover:text-primary cursor-pointer border border-outline-variant/30 bg-surface-container-low/80" aria-label="Open navigation menu">
+<span class="material-symbols-outlined nav-mobile-icon-open text-2xl transition-transform duration-300 ease-out">menu</span>
+<span class="material-symbols-outlined nav-mobile-icon-close text-2xl transition-transform duration-300 ease-out">close</span>
 </summary>
-<div class="absolute right-0 top-full mt-2 w-[min(calc(100vw-2rem),18rem)] bg-surface-container-lowest border border-outline-variant/20 shadow-lg py-2 z-[60]">
-<a class="block px-4 py-3 font-label text-sm text-on-background/80 hover:bg-surface-container-high" href="index.html">The Index</a>
-<a class="block px-4 py-3 font-label text-sm text-primary font-semibold border-b border-outline-variant/15" href="country-profiles.html" aria-current="page">Country Profiles</a>
-<a class="block px-4 py-3 font-label text-sm text-on-background/80 hover:bg-surface-container-high" href="indicators.html">Indicators</a>
-<a class="block px-4 py-3 font-label text-sm text-on-background/80 hover:bg-surface-container-high" href="references.html">References</a>
+<div class="nav-mobile-panel absolute right-0 top-full mt-2 w-[min(calc(100vw-2rem),18rem)] border border-outline-variant/25 py-1 z-[60]">
+<a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-on-background/85 hover:bg-surface-container-high/90 hover:text-primary" href="index.html">The Index</a>
+<a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-primary font-semibold border-b border-outline-variant/15 hover:bg-surface-container-high/90" href="country-profiles.html" aria-current="page">Country Profiles</a>
+<a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-on-background/85 hover:bg-surface-container-high/90 hover:text-primary" href="indicators.html">Indicators</a>
+<a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-on-background/85 hover:bg-surface-container-high/90 hover:text-primary" href="references.html">References</a>
 </div>
 </details>
 </div>
@@ -381,16 +513,11 @@ Structure and weights follow the index workbook (Part3); the table above lists e
 </main>
 
 <footer class="bg-surface-container text-primary font-label text-xs uppercase tracking-widest w-full px-4 sm:px-6 lg:px-12 py-12 sm:py-16 mt-12 sm:mt-20 transition-all duration-500 ease-in-out supports-[padding:max(0px)]:pb-[max(3rem,env(safe-area-inset-bottom))]">
-<div class="grid grid-cols-1 md:grid-cols-2 items-end w-full max-w-screen-2xl mx-auto gap-8">
-<div class="flex flex-col gap-4">
-<div class="text-lg font-serif italic text-primary font-headline normal-case tracking-normal">Democracy Index for Latin America</div>
-<div class="text-on-background/50 normal-case">© 2024 The Digital Monograph: Democracy Index for Latin America. All rights reserved.</div>
-</div>
-<div class="flex flex-wrap md:justify-end gap-8">
-<a class="text-on-background/50 hover:underline decoration-primary underline-offset-8 transition-all" href="#">Institutional Access</a>
-<a class="text-on-background/50 hover:underline decoration-primary underline-offset-8 transition-all" href="#">Data Citations</a>
-<a class="text-on-background/50 hover:underline decoration-primary underline-offset-8 transition-all" href="#">Archive</a>
-<a class="text-on-background/50 hover:underline decoration-primary underline-offset-8 transition-all" href="#">Contact</a>
+<div class="grid grid-cols-1 md:grid-cols-2 items-end gap-x-8 gap-y-6 w-full max-w-screen-2xl mx-auto">
+<div class="text-lg font-serif italic text-primary font-headline normal-case tracking-normal min-w-0">Democracy Index for Latin America</div>
+<div class="text-on-background/50 normal-case text-right md:max-w-xl md:ml-auto md:justify-self-end flex flex-col items-end gap-0">
+<div class="font-label not-italic">© COPYRIGHT APRIL 2026 ALL RIGHTS RESERVED.</div>
+<div class="italic font-serif text-on-background/60">Designed and engineered by Ari's group</div>
 </div>
 </div>
 </footer>

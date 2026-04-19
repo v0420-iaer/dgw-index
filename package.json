@@ -4,10 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "npm run cloudflare:pages",
     "test:responsive": "node responsive-check.mjs",
     "ingest:excel": "node scripts/ingest-excel.js",
     "validate:workbook": "node scripts/validate-workbook.js",
-    "cloudflare:pages": "bash scripts/cloudflare-pages-build.sh"
+    "cloudflare:pages": "bash scripts/cloudflare-pages-build.sh",
+    "cloudflare:pages:deploy": "node -e \"process.exit(0)\"",
+    "cf-pages-noop": "node -e \"process.exit(0)\""
   },
   "keywords": [],
   "author": "",

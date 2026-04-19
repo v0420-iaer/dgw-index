@@ -93,6 +93,14 @@ Replace `YOUR_USERNAME` and `YOUR_REPO` with yours.
 3. **Connect GitHub** (or GitLab): authorize Cloudflare to read repositories when prompted.
 4. Select the repository you pushed (e.g. `democracy-index-latam`).
 
+### B2a — Pages vs Worker (read this if the form will not save)
+
+The **Workers** Git integration uses **Workers Builds**. Its settings include **Deploy command** and **Non-production branch deploy command** (defaults like `npx wrangler deploy` / `npx wrangler versions upload`). That flow deploys a **Worker**, not a static **Pages** site — it is the wrong product for this repo and leads to **“Asset too large”** and confusing save errors.
+
+**Cloudflare Pages** (what you want) uses a simpler build screen: **build command**, **build output directory**, and optionally **root directory** — **not** a separate Wrangler “deploy command” pair.
+
+If your modal shows **Deploy command** + **Non-production branch deploy command**, go back and **create a Pages project** (**Create** → **Pages** → **Connect to Git**), or open your existing **Pages** app in the dashboard instead of the **Worker** named `dgwindex`. Do not try to “fix” a Worker build into behaving like Pages.
+
 ### B3. Configure the build
 
 Use settings that match a **static site at the repository root** — **not** `npx wrangler deploy` (that targets **Workers** and will try to pack `node_modules`, causing **“Asset too large”** errors).
@@ -105,6 +113,7 @@ Use settings that match a **static site at the repository root** — **not** `np
 | **Framework preset** | **None** (avoid presets that inject `wrangler deploy`). |
 | **Build command** | `npm run cloudflare:pages` **or** `bash scripts/cloudflare-pages-build.sh` **or** `rm -rf node_modules` |
 | **Build output directory** | **`/`** or **`.`** (repo root, where `index.html` lives). |
+| **Deploy command** (if required) | **Not** Wrangler — use **`npm run cf-pages-noop`** (no-op; colon-free name avoids some dashboard bugs) or **`npm run cloudflare:pages:deploy`**, or leave empty when allowed. |
 
 Cloudflare runs **`npm install`** when it sees `package.json`. The published site does not need `node_modules` (only HTML/JS/data). The build step deletes that folder so the deploy uploads **static files only**.
 
@@ -156,9 +165,36 @@ In the Pages project: **Settings** → **Builds & deployments** → enable **Pre
 
 ### Build fails: “Asset too large” / `workerd` / `node_modules`
 
-Cause: a step (often **`npx wrangler deploy`**) tried to upload the **whole repo** as Worker assets, including **`node_modules`** (hundreds of MB).
+Cause: a step (often **`npx wrangler deploy`**) tried to upload the **whole repo** as Worker assets, including **`node_modules`** (hundreds of MB). Typical log lines:
 
-**Fix:** In Pages **build settings**, remove `wrangler deploy`. Set **build command** to `npm run cloudflare:pages` (this repo) or `rm -rf node_modules`, **output** to repo root. Redeploy. Do **not** use Workers-style deploy for this static site.
+```text
+Executing user deploy command: npx wrangler deploy
+…
+✘ [ERROR] Asset too large.
+… node_modules/workerd/bin/workerd … 118 MiB
+```
+
+**Fix (Cloudflare dashboard):**
+
+1. Open the **Pages** project → **Settings** → **Builds & deployments** → **Edit configuration** (wording may vary).
+2. Set **Framework preset** to **None** — not a preset that injects Wrangler/Workers.
+3. **Build command:** `npm run cloudflare:pages` (or `bash scripts/cloudflare-pages-build.sh` or `rm -rf node_modules`).
+4. **Build output directory:** `/` or `.` (repo root, where `index.html` is).
+5. **Deploy command** / **Wrangler deploy** / **Post-build command** (if shown): **leave empty** if the UI allows — remove `npx wrangler deploy` entirely. If Cloudflare **requires** a deploy command, use **`npm run cf-pages-noop`** (no-op in `package.json`). If saving shows an **internal error**, try **`bash -c true`** or **`true`** as the deploy command, or use **`bash scripts/cloudflare-pages-build.sh`** for build only and change **one field at a time** until save works. Pages still publishes the output directory; do **not** use `wrangler deploy` for this static site.
+6. Save and trigger a new deployment.
+
+If Wrangler created **`wrangler.jsonc`** in your repo, delete it and commit — this project does not need it for Git-based **Pages** deploys.
+
+### Dashboard: “Internal error” when saving build settings
+
+Often transient or tied to one field. Try in order:
+
+1. **Hard refresh** the page, or another browser / private window (extensions sometimes break Cloudflare’s app).
+2. **Root directory:** if it is **`/`**, try **clearing** it (repo root) or **`.`** — some projects error when root is `/`.
+3. **Version command:** must be **empty** — remove `npx wrangler versions upload`; that field can break saves.
+4. **Avoid colons in typed commands:** use **`bash scripts/cloudflare-pages-build.sh`** instead of `npm run cloudflare:pages`, and **`npm run cf-pages-noop`** instead of `npm run cloudflare:pages:deploy`.
+5. **Change one field** and save; repeat until you find which value triggers the error.
+6. If it still fails, check [Cloudflare status](https://www.cloudflarestatus.com/) and try again later, or open a ticket with Cloudflare (a true “internal error” is usually server-side).
 
 ### Build fails: “Output directory not found” or “No files”
 
@@ -202,7 +238,7 @@ Use a **Cloudflare API token** only on your machine; never commit it. Git-based 
 ## Quick checklist
 
 - Repo on GitHub with `index.html` at root and `data/` committed  
-- Pages project: preset **None**, **build** = `npm run cloudflare:pages` (or `rm -rf node_modules`), **output** = repo root — **not** `npx wrangler deploy`  
+- Pages project: preset **None**, **build** = `npm run cloudflare:pages` (or `rm -rf node_modules`), **output** = repo root — **not** `npx wrangler deploy`; if deploy command is required, **`npm run cf-pages-noop`**  
 - After Excel edits: `npm run ingest:excel` → commit `data/*` → `git push`  
 - Share `https://<project-name>.pages.dev` with readers
 
