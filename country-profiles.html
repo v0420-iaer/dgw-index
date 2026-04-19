@@ -508,7 +508,7 @@
 <table class="w-full min-w-[300px] font-label text-sm border border-outline-variant/20 text-left">
 <thead>
 <tr class="bg-surface-container-high/70 text-on-surface-variant uppercase tracking-wider text-[10px]">
-<th class="px-3 py-2 font-medium">Variable</th>
+<th class="px-3 py-2 font-medium">Dimension</th>
 <th class="px-3 py-2 font-medium text-right whitespace-nowrap">Score / 100</th>
 <th class="px-3 py-2 font-medium text-right whitespace-nowrap">%</th>
 </tr>
@@ -603,28 +603,28 @@ Structure and weights follow the index workbook (Part3); the table above lists e
 
     /* Set reparationsExcluded: true on a country when the Reparations sub-component (Democratic memory) is not used — see the note on indicators.html. */
     const profileMeta = {
-        "Uruguay": { wbPop: 3386588, capital: "Montevideo", regionalRank: 1, iso2: "UY", president: "Yamandú Alberto Antonio Orsi Benítez", capitalLon: -56.1645, capitalLat: -34.9011 },
-        "Chile": { wbPop: 19764771, capital: "Santiago de Chile", regionalRank: 2, iso2: "CL", president: "José Antonio Kast Rist", capitalLon: -70.6483, capitalLat: -33.4489 },
-        "Brazil": { wbPop: 211998573, capital: "Brasília", regionalRank: 3, iso2: "BR", president: "Luiz Inácio Lula da Silva", capitalLon: -47.8828, capitalLat: -15.7939 },
-        "Argentina": { wbPop: 45696159, capital: "Ciudad Autónoma de Buenos Aires", regionalRank: 4, iso2: "AR", president: "Javier Gerardo Milei", capitalLon: -58.3816, capitalLat: -34.6037 },
-        "Colombia": { wbPop: 52886363, capital: "Bogotá, Distrito Capital", regionalRank: 5, iso2: "CO", president: "Gustavo Francisco Petro Urrego", capitalLon: -74.0721, capitalLat: 4.7110 },
-        "Ecuador": { wbPop: 18135478, capital: "San Francisco de Quito", regionalRank: 6, iso2: "EC", president: "Daniel Roy Gilchrist Noboa Azín", capitalLon: -78.4678, capitalLat: -0.1807 },
-        "Peru": { wbPop: 34217848, capital: "Lima", regionalRank: 7, iso2: "PE", president: "Dina Ercilia Boluarte Zegarra", capitalLon: -77.0428, capitalLat: -12.0464 },
-        "Bolivia": { wbPop: 12413315, capital: "Sucre (capital constitucional) y La Paz (sede de gobierno)", regionalRank: 8, iso2: "BO", president: "Luis Alberto Arce Catacora", capitalLon: -68.1193, capitalLat: -16.4897 },
-        "Paraguay": { wbPop: 6929153, capital: "Nuestra Señora Santa María de la Asunción", regionalRank: 9, iso2: "PY", president: "Santiago Peña Palacios", capitalLon: -57.5759, capitalLat: -25.2637 },
-        "Suriname": { wbPop: 634431, capital: "Paramaribo", regionalRank: 10, iso2: "SR", president: "Chan Santokhi", capitalLon: -55.2038, capitalLat: 5.8520 },
-        "Guyana": { wbPop: 831303, capital: "Georgetown", regionalRank: 11, iso2: "GY", president: "Mohamed Irfaan Ali", capitalLon: -58.1551, capitalLat: 6.8013, reparationsExcluded: true },
-        "Venezuela": { wbPop: 28405543, capital: "Caracas", regionalRank: 12, iso2: "VE", president: "Delcy Eloína Rodríguez Gómez, presidenta encargada", capitalLon: -66.9036, capitalLat: 10.4806 },
-        "Mexico": { wbPop: 128000000, capital: "Ciudad de México", iso2: "MX", president: "—", capitalLon: -99.1332, capitalLat: 19.4326 },
-        "Guatemala": { wbPop: 18000000, capital: "Ciudad de Guatemala", iso2: "GT", president: "—", capitalLon: -90.5133, capitalLat: 14.6349 },
-        "Honduras": { wbPop: 10500000, capital: "Tegucigalpa", iso2: "HN", president: "—", capitalLon: -87.2068, capitalLat: 14.0723 },
-        "El Salvador": { wbPop: 6300000, capital: "San Salvador", iso2: "SV", president: "—", capitalLon: -89.2182, capitalLat: 13.6929 },
-        "Nicaragua": { wbPop: 6900000, capital: "Managua", iso2: "NI", president: "—", capitalLon: -86.2514, capitalLat: 12.1364 },
-        "Costa Rica": { wbPop: 5200000, capital: "San José", iso2: "CR", president: "—", capitalLon: -84.0907, capitalLat: 9.9281 },
-        "Panama": { wbPop: 4500000, capital: "Ciudad de Panamá", iso2: "PA", president: "—", capitalLon: -79.5197, capitalLat: 8.9943 },
-        "Dominican Republic": { wbPop: 11300000, capital: "Santo Domingo", iso2: "DO", president: "—", capitalLon: -69.9312, capitalLat: 18.4861 },
-        "Haiti": { wbPop: 11500000, capital: "Port-au-Prince", iso2: "HT", president: "—", capitalLon: -72.3074, capitalLat: 18.5944 },
-        "Cuba": { wbPop: 11000000, capital: "La Habana", iso2: "CU", president: "—", capitalLon: -82.3666, capitalLat: 23.1136 }
+        "Uruguay": { wbPop: 3386588, capital: "Montevideo", iso2: "UY", president: "Yamandú Orsi", capitalLon: -56.1645, capitalLat: -34.9011 },
+        "Chile": { wbPop: 19764771, capital: "Santiago", iso2: "CL", president: "José Antonio Kast", capitalLon: -70.6483, capitalLat: -33.4489 },
+        "Brazil": { wbPop: 211998573, capital: "Brasília", iso2: "BR", president: "Luiz Inácio Lula da Silva", capitalLon: -47.8828, capitalLat: -15.7939 },
+        "Argentina": { wbPop: 45696159, capital: "Buenos Aires", iso2: "AR", president: "Javier Milei", capitalLon: -58.3816, capitalLat: -34.6037 },
+        "Colombia": { wbPop: 52886363, capital: "Bogotá", iso2: "CO", president: "Gustavo Petro", capitalLon: -74.0721, capitalLat: 4.7110 },
+        "Costa Rica": { wbPop: 5129910, capital: "San José", iso2: "CR", president: "Rodrigo Chaves Robles", capitalLon: -84.0907, capitalLat: 9.9281 },
+        "Dominican Republic": { wbPop: 11427557, capital: "Santo Domingo", iso2: "DO", president: "Luis Abinader", capitalLon: -69.9312, capitalLat: 18.4861 },
+        "Panama": { wbPop: 4515577, capital: "Ciudad de Panamá", iso2: "PA", president: "José Raúl Mulino", capitalLon: -79.5197, capitalLat: 8.9943 },
+        "Ecuador": { wbPop: 18135478, capital: "Quito", iso2: "EC", president: "Daniel Noboa", capitalLon: -78.4678, capitalLat: -0.1807 },
+        "Peru": { wbPop: 34217848, capital: "Lima", iso2: "PE", president: "Dina Boluarte", capitalLon: -77.0428, capitalLat: -12.0464 },
+        "Paraguay": { wbPop: 6929153, capital: "Asunción", iso2: "PY", president: "Santiago Peña", capitalLon: -57.5759, capitalLat: -25.2637 },
+        "Guatemala": { wbPop: 18406359, capital: "Ciudad de Guatemala", iso2: "GT", president: "Bernardo Arévalo", capitalLon: -90.5133, capitalLat: 14.6349 },
+        "Bolivia": { wbPop: 12413315, capital: "La Paz (sede de gobierno); Sucre (capital constitucional)", iso2: "BO", president: "Luis Arce", capitalLon: -68.1193, capitalLat: -16.4897 },
+        "Suriname": { wbPop: 634431, capital: "Paramaribo", iso2: "SR", president: "Chan Santokhi", capitalLon: -55.2038, capitalLat: 5.8520 },
+        "Mexico": { wbPop: 130861007, capital: "Ciudad de México", iso2: "MX", president: "Claudia Sheinbaum Pardo", capitalLon: -99.1332, capitalLat: 19.4326 },
+        "Honduras": { wbPop: 10825703, capital: "Tegucigalpa", iso2: "HN", president: "Nasry Asfura", capitalLon: -87.2068, capitalLat: 14.0723 },
+        "Guyana": { wbPop: 831087, capital: "Georgetown", iso2: "GY", president: "Mohamed Irfaan Ali", capitalLon: -58.1551, capitalLat: 6.8013, reparationsExcluded: true },
+        "El Salvador": { wbPop: 6338193, capital: "San Salvador", iso2: "SV", president: "Nayib Bukele", capitalLon: -89.2182, capitalLat: 13.6929 },
+        "Cuba": { wbPop: 10979783, capital: "La Habana", iso2: "CU", president: "Miguel Díaz-Canel", capitalLon: -82.3666, capitalLat: 23.1136 },
+        "Haiti": { wbPop: 11772557, capital: "Port-au-Prince", iso2: "HT", president: "Alix Didier Fils-Aimé (primer ministro, transición)", capitalLon: -72.3074, capitalLat: 18.5944 },
+        "Nicaragua": { wbPop: 6916140, capital: "Managua", iso2: "NI", president: "Daniel Ortega y Rosario Murillo (copresidencia)", capitalLon: -86.2514, capitalLat: 12.1364 },
+        "Venezuela": { wbPop: 28405543, capital: "Caracas", iso2: "VE", president: "Delcy Rodríguez (presidenta encargada)", capitalLon: -66.9036, capitalLat: 10.4806 }
     };
 
     /** When true in profileMeta, Reparations (Democratic memory) is not scored — see Indicators page. */
@@ -889,9 +889,28 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         }
     }
 
+    /** Same order as ingest + home ranking (`countryNamesSorted`), including stable tie-breaking. */
+    function countryNamesForUi() {
+        const fromBundle =
+            dgw.countryNamesSorted && dgw.countryNamesSorted.length
+                ? dgw.countryNamesSorted.filter(function (n) {
+                      return countryData[n];
+                  })
+                : [];
+        if (fromBundle.length) {
+            const extra = Object.keys(countryData).filter(function (n) {
+                return fromBundle.indexOf(n) === -1;
+            });
+            return fromBundle.concat(extra);
+        }
+        return Object.keys(countryData).sort(function (a, b) {
+            return (countryData[b].score || 0) - (countryData[a].score || 0);
+        });
+    }
+
     function buildCountryMenu() {
         countrySelectMenu.innerHTML = "";
-        const sorted = Object.keys(countryData).sort((a, b) => countryData[b].score - countryData[a].score);
+        const sorted = countryNamesForUi();
         sorted.forEach((name) => {
             const row = document.createElement("button");
             row.type = "button";

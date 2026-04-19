@@ -507,11 +507,12 @@
 <div class="index-globe-column w-full min-w-0 max-w-full lg:w-3/5 relative z-10 shrink-0 self-stretch max-lg:static max-lg:self-stretch lg:sticky lg:top-24 lg:h-[calc(100dvh-8rem)] lg:min-h-[min(100dvh-8rem,40rem)] min-h-[min(78svh,34rem)] sm:min-h-[min(76svh,36rem)] md:min-h-[min(74svh,38rem)] flex flex-col">
 <div class="w-full flex-1 min-h-0 flex flex-col bg-surface-container-lowest border border-outline-variant/20 p-2.5 sm:p-4 relative group shadow-[0_28px_56px_-16px_rgba(27,28,27,0.14),0_10px_22px_-12px_rgba(27,28,27,0.08),0_2px_6px_-2px_rgba(27,28,27,0.05)] max-lg:min-h-[min(78svh,34rem)] sm:max-lg:min-h-[min(76svh,36rem)] md:max-lg:min-h-[min(74svh,38rem)] lg:min-h-0 lg:h-full">
 <header class="map-mode-header shrink-0 mb-2 sm:mb-4 px-0 sm:px-0.5 pb-2 sm:pb-4 border-b border-outline-variant/15">
-<p class="font-label text-[9px] sm:text-[11px] uppercase tracking-[0.2em] text-on-surface-variant/90 max-lg:mb-1">How to read this map</p>
+<p class="font-label text-[9px] sm:text-[11px] uppercase tracking-[0.2em] text-on-surface-variant/90 max-lg:mb-0">How to read this map</p>
+<p class="font-label text-[10px] sm:text-[11px] text-primary font-medium tracking-[0.06em] mt-1.5 mb-0">Latin America &amp; Central America</p>
 <div class="mt-2 sm:mt-3.5 flex flex-col gap-3 sm:gap-5 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
 <div class="min-w-0 flex-1 space-y-1.5 sm:space-y-2 lg:max-w-[28rem]">
 <h3 id="map-mode-title" class="map-headline-mobile font-headline text-base sm:text-lg md:text-[1.35rem] text-primary leading-[1.2] tracking-[-0.02em] text-balance">Continuous scores across the 0–100 scale</h3>
-<p id="map-mode-blurb" class="font-body text-[12px] sm:text-[0.9375rem] text-on-surface-variant leading-snug sm:leading-[1.55] text-pretty max-lg:line-clamp-4" aria-live="polite">This map is driven by exact index values: a smooth colour ramp so neighbouring scores read as subtly different on the globe. The full 0–100 scale, regime bands, and colour key are on the <a href="indicators.html" class="text-primary font-medium underline decoration-primary/30 underline-offset-2 hover:decoration-primary">Indicators</a> page.</p>
+<p id="map-mode-blurb" class="font-body text-[12px] sm:text-[0.9375rem] text-on-surface-variant leading-snug sm:leading-[1.55] text-pretty max-lg:line-clamp-4" aria-live="polite">The view is framed on Latin America and Central America (Mexico, the isthmus, the Caribbean, and South America on one globe). Exact index values drive a smooth colour ramp so neighbouring scores read subtly different. The full 0–100 scale, regime bands, and colour key are on the <a href="indicators.html" class="text-primary font-medium underline decoration-primary/30 underline-offset-2 hover:decoration-primary">Indicators</a> page.</p>
 </div>
 <div class="flex flex-col gap-2 shrink-0 w-full sm:w-auto sm:min-w-[17rem] lg:min-w-[18rem] lg:pt-0.5 max-lg:flex-row max-lg:items-center max-lg:justify-between max-lg:gap-3">
 <span class="font-label text-[9px] uppercase tracking-[0.18em] text-on-surface-variant/75 max-lg:sr-only sm:text-right">View</span>
@@ -663,7 +664,8 @@
     const tooltipCountry = document.getElementById("tooltip-country");
     const tooltipScore = document.getElementById("tooltip-score");
 
-    const targetView = { lon: -66, lat: -16 };
+    /** Globe centre [°E, °N]: Panama/Caribbean gateway so the isthmus, Mexico, the Andes, and the southern cone share one hemisphere. */
+    const targetView = { lon: -81, lat: 7 };
     const SCROLL_TABLE_REVEAL = 96;
     const SCROLL_FOCUS_START = 96;
     const SCROLL_FOCUS_SPAN = 900;
@@ -750,7 +752,8 @@
         const p = easeInOutCubic(focusProgress);
         const lonBase = spinFrozen !== null ? spinFrozen : spinIdle;
         const lon = lonBase * (1 - p) + targetView.lon * p;
-        const lat = -11 * (1 - p) + targetView.lat * p;
+        const latIdle = 6;
+        const lat = latIdle * (1 - p) + targetView.lat * p;
         return [lon, lat];
     }
 
@@ -819,14 +822,14 @@
         score: {
             title: "Continuous scores across the 0–100 scale",
             blurbHtml:
-                "This map is driven by exact index values: a smooth colour ramp so neighbouring scores read as subtly different on the globe. The full 0–100 scale, regime bands, and colour key are on the <a href=\"indicators.html\" class=\"" +
+                "The view is framed on Latin America and Central America (Mexico, the isthmus, the Caribbean, and South America on one globe). Exact index values drive a smooth colour ramp so neighbouring scores read subtly different. The full 0–100 scale, regime bands, and colour key are on the <a href=\"indicators.html\" class=\"" +
                 linkCls +
                 "\">Indicators</a> page."
         },
         category: {
             title: "Four regime types, one solid colour each",
             blurbHtml:
-                "Each country uses one flat colour for its regime class. The same regime categories, score ranges, and legend as the map are detailed on the <a href=\"indicators.html\" class=\"" +
+                "Framed on Latin America and Central America: each country uses one flat colour for its regime class. Categories, score ranges, and the legend are on the <a href=\"indicators.html\" class=\"" +
                 linkCls +
                 "\">Indicators</a> page."
         }
@@ -963,7 +966,10 @@
         const svgEl = svg.node();
 
         tooltipCountry.textContent = "Country: " + name;
-        tooltipScore.textContent = String(countryData[name].score);
+        tooltipScore.textContent =
+            typeof countryData[name].score === "number"
+                ? countryData[name].score.toFixed(1)
+                : String(countryData[name].score);
 
         const revealCard = () => {
             const gap = 16;
@@ -1026,7 +1032,7 @@
 
     function applyProjection() {
         const p = easeInOutCubic(focusProgress);
-        const scale = radius * (1.08 + 0.62 * p);
+        const scale = radius * (1.12 + 0.64 * p);
         const [lon, lat] = getViewCenterLonLat();
         projection.scale(scale).rotate([-lon, -lat, 0]).translate([width / 2, height / 2]);
         path.projection(projection);
@@ -1095,12 +1101,18 @@
         if (revealed) {
             if (mapEl) {
                 if (mapColorMode === "category") {
-                    mapEl.setAttribute("aria-label", "Globe tilted toward the Americas; index countries are coloured by regime category (four flat colours).");
+                    mapEl.setAttribute(
+                        "aria-label",
+                        "Globe centred on Latin America and Central America; index countries are coloured by regime category (four flat colours)."
+                    );
                 } else {
-                    mapEl.setAttribute("aria-label", "Globe tilted toward the Americas; index countries are coloured by exact score on the 0–100 democracy scale.");
+                    mapEl.setAttribute(
+                        "aria-label",
+                        "Globe centred on Latin America and Central America; index countries are coloured by exact score on the 0–100 democracy scale."
+                    );
                 }
             }
-            if (heading) heading.textContent = "Latin America — Results";
+            if (heading) heading.textContent = "Latin America & Central America — Results";
         } else {
             if (mapEl) mapEl.setAttribute("aria-label", "Animated globe of world land masses");
             if (heading) heading.textContent = "Results";
