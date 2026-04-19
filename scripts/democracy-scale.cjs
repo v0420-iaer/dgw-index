@@ -1,6 +1,6 @@
 /**
  * Democracy index: regime thresholds + colours.
- * Categories: No 0–35; Initial 36–59; Electoral 60–79; Consolidated 80–100.
+ * Categories: No 0–35; Transitional 36–59; Electoral 60–79; Consolidated 80–100.
  * Palette: Amaranth #D1495B, Honey Bronze #EDAE49, Stormy Teal #00798C,
  * Baltic Blue #30638E, Yale Blue #003D5B — flat category hues + continuous ramp.
  * Keep data/democracy-scale.js aligned.
@@ -12,12 +12,12 @@ function clamp0100(v) {
   return Math.max(0, Math.min(100, Number(v)));
 }
 
-/** Regime labels — 0–35 No; 36–59 Initial; 60–79 Electoral; 80–100 Consolidated */
+/** Regime labels — 0–35 No; 36–59 Transitional; 60–79 Electoral; 80–100 Consolidated */
 function categoryFromScore(score) {
   const s = clamp0100(score);
   if (s >= 80) return "Consolidated democracy";
   if (s >= 60) return "Electoral democracy";
-  if (s >= 36) return "Initial stage democracy";
+  if (s >= 36) return "Transitional";
   return "No democracy";
 }
 
@@ -87,7 +87,8 @@ function flatCategoryColor(category) {
       return "rgb(0, 61, 91)";
     case "Electoral democracy":
       return "rgb(48, 99, 142)";
-    case "Initial stage democracy":
+    case "Transitional":
+    case "Transition":
       return "rgb(237, 174, 73)";
     case "No democracy":
       return "rgb(209, 73, 91)";

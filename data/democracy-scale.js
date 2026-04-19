@@ -13,7 +13,7 @@
     const s = clamp0100(score);
     if (s >= 80) return "Consolidated democracy";
     if (s >= 60) return "Electoral democracy";
-    if (s >= 36) return "Initial stage democracy";
+    if (s >= 36) return "Transitional";
     return "No democracy";
   }
 
@@ -80,7 +80,8 @@
         return "rgb(0, 61, 91)";
       case "Electoral democracy":
         return "rgb(48, 99, 142)";
-      case "Initial stage democracy":
+      case "Transitional":
+      case "Transition":
         return "rgb(237, 174, 73)";
       case "No democracy":
         return "rgb(209, 73, 91)";

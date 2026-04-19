@@ -75,61 +75,61 @@ window.__DGW__ = {
     },
     "Ecuador": {
       "score": 59,
-      "category": "Initial stage democracy",
+      "category": "Transitional",
       "color": "rgb(186, 110, 30)",
       "regionalRank": 9
     },
     "Peru": {
       "score": 59,
-      "category": "Initial stage democracy",
+      "category": "Transitional",
       "color": "rgb(186, 110, 30)",
       "regionalRank": 10
     },
     "Paraguay": {
       "score": 58,
-      "category": "Initial stage democracy",
+      "category": "Transitional",
       "color": "rgb(189, 116, 37)",
       "regionalRank": 11
     },
     "Guatemala": {
       "score": 57,
-      "category": "Initial stage democracy",
+      "category": "Transitional",
       "color": "rgb(192, 121, 45)",
       "regionalRank": 12
     },
     "Bolivia": {
       "score": 55,
-      "category": "Initial stage democracy",
+      "category": "Transitional",
       "color": "rgb(198, 133, 59)",
       "regionalRank": 13
     },
     "Suriname": {
       "score": 55,
-      "category": "Initial stage democracy",
+      "category": "Transitional",
       "color": "rgb(198, 133, 59)",
       "regionalRank": 14
     },
     "Mexico": {
       "score": 54,
-      "category": "Initial stage democracy",
+      "category": "Transitional",
       "color": "rgb(201, 138, 67)",
       "regionalRank": 15
     },
     "Honduras": {
       "score": 53,
-      "category": "Initial stage democracy",
+      "category": "Transitional",
       "color": "rgb(204, 144, 74)",
       "regionalRank": 16
     },
     "Guyana": {
       "score": 49,
-      "category": "Initial stage democracy",
+      "category": "Transitional",
       "color": "rgb(216, 167, 103)",
       "regionalRank": 17
     },
     "El Salvador": {
       "score": 42,
-      "category": "Initial stage democracy",
+      "category": "Transitional",
       "color": "rgb(237, 206, 154)",
       "regionalRank": 18
     },
