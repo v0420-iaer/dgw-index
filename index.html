@@ -148,6 +148,22 @@
             }
         }
 
+        /* Phone: prioritize map size — tighter chrome, bigger globe area */
+        @media (max-width: 1023px) {
+            .map-mode-header {
+                margin-bottom: 0.5rem;
+                padding-bottom: 0.65rem;
+                border-bottom-width: 1px;
+            }
+            .map-mode-header .map-headline-mobile {
+                font-size: 1rem;
+                line-height: 1.25;
+            }
+            #map-container {
+                min-height: clamp(12.5rem, 48vmin, 17.5rem);
+            }
+        }
+
         .smooth-x-scroll {
             -webkit-overflow-scrolling: touch;
             overscroll-behavior-x: contain;
@@ -159,9 +175,12 @@
                 position: relative !important;
                 top: auto !important;
                 height: auto !important;
-                min-height: min(78vh, 30rem);
+                min-height: min(72vh, 26rem) !important;
                 max-height: none;
                 align-self: stretch;
+            }
+            .index-globe-column > .w-full.min-h-0 {
+                min-height: min(68vh, 24rem) !important;
             }
         }
 
@@ -188,10 +207,12 @@
             display: grid;
             grid-template-rows: 0fr;
             transition: grid-template-rows 1.05s cubic-bezier(0.22, 0.61, 0.36, 1);
+            overflow: hidden;
         }
 
         #ranking-table-outer.is-open {
             grid-template-rows: 1fr;
+            overflow: visible;
         }
 
         #ranking-table-outer > .ranking-table-inner {
@@ -483,25 +504,25 @@
 <main class="flex-grow w-full max-w-screen-2xl mx-auto layout-gutter pt-8 sm:pt-12 lg:pt-16 pb-16 sm:pb-24 lg:pb-32 overflow-x-clip min-w-0">
 <div class="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-16 relative w-full min-w-0 max-w-full">
 <!-- Left: globe (sticky on all breakpoints so it stays in view while reading the right column) -->
-<div class="index-globe-column w-full min-w-0 max-w-full lg:w-3/5 h-[min(52vh,28rem)] sm:h-[min(56vh,32rem)] md:h-[min(60vh,36rem)] lg:h-[calc(100dvh-8rem)] lg:min-h-[min(100dvh-8rem,40rem)] relative sticky top-20 sm:top-24 z-10 shrink-0 self-start">
-<div class="w-full h-full bg-surface-container-lowest border border-outline-variant/20 p-3 sm:p-4 relative group min-h-[240px] shadow-[0_28px_56px_-16px_rgba(27,28,27,0.14),0_10px_22px_-12px_rgba(27,28,27,0.08),0_2px_6px_-2px_rgba(27,28,27,0.05)] flex flex-col min-h-0">
-<header class="map-mode-header shrink-0 mb-3 sm:mb-4 px-0 sm:px-0.5 pb-4 border-b border-outline-variant/15">
-<p class="font-label text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-on-surface-variant/90">How to read this map</p>
-<div class="mt-3.5 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
-<div class="min-w-0 flex-1 space-y-2 lg:max-w-[28rem]">
-<h3 id="map-mode-title" class="font-headline text-lg sm:text-[1.35rem] text-primary leading-[1.2] tracking-[-0.02em] text-balance">Continuous scores across the 0–100 scale</h3>
-<p id="map-mode-blurb" class="font-body text-[13px] sm:text-[0.9375rem] text-on-surface-variant leading-[1.55] text-pretty" aria-live="polite">This map is driven by exact index values: a smooth colour ramp so neighbouring scores read as subtly different on the globe. The full 0–100 scale, regime bands, and colour key are on the <a href="indicators.html" class="text-primary font-medium underline decoration-primary/30 underline-offset-2 hover:decoration-primary">Indicators</a> page.</p>
+<div class="index-globe-column w-full min-w-0 max-w-full lg:w-3/5 relative z-10 shrink-0 self-stretch max-lg:static max-lg:self-stretch lg:sticky lg:top-24 lg:h-[calc(100dvh-8rem)] lg:min-h-[min(100dvh-8rem,40rem)] min-h-[min(78svh,34rem)] sm:min-h-[min(76svh,36rem)] md:min-h-[min(74svh,38rem)] flex flex-col">
+<div class="w-full flex-1 min-h-0 flex flex-col bg-surface-container-lowest border border-outline-variant/20 p-2.5 sm:p-4 relative group shadow-[0_28px_56px_-16px_rgba(27,28,27,0.14),0_10px_22px_-12px_rgba(27,28,27,0.08),0_2px_6px_-2px_rgba(27,28,27,0.05)] max-lg:min-h-[min(78svh,34rem)] sm:max-lg:min-h-[min(76svh,36rem)] md:max-lg:min-h-[min(74svh,38rem)] lg:min-h-0 lg:h-full">
+<header class="map-mode-header shrink-0 mb-2 sm:mb-4 px-0 sm:px-0.5 pb-2 sm:pb-4 border-b border-outline-variant/15">
+<p class="font-label text-[9px] sm:text-[11px] uppercase tracking-[0.2em] text-on-surface-variant/90 max-lg:mb-1">How to read this map</p>
+<div class="mt-2 sm:mt-3.5 flex flex-col gap-3 sm:gap-5 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
+<div class="min-w-0 flex-1 space-y-1.5 sm:space-y-2 lg:max-w-[28rem]">
+<h3 id="map-mode-title" class="map-headline-mobile font-headline text-base sm:text-lg md:text-[1.35rem] text-primary leading-[1.2] tracking-[-0.02em] text-balance">Continuous scores across the 0–100 scale</h3>
+<p id="map-mode-blurb" class="font-body text-[12px] sm:text-[0.9375rem] text-on-surface-variant leading-snug sm:leading-[1.55] text-pretty max-lg:line-clamp-4" aria-live="polite">This map is driven by exact index values: a smooth colour ramp so neighbouring scores read as subtly different on the globe. The full 0–100 scale, regime bands, and colour key are on the <a href="indicators.html" class="text-primary font-medium underline decoration-primary/30 underline-offset-2 hover:decoration-primary">Indicators</a> page.</p>
 </div>
-<div class="flex flex-col gap-2.5 shrink-0 w-full sm:w-auto sm:min-w-[17rem] lg:min-w-[18rem] lg:pt-0.5">
-<span class="font-label text-[9px] uppercase tracking-[0.18em] text-on-surface-variant/75 sm:text-right">View</span>
-<div class="map-mode-track flex p-1 rounded-sm bg-surface-container-low/90 border border-outline-variant/25 gap-1" role="group" aria-label="Choose how countries are coloured on the map">
-<button type="button" id="map-mode-score" class="map-mode-btn flex min-h-[44px] sm:min-h-0 items-center justify-center flex-1 px-3 py-2.5 sm:py-2 text-[11px] sm:text-xs font-label font-medium uppercase tracking-[0.12em] rounded-sm transition-all duration-200 bg-primary text-on-primary shadow-[0_1px_2px_rgba(7,41,12,0.12)]" aria-pressed="true">Exact scores</button>
-<button type="button" id="map-mode-category" class="map-mode-btn flex min-h-[44px] sm:min-h-0 items-center justify-center flex-1 px-3 py-2.5 sm:py-2 text-[11px] sm:text-xs font-label font-medium uppercase tracking-[0.12em] rounded-sm transition-all duration-200 text-on-background/65 hover:text-primary hover:bg-surface-container-high/70" aria-pressed="false">Regime types</button>
+<div class="flex flex-col gap-2 shrink-0 w-full sm:w-auto sm:min-w-[17rem] lg:min-w-[18rem] lg:pt-0.5 max-lg:flex-row max-lg:items-center max-lg:justify-between max-lg:gap-3">
+<span class="font-label text-[9px] uppercase tracking-[0.18em] text-on-surface-variant/75 max-lg:sr-only sm:text-right">View</span>
+<div class="map-mode-track flex p-1 rounded-sm bg-surface-container-low/90 border border-outline-variant/25 gap-1 flex-1 min-w-0 max-lg:max-w-[20rem] max-lg:ml-auto" role="group" aria-label="Choose how countries are coloured on the map">
+<button type="button" id="map-mode-score" class="map-mode-btn flex min-h-[40px] sm:min-h-0 items-center justify-center flex-1 px-2.5 sm:px-3 py-2 sm:py-2 text-[10px] sm:text-xs font-label font-medium uppercase tracking-[0.12em] rounded-sm transition-all duration-200 bg-primary text-on-primary shadow-[0_1px_2px_rgba(7,41,12,0.12)]" aria-pressed="true">Exact scores</button>
+<button type="button" id="map-mode-category" class="map-mode-btn flex min-h-[40px] sm:min-h-0 items-center justify-center flex-1 px-2.5 sm:px-3 py-2 sm:py-2 text-[10px] sm:text-xs font-label font-medium uppercase tracking-[0.12em] rounded-sm transition-all duration-200 text-on-background/65 hover:text-primary hover:bg-surface-container-high/70" aria-pressed="false">Regime types</button>
 </div>
 </div>
 </div>
 </header>
-<div id="map-container" class="w-full flex-1 min-h-[160px] bg-surface-container flex items-center justify-center overflow-visible" role="img" aria-label="Animated globe of world land masses">
+<div id="map-container" class="w-full flex-1 min-h-[160px] max-lg:min-h-0 bg-surface-container flex items-center justify-center overflow-visible" role="img" aria-label="Animated globe of world land masses">
 </div>
 <div id="map-tooltip" class="absolute z-30 flex flex-col bg-surface-container-lowest shadow-[0px_8px_24px_rgba(27,28,27,0.08)] border border-outline-variant/20 px-3 py-2.5 sm:px-3.5 sm:py-3 max-w-[min(100%,12.5rem)] opacity-0 invisible will-change-[opacity,transform]" role="status" aria-live="polite">
 <span id="tooltip-country" class="font-label text-[9px] sm:text-[10px] uppercase tracking-widest text-on-surface-variant mb-1 leading-snug">Country: --</span>
@@ -525,7 +546,7 @@
 </div>
 </div>
 </section>
-<div id="scroll-hint-block" class="flex flex-col items-center gap-5 py-6 sm:py-8 select-none pointer-events-none" aria-label="Scroll down to reveal the results">
+<div id="scroll-hint-block" class="flex flex-col items-center gap-3 py-4 sm:gap-5 sm:py-8 select-none pointer-events-none" aria-label="Scroll down to reveal the results">
 <span class="font-label text-[11px] sm:text-xs uppercase tracking-[0.35em] text-on-surface-variant/90">Scroll</span>
 <span class="material-symbols-outlined scroll-cue-arrow" aria-hidden="true">expand_more</span>
 </div>
