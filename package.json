@@ -8,6 +8,8 @@
     "test:responsive": "node responsive-check.mjs",
     "ingest:excel": "node scripts/ingest-excel.js",
     "validate:workbook": "node scripts/validate-workbook.js",
+    "verify:blueprint": "node scripts/verify-blueprint-ingest.js",
+    "verify:data": "npm run validate:workbook && npm run verify:blueprint",
     "cloudflare:pages": "bash scripts/cloudflare-pages-build.sh",
     "cloudflare:pages:deploy": "node -e \"process.exit(0)\"",
     "cf-pages-noop": "node -e \"process.exit(0)\""

@@ -1472,6 +1472,30 @@ window.__DGW__ = {
       "legal": 22
     }
   },
+  "workbookVariableUnavailable": {
+    "Uruguay": {},
+    "Chile": {},
+    "Costa Rica": {},
+    "Brazil": {},
+    "Argentina": {},
+    "Colombia": {},
+    "Dominican Republic": {},
+    "Panama": {},
+    "Ecuador": {},
+    "Peru": {},
+    "Paraguay": {},
+    "Guatemala": {},
+    "Bolivia": {},
+    "Suriname": {},
+    "Mexico": {},
+    "Honduras": {},
+    "Guyana": {},
+    "El Salvador": {},
+    "Cuba": {},
+    "Haiti": {},
+    "Nicaragua": {},
+    "Venezuela": {}
+  },
   "workbookIndicatorUnavailable": {
     "Uruguay": {},
     "Chile": {},

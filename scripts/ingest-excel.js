@@ -39,15 +39,18 @@ function isUnavailableIndicatorCell(s) {
     low === "—" ||
     low === "-" ||
     low === "not available" ||
-    low === "data not available"
+    low === "data not available" ||
+    low === "data not available." ||
+    low.includes("data not available")
   );
 }
 
+/** Exact pillar names as in Excel column “Variable” (must match keys in co.dims). */
 const DIM_ORDER = [
   "Institutional Integrity",
   "Socio-economic development",
   "Responsiveness",
-  "Electoral integrity",
+  "Electoral Integrity",
   "Democratic memory",
 ];
 
@@ -57,7 +60,7 @@ function normDim(s) {
   if (x.includes("institutional")) return "Institutional Integrity";
   if (x.includes("socio")) return "Socio-economic development";
   if (x.includes("responsiveness")) return "Responsiveness";
-  if (x.includes("electoral")) return "Electoral integrity";
+  if (x.includes("electoral")) return "Electoral Integrity";
   if (x.includes("democratic memory")) return "Democratic memory";
   return null;
 }
@@ -94,6 +97,7 @@ function indKeyFromName(name) {
     "division of power index": "division_of_power_index",
     "separations of powers": "division_of_power_index",
     "separations of power": "division_of_power_index",
+    "separation of power": "division_of_power_index",
     "high court independence": "high_court_independence",
     "control of corruption": "control_of_corruption",
     "corruption perception index": "corruption_perception_index",
@@ -104,7 +108,6 @@ function indKeyFromName(name) {
     "social safety nets": "social_safety_nets",
     "educational equality": "educational_equality",
     "health equality": "health_equality",
-    "exclusion by socio-economic group (inverted)": "exclusion_socioeconomic_group_inv",
     hdi: "hdi",
     "infant mortality rate": "infant_mortality_rate",
     "infant mortality rate (inverted)": "infant_mortality_rate",
@@ -155,6 +158,7 @@ function ensureCountry(countries, curState) {
       dims: {},
       workbookIndicatorScores0100: {},
       workbookVariableScores0100: {},
+      workbookVariableUnavailable: {},
       workbookIndicatorUnavailable: {},
     };
   }
@@ -193,10 +197,15 @@ function ingestSheetData(data, countries) {
 
     if (dimHeading) {
       const bid = BLOCK_HEADING_TO_ID[normHeading(dimHeading)];
-      let sd = parsePct(scoreDim);
-      if (bid && sd != null) {
-        sd = clamp0100(sd);
-        c.workbookVariableScores0100[bid] = sd;
+      if (bid) {
+        if (isUnavailableIndicatorCell(scoreDim)) {
+          c.workbookVariableUnavailable[bid] = true;
+        } else {
+          const sd = parsePct(scoreDim);
+          if (sd != null) {
+            c.workbookVariableScores0100[bid] = clamp0100(sd);
+          }
+        }
       }
     }
 
@@ -208,6 +217,7 @@ function ingestSheetData(data, countries) {
         } else {
           const si = parseIndTo0100(scoreInd);
           if (si != null) c.workbookIndicatorScores0100[iid] = si;
+          else c.workbookIndicatorUnavailable[iid] = true;
         }
       }
     }
@@ -231,16 +241,18 @@ const names = Object.keys(countries).sort((a, b) => (countries[b].total ?? 0) - 
 const workbookDimensionScores = {};
 const workbookIndicatorScores0100 = {};
 const workbookVariableScores0100 = {};
+const workbookVariableUnavailable = {};
 const workbookIndicatorUnavailable = {};
 
 for (const name of names) {
   const co = countries[name];
   workbookDimensionScores[name] = DIM_ORDER.map((d) => {
     const v = co.dims[d];
-    return v == null ? 0 : clamp0100(v);
+    return v == null ? null : clamp0100(v);
   });
   workbookIndicatorScores0100[name] = co.workbookIndicatorScores0100;
   workbookVariableScores0100[name] = co.workbookVariableScores0100;
+  workbookVariableUnavailable[name] = co.workbookVariableUnavailable || {};
   workbookIndicatorUnavailable[name] = co.workbookIndicatorUnavailable || {};
 }
 
@@ -259,6 +271,7 @@ const out = {
   workbookDimensionScores,
   workbookIndicatorScores0100,
   workbookVariableScores0100,
+  workbookVariableUnavailable,
   workbookIndicatorUnavailable,
 };
 
@@ -277,6 +290,7 @@ const bundle = {
   workbookDimensionScores,
   workbookIndicatorScores0100,
   workbookVariableScores0100,
+  workbookVariableUnavailable,
   workbookIndicatorUnavailable,
 };
 const jsPath = path.join(__dirname, "..", "data", "ingested-excel.js");

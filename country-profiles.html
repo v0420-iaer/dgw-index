@@ -654,11 +654,12 @@ Structure and weights follow the index workbook (Part3); the table above lists e
     }
 
     /** Workbook (Part3) variable weights and hierarchy; dimension % scores where the extract lists that country. */
+    /** Pillar names exactly as in the workbook (Excel column “Variable”). */
     const DIMENSION_LABELS = [
-        "Institutional integrity",
+        "Institutional Integrity",
         "Socio-economic development",
         "Responsiveness",
-        "Electoral integrity",
+        "Electoral Integrity",
         "Democratic memory"
     ];
     const DIMENSION_WEIGHTS_PCT = [30, 20, 20, 20, 10];
@@ -670,13 +671,18 @@ Structure and weights follow the index workbook (Part3); the table above lists e
 
     /** Per-variable and per-indicator scores from the index workbook (Part 3). */
     const workbookVariableScores0100 = window.__DGW__.workbookVariableScores0100;
+    const workbookVariableUnavailable = window.__DGW__.workbookVariableUnavailable || {};
     const workbookIndicatorScores0100 = window.__DGW__.workbookIndicatorScores0100;
     const workbookIndicatorUnavailable = window.__DGW__.workbookIndicatorUnavailable || {};
 
+    /**
+     * Hierarchy: dimension (pillar) → variable (Excel “Dimension” column) → indicator.
+     * Labels and % weights match the index workbook (Part 3).
+     */
     const INDEX_BLUEPRINT = [
         {
-            label: "Variable 1",
-            title: "Institutional integrity",
+            label: "Dimension 1",
+            title: "Institutional Integrity",
             weightPct: 30,
             blocks: [
                 {
@@ -695,7 +701,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
                     heading: "Separation of powers",
                     dimWeightPct: 25,
                     indicators: [
-                        { id: "division_of_power_index", name: "Division of power index", weightInDimPct: 70 },
+                        { id: "division_of_power_index", name: "Separations of power", weightInDimPct: 70 },
                         { id: "high_court_independence", name: "High court independence", weightInDimPct: 30 }
                     ]
                 },
@@ -705,7 +711,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
                     dimWeightPct: 30,
                     indicators: [
                         { id: "control_of_corruption", name: "Control of corruption", weightInDimPct: 35 },
-                        { id: "corruption_perception_index", name: "Corruption perception index", weightInDimPct: 30 },
+                        { id: "corruption_perception_index", name: "Corruption perceptions index", weightInDimPct: 30 },
                         { id: "diagonal_accountability_index", name: "Diagonal accountability index", weightInDimPct: 35 }
                     ]
                 },
@@ -721,7 +727,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
             ]
         },
         {
-            label: "Variable 2",
+            label: "Dimension 2",
             title: "Socio-economic development",
             weightPct: 20,
             blocks: [
@@ -733,7 +739,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
                         { id: "social_safety_nets", name: "Social safety nets", weightInDimPct: 30 },
                         { id: "educational_equality", name: "Educational equality", weightInDimPct: 20 },
                         { id: "health_equality", name: "Health equality", weightInDimPct: 20 },
-                        { id: "exclusion_socioeconomic_group_inv", name: "Exclusion by socio-economic group (inverted)", weightInDimPct: 30 }
+                        { id: "access_public_services_social_group", name: "Access to public services by socio-economic position", weightInDimPct: 30 }
                     ]
                 },
                 {
@@ -741,10 +747,9 @@ Structure and weights follow the index workbook (Part3); the table above lists e
                     heading: "Living Standards",
                     dimWeightPct: 40,
                     indicators: [
-                        { id: "hdi", name: "HDI", weightInDimPct: 30 },
-                        { id: "infant_mortality_rate", name: "Infant mortality rate (inverted)", weightInDimPct: 20 },
-                        { id: "freedom_academic_cultural_expression", name: "Freedom of academic & cultural expression", weightInDimPct: 25 },
-                        { id: "access_public_services_social_group", name: "Access to public services by social group", weightInDimPct: 25 }
+                        { id: "hdi", name: "HDI", weightInDimPct: 50 },
+                        { id: "infant_mortality_rate", name: "Infant mortality rate (inverted)", weightInDimPct: 30 },
+                        { id: "freedom_academic_cultural_expression", name: "Freedom of academic & cultural expression", weightInDimPct: 20 }
                     ]
                 },
                 {
@@ -760,7 +765,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
             ]
         },
         {
-            label: "Variable 3",
+            label: "Dimension 3",
             title: "Responsiveness",
             weightPct: 20,
             blocks: [
@@ -778,15 +783,15 @@ Structure and weights follow the index workbook (Part3); the table above lists e
                     heading: "Policies and legitimacy",
                     dimWeightPct: 55,
                     indicators: [
-                        { id: "steering_capacity", name: "Steering capability", weightInDimPct: 60 },
+                        { id: "steering_capacity", name: "Steering Capability", weightInDimPct: 60 },
                         { id: "political_culture", name: "Approval of democracy", weightInDimPct: 40 }
                     ]
                 }
             ]
         },
         {
-            label: "Variable 4",
-            title: "Electoral integrity",
+            label: "Dimension 4",
+            title: "Electoral Integrity",
             weightPct: 20,
             blocks: [
                 {
@@ -813,7 +818,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
             ]
         },
         {
-            label: "Variable 5",
+            label: "Dimension 5",
             title: "Democratic memory",
             weightPct: 10,
             blocks: [
@@ -1107,9 +1112,11 @@ Structure and weights follow the index workbook (Part3); the table above lists e
     }
 
     function variableWorkbookValue0100(country, dimensionIdx, blockId) {
+        const vu = workbookVariableUnavailable[country];
+        if (vu && vu[blockId]) return null;
         const byVar = workbookVariableScores0100[country];
         if (byVar && byVar[blockId] != null && byVar[blockId] !== undefined) return byVar[blockId];
-        return dimensionWorkbookValue0100(country, dimensionIdx);
+        return null;
     }
 
     function indicatorWorkbookValue0100(country, dimensionIdx, blockId, indicatorId) {
@@ -1117,18 +1124,24 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         if (un && un[indicatorId]) return null;
         const byInd = workbookIndicatorScores0100[country];
         if (byInd && byInd[indicatorId] != null && byInd[indicatorId] !== undefined) return byInd[indicatorId];
-        return variableWorkbookValue0100(country, dimensionIdx, blockId);
+        return null;
     }
 
-    /** Format a 0–100 workbook value for display. */
-    function formatScoreOutOf100(workbook0100) {
-        if (workbook0100 === null || workbook0100 === undefined || Number.isNaN(Number(workbook0100))) return "—";
+    /** Pillar / dimension score (0–100) or missing per workbook. */
+    function formatWorkbook0100Display(workbook0100) {
+        if (workbook0100 === null || workbook0100 === undefined || Number.isNaN(Number(workbook0100))) {
+            return DATA_NOT_AVAILABLE_DISPLAY;
+        }
         return Number(workbook0100).toFixed(1) + " / 100";
     }
 
     function formatVariableOrIndicatorScore(dimensionIdx, blockId, workbook0100, indicatorId) {
         if (dimensionIdx === 4 && blockId === "reparations" && reparationsExcludedForCountry(selectedKey)) {
             return REPARATIONS_NA_DISPLAY;
+        }
+        if (!indicatorId) {
+            const vu = workbookVariableUnavailable[selectedKey];
+            if (vu && vu[blockId]) return DATA_NOT_AVAILABLE_DISPLAY;
         }
         if (
             indicatorId &&
@@ -1137,7 +1150,10 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         ) {
             return DATA_NOT_AVAILABLE_DISPLAY;
         }
-        return formatScoreOutOf100(workbook0100);
+        if (workbook0100 === null || workbook0100 === undefined || Number.isNaN(Number(workbook0100))) {
+            return DATA_NOT_AVAILABLE_DISPLAY;
+        }
+        return Number(workbook0100).toFixed(1) + " / 100";
     }
 
     function renderDimensionTable() {
@@ -1148,7 +1164,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
             const label = DIMENSION_LABELS[i];
             const w = DIMENSION_WEIGHTS_PCT[i];
             const v = dimensionWorkbookValue0100(selectedKey, i);
-            const scoreCell = formatScoreOutOf100(v);
+            const scoreCell = formatWorkbook0100Display(v);
             const weightCell = w + "%";
             parts.push(
                 "<tr class=\"border-t border-outline-variant/10\">" +
@@ -1215,7 +1231,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
             const dimVal = dimensionWorkbookValue0100(selectedKey, idx);
             const dimScoreHtml =
                 "<span class=\"font-headline font-medium tracking-tight leading-none text-3xl sm:text-4xl md:text-[2.75rem] text-primary tabular-nums shrink-0 whitespace-nowrap\">" +
-                escHtml(formatScoreOutOf100(dimVal)) +
+                escHtml(formatWorkbook0100Display(dimVal)) +
                 "</span>";
 
             const det = document.createElement("details");

@@ -30,6 +30,7 @@
       workbookDimensionScores: full.workbookDimensionScores || {},
       workbookIndicatorScores0100: full.workbookIndicatorScores0100 || {},
       workbookVariableScores0100: full.workbookVariableScores0100 || {},
+      workbookVariableUnavailable: full.workbookVariableUnavailable || {},
       workbookIndicatorUnavailable: full.workbookIndicatorUnavailable || {},
     };
   }
