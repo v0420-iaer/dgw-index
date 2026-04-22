@@ -469,9 +469,8 @@
 <img id="profile-scroll-summary-flag" src="" alt="" width="44" height="33" loading="lazy" decoding="async">
 </div>
 <p class="font-headline text-base sm:text-lg text-primary tracking-tight min-w-0 flex-1 truncate" id="profile-scroll-summary-country">—</p>
-<div class="flex items-baseline gap-1.5 shrink-0 tabular-nums">
+<div class="shrink-0 tabular-nums">
 <span id="profile-scroll-summary-score" class="font-headline text-lg sm:text-xl text-primary">—</span>
-<span class="font-headline text-sm text-outline-variant">/ 100</span>
 </div>
 <span id="profile-scroll-summary-regime" class="font-label text-[10px] sm:text-xs font-semibold uppercase tracking-wider px-2.5 py-1 border border-outline-variant/20 shrink-0 text-end leading-snug max-w-[42%] sm:max-w-[13.5rem]">—</span>
 </div>
@@ -494,9 +493,8 @@
 <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary-container/5 opacity-50 pointer-events-none"></div>
 <div class="relative z-10 flex flex-col items-start">
 <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-5">Index score</span>
-<div class="flex items-baseline gap-3 mb-2">
-<span id="profile-score-big" class="font-headline text-6xl sm:text-7xl md:text-8xl tracking-tighter text-primary leading-none">—</span>
-<span class="font-headline text-2xl text-outline-variant">/ 100</span>
+<div class="mb-2">
+<span id="profile-score-big" class="font-headline text-5xl sm:text-6xl md:text-7xl tracking-tighter text-primary leading-none">—</span>
 </div>
 <div class="mt-8 pt-6 border-t border-outline-variant/20 w-full flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
 <span class="font-label text-sm text-on-surface-variant">Regime type</span>
@@ -509,7 +507,7 @@
 <thead>
 <tr class="bg-surface-container-high/70 text-on-surface-variant uppercase tracking-wider text-[10px]">
 <th class="px-3 py-2 font-medium">Dimension</th>
-<th class="px-3 py-2 font-medium text-right whitespace-nowrap">Score / 100</th>
+<th class="px-3 py-2 font-medium text-right whitespace-nowrap">Score</th>
 <th class="px-3 py-2 font-medium text-right whitespace-nowrap">%</th>
 </tr>
 </thead>
@@ -561,7 +559,7 @@
 <header class="mb-10 md:mb-14">
 <h2 class="font-headline text-2xl sm:text-3xl md:text-4xl text-primary tracking-tight mb-3 text-balance">Index variables &amp; indicators</h2>
 <p class="font-body text-base md:text-lg text-on-surface-variant leading-relaxed max-w-2xl text-pretty">
-Structure and weights follow the index workbook (Part3); the table above lists each pillar’s <span class="font-label text-on-surface">%</span> weight. Below, every pillar, variable block, and indicator shows the country’s score on the same 0–100 workbook scale (finer values can be set per level in the data when available). Tap <span class="font-label text-primary">+</span> to expand.
+Structure and weights follow the index workbook (Part3); the table above lists each pillar’s <span class="font-label text-on-surface">%</span> weight. Below, every pillar, variable block, and indicator shows the country’s score in the form <span class="font-label text-on-surface">XX.XX/100</span> on the workbook scale. Tap <span class="font-label text-primary">+</span> to expand.
 </p>
 </header>
 <div id="categories-root" class="flex flex-col gap-4 md:gap-5"></div>
@@ -1067,7 +1065,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         opts = opts || {};
         const d = countryData[selectedKey];
         const m = profileMeta[selectedKey];
-        document.getElementById("profile-score-big").textContent = formatIndexPoint(d.score) || "—";
+        document.getElementById("profile-score-big").textContent = formatScoreSlash100(d.score) || "—";
         const regimeEl = document.getElementById("profile-regime");
         regimeEl.textContent = d.category;
         const regimeBg =
@@ -1127,13 +1125,10 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         return null;
     }
 
-    /** Format a workbook point (may exceed 100 if the source cell does) with up to 4 decimal places, trimmed. */
-    function formatIndexPoint(value) {
+    /** Always `XX.XX/100` (two decimal places). */
+    function formatScoreSlash100(value) {
         if (value === null || value === undefined || Number.isNaN(Number(value))) return null;
-        let s = Number(value).toFixed(4);
-        s = s.replace(/(\.\d*?)0+$/, "$1");
-        if (s.endsWith(".")) s = s.slice(0, -1);
-        return s;
+        return Number(value).toFixed(2) + "/100";
     }
 
     /** Pillar / dimension / variable / indicator or missing. */
@@ -1141,7 +1136,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         if (workbook0100 === null || workbook0100 === undefined || Number.isNaN(Number(workbook0100))) {
             return DATA_NOT_AVAILABLE_DISPLAY;
         }
-        return formatIndexPoint(workbook0100) + " / 100";
+        return formatScoreSlash100(workbook0100);
     }
 
     function formatVariableOrIndicatorScore(dimensionIdx, blockId, workbook0100, indicatorId) {
@@ -1162,7 +1157,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         if (workbook0100 === null || workbook0100 === undefined || Number.isNaN(Number(workbook0100))) {
             return DATA_NOT_AVAILABLE_DISPLAY;
         }
-        return formatIndexPoint(workbook0100) + " / 100";
+        return formatScoreSlash100(workbook0100);
     }
 
     function renderDimensionTable() {
@@ -1201,7 +1196,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         sImg.src = flagSvgUrl(m.iso2);
         sImg.alt = "";
         document.getElementById("profile-scroll-summary-country").textContent = selectedKey;
-        document.getElementById("profile-scroll-summary-score").textContent = formatIndexPoint(d.score) || "—";
+        document.getElementById("profile-scroll-summary-score").textContent = formatScoreSlash100(d.score) || "—";
         const sReg = document.getElementById("profile-scroll-summary-regime");
         sReg.textContent = d.category;
         const sumBg =

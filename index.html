@@ -616,10 +616,7 @@
     }
     function formatIndexPointScore(n) {
         if (n == null || n === undefined || typeof n !== "number" || isNaN(n)) return String(n);
-        var s = n.toFixed(4);
-        s = s.replace(/(\.\d*?)0+$/, "$1");
-        if (s.charAt(s.length - 1) === ".") s = s.slice(0, -1);
-        return s;
+        return n.toFixed(2) + "/100";
     }
 
     function escHtmlTbl(s) {
