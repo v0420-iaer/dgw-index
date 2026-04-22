@@ -829,7 +829,6 @@ window.__DGW__ = {
       "poverty_headcount_ratio": 82,
       "deliberative_component_index": 78,
       "reasoned_justification": 77,
-      "political_culture": 0,
       "clean_elections_index": 86,
       "election_free_and_fair": 95,
       "opposition_parties_autonomy": 91,
@@ -939,7 +938,6 @@ window.__DGW__ = {
       "power_distributed_socioeconomic": 64,
       "deliberative_component_index": 37,
       "reasoned_justification": 52,
-      "political_culture": 0,
       "clean_elections_index": 49,
       "election_free_and_fair": 73,
       "opposition_parties_autonomy": 73,
@@ -977,7 +975,6 @@ window.__DGW__ = {
       "deliberative_component_index": 25,
       "reasoned_justification": 51,
       "steering_capacity": 43,
-      "political_culture": 0,
       "clean_elections_index": 31,
       "election_free_and_fair": 60,
       "opposition_parties_autonomy": 82,
@@ -1014,7 +1011,6 @@ window.__DGW__ = {
       "deliberative_component_index": 30,
       "reasoned_justification": 48,
       "steering_capacity": 53,
-      "political_culture": 0,
       "clean_elections_index": 30,
       "election_free_and_fair": 14,
       "opposition_parties_autonomy": 4,
@@ -1088,7 +1084,6 @@ window.__DGW__ = {
       "deliberative_component_index": 2,
       "reasoned_justification": 8,
       "steering_capacity": 27,
-      "political_culture": 0,
       "clean_elections_index": 14,
       "election_free_and_fair": 25,
       "opposition_parties_autonomy": 19,
@@ -1514,19 +1509,27 @@ window.__DGW__ = {
     "Bolivia": {},
     "Suriname": {
       "social_safety_nets": true,
-      "steering_capacity": true
+      "steering_capacity": true,
+      "political_culture": true
     },
     "Mexico": {},
     "Honduras": {},
     "Guyana": {
       "social_safety_nets": true,
       "poverty_headcount_ratio": true,
-      "steering_capacity": true
+      "steering_capacity": true,
+      "political_culture": true
     },
-    "El Salvador": {},
-    "Cuba": {},
+    "El Salvador": {
+      "political_culture": true
+    },
+    "Cuba": {
+      "political_culture": true
+    },
     "Haiti": {},
-    "Nicaragua": {},
+    "Nicaragua": {
+      "political_culture": true
+    },
     "Venezuela": {}
   }
 };
