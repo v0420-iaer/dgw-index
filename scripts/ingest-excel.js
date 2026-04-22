@@ -1,48 +1,28 @@
 /**
  * Reads the index workbook (Part 3) xlsx — sheets SOUTH AMERICA + CENTROAMERICA — and writes data/ingested-excel.json + .js
+ * Uses raw cell values (sheet_to_json raw: true) to preserve Excel precision; no clamp on export (values may exceed 100 if the sheet does).
  * Run: node scripts/ingest-excel.js
  */
 const XLSX = require("xlsx");
 const fs = require("fs");
 const path = require("path");
 const { categoryFromScore, colorFromScore } = require("./democracy-scale.cjs");
+const {
+  toWorkbookScale,
+  toIndicator0to100,
+  isTextUnavailable,
+  ensureAllBlueprintIndicatorSlots,
+} = require("./workbook-numeric.cjs");
 
 const xlsxPath = path.join(__dirname, "..", "the index", "part 3 democracy.xlsx");
 /** Regional data sheets (same column layout in each). */
 const DATA_SHEET_NAMES = ["SOUTH AMERICA", "CENTROAMERICA"];
 
-function parsePct(s) {
-  if (s == null || s === "") return null;
-  const m = String(s).replace(/\s/g, "").match(/([0-9]+(?:\.[0-9]+)?)%?/);
-  return m ? parseFloat(m[1]) : null;
-}
-
-function parseIndTo0100(s) {
-  if (s == null || s === "") return null;
-  const t = String(s).trim().replace(",", ".").replace(/\s+$/, "");
-  const n = parseFloat(t);
-  if (Number.isNaN(n)) return null;
-  if (n <= 1 && n >= 0) return Math.round(n * 1000) / 10;
-  return n;
-}
-
-/** Cell text that means the indicator is not reported (weight may be redistributed in the workbook). */
+/** Cell content that should not be stored as a numeric score. */
 function isUnavailableIndicatorCell(s) {
   if (s == null) return true;
-  const t = String(s).trim();
-  if (t === "") return true;
-  const low = t.toLowerCase();
-  return (
-    low === "n/a" ||
-    low === "na" ||
-    low === "#n/a" ||
-    low === "—" ||
-    low === "-" ||
-    low === "not available" ||
-    low === "data not available" ||
-    low === "data not available." ||
-    low.includes("data not available")
-  );
+  if (typeof s === "number" && !Number.isNaN(s)) return false;
+  return isTextUnavailable(s);
 }
 
 /** Exact pillar names as in Excel column “Variable” (must match keys in co.dims). */
@@ -140,17 +120,6 @@ function indKeyFromName(name) {
   return map[k] || null;
 }
 
-function mapStateName(state) {
-  if (state === "Brasil") return "Brazil";
-  if (state === "Perú") return "Peru";
-  return state;
-}
-
-function clamp0100(v) {
-  if (v == null) return null;
-  return Math.max(0, Math.min(100, v));
-}
-
 function ensureCountry(countries, curState) {
   if (!countries[curState]) {
     countries[curState] = {
@@ -178,9 +147,9 @@ function ingestSheetData(data, countries) {
     const totalIdx = r[10];
 
     if (state) {
-      curState = mapStateName(state);
+      curState = String(state).trim();
       ensureCountry(countries, curState);
-      const t = parsePct(totalIdx);
+      const t = toWorkbookScale(totalIdx);
       if (t != null) countries[curState].total = t;
     }
     if (!curState) continue;
@@ -190,7 +159,7 @@ function ingestSheetData(data, countries) {
     if (variableCol) {
       const d = normDim(variableCol);
       if (d) {
-        const sv = parsePct(scoreVar);
+        const sv = toWorkbookScale(scoreVar);
         if (sv != null) c.dims[d] = sv;
       }
     }
@@ -201,9 +170,9 @@ function ingestSheetData(data, countries) {
         if (isUnavailableIndicatorCell(scoreDim)) {
           c.workbookVariableUnavailable[bid] = true;
         } else {
-          const sd = parsePct(scoreDim);
+          const sd = toWorkbookScale(scoreDim);
           if (sd != null) {
-            c.workbookVariableScores0100[bid] = clamp0100(sd);
+            c.workbookVariableScores0100[bid] = sd;
           }
         }
       }
@@ -215,7 +184,7 @@ function ingestSheetData(data, countries) {
         if (isUnavailableIndicatorCell(scoreInd)) {
           c.workbookIndicatorUnavailable[iid] = true;
         } else {
-          const si = parseIndTo0100(scoreInd);
+          const si = toIndicator0to100(scoreInd);
           if (si != null) c.workbookIndicatorScores0100[iid] = si;
           else c.workbookIndicatorUnavailable[iid] = true;
         }
@@ -232,11 +201,15 @@ for (const sheetName of DATA_SHEET_NAMES) {
       `Sheet "${sheetName}" not found in ${path.basename(xlsxPath)}. Available: ${wb.SheetNames.join(", ")}`
     );
   }
-  const data = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, defval: null, raw: false });
+  const data = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, defval: null, raw: true });
   ingestSheetData(data, countries);
 }
 
 const names = Object.keys(countries).sort((a, b) => (countries[b].total ?? 0) - (countries[a].total ?? 0));
+
+for (const n of names) {
+  ensureAllBlueprintIndicatorSlots(countries[n]);
+}
 
 const workbookDimensionScores = {};
 const workbookIndicatorScores0100 = {};
@@ -248,7 +221,7 @@ for (const name of names) {
   const co = countries[name];
   workbookDimensionScores[name] = DIM_ORDER.map((d) => {
     const v = co.dims[d];
-    return v == null ? null : clamp0100(v);
+    return v == null ? null : v;
   });
   workbookIndicatorScores0100[name] = co.workbookIndicatorScores0100;
   workbookVariableScores0100[name] = co.workbookVariableScores0100;
@@ -305,7 +278,7 @@ console.log("Wrote", jsPath);
 
 const allIds = new Set();
 for (const sheetName of DATA_SHEET_NAMES) {
-  const data = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, defval: null, raw: false });
+  const data = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, defval: null, raw: true });
   for (let i = 1; i < data.length; i++) {
     if (data[i][7]) allIds.add(String(data[i][7]).trim());
   }

@@ -608,6 +608,20 @@
         }
         var countryData = dgw.countryData;
 
+    /** Natural Earth (EN) → keys from the Excel/ingest (Brasil, Perú, …). */
+    var GEO_NAME_TO_DGW_KEY = { Brazil: "Brasil", Peru: "Perú" };
+    function dgwDataKey(geoName) {
+        if (!geoName) return "";
+        return GEO_NAME_TO_DGW_KEY[geoName] != null ? GEO_NAME_TO_DGW_KEY[geoName] : String(geoName);
+    }
+    function formatIndexPointScore(n) {
+        if (n == null || n === undefined || typeof n !== "number" || isNaN(n)) return String(n);
+        var s = n.toFixed(4);
+        s = s.replace(/(\.\d*?)0+$/, "$1");
+        if (s.charAt(s.length - 1) === ".") s = s.slice(0, -1);
+        return s;
+    }
+
     function escHtmlTbl(s) {
         if (s == null || s === undefined) return "";
         return String(s)
@@ -634,7 +648,7 @@
             var cat = d.category;
             var bg = window.DGWScale.flatCategoryColor(cat);
             var fg = window.DGWScale.contrastTextColor(bg);
-            var sc = typeof d.score === "number" ? d.score.toFixed(1) : escHtmlTbl(String(d.score));
+            var sc = typeof d.score === "number" ? formatIndexPointScore(d.score) : escHtmlTbl(String(d.score));
             parts.push(
                 "<tr class=\"border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300\">" +
                 "<td class=\"py-5 px-2\">" + escHtmlTbl(name) + "</td>" +
@@ -778,7 +792,7 @@
     }
 
     function landFill(d) {
-        const name = featureName(d);
+        const name = dgwDataKey(featureName(d));
         if (!revealed || !countryData[name]) return NEUTRAL;
         if (mapColorMode === "category") {
             const cat = regimeCategoryForName(name);
@@ -930,7 +944,7 @@
 
     function showCountryCallout(event, d) {
         if (!revealed || !calloutG || !svg) return;
-        const name = featureName(d);
+        const name = dgwDataKey(featureName(d));
         if (!countryData[name]) return;
 
         if (calloutHideTimer) {
@@ -968,7 +982,7 @@
         tooltipCountry.textContent = "Country: " + name;
         tooltipScore.textContent =
             typeof countryData[name].score === "number"
-                ? countryData[name].score.toFixed(1)
+                ? formatIndexPointScore(countryData[name].score)
                 : String(countryData[name].score);
 
         const revealCard = () => {
@@ -1062,10 +1076,10 @@
 
     function updateTableLinkedHighlight() {
         if (!landPaths) return;
-        landPaths.classed("table-linked-highlight", d => !!tableLinkedCountry && featureName(d) === tableLinkedCountry);
+        landPaths.classed("table-linked-highlight", d => !!tableLinkedCountry && dgwDataKey(featureName(d)) === tableLinkedCountry);
         landPaths.sort((a, b) => {
-            const aH = featureName(a) === tableLinkedCountry ? 1 : 0;
-            const bH = featureName(b) === tableLinkedCountry ? 1 : 0;
+            const aH = dgwDataKey(featureName(a)) === tableLinkedCountry ? 1 : 0;
+            const bH = dgwDataKey(featureName(b)) === tableLinkedCountry ? 1 : 0;
             return aH - bH;
         });
         if (path) landPaths.attr("d", path);
@@ -1191,7 +1205,7 @@
             .data(world.features)
             .join("path")
             .attr("class", d => {
-                const n = featureName(d);
+                const n = dgwDataKey(featureName(d));
                 return latAmSet.has(n) ? "country land is-latam" : "country land";
             })
             .attr("fill", NEUTRAL)
@@ -1199,7 +1213,7 @@
             .on("mouseleave", handleMouseOut)
             .on("click", handleCountryClick);
 
-        indexedFeatures = world.features.filter(d => countryData[featureName(d)]);
+        indexedFeatures = world.features.filter(d => countryData[dgwDataKey(featureName(d))]);
 
         outlinePath = gMain.append("path")
             .datum({ type: "Sphere" })

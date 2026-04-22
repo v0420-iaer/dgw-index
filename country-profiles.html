@@ -605,14 +605,14 @@ Structure and weights follow the index workbook (Part3); the table above lists e
     const profileMeta = {
         "Uruguay": { wbPop: 3386588, capital: "Montevideo", iso2: "UY", president: "Yamandú Orsi", capitalLon: -56.1645, capitalLat: -34.9011 },
         "Chile": { wbPop: 19764771, capital: "Santiago", iso2: "CL", president: "José Antonio Kast", capitalLon: -70.6483, capitalLat: -33.4489 },
-        "Brazil": { wbPop: 211998573, capital: "Brasília", iso2: "BR", president: "Luiz Inácio Lula da Silva", capitalLon: -47.8828, capitalLat: -15.7939 },
+        "Brasil": { wbPop: 211998573, capital: "Brasília", iso2: "BR", president: "Luiz Inácio Lula da Silva", capitalLon: -47.8828, capitalLat: -15.7939 },
         "Argentina": { wbPop: 45696159, capital: "Buenos Aires", iso2: "AR", president: "Javier Milei", capitalLon: -58.3816, capitalLat: -34.6037 },
         "Colombia": { wbPop: 52886363, capital: "Bogotá", iso2: "CO", president: "Gustavo Petro", capitalLon: -74.0721, capitalLat: 4.7110 },
         "Costa Rica": { wbPop: 5129910, capital: "San José", iso2: "CR", president: "Rodrigo Chaves Robles", capitalLon: -84.0907, capitalLat: 9.9281 },
         "Dominican Republic": { wbPop: 11427557, capital: "Santo Domingo", iso2: "DO", president: "Luis Abinader", capitalLon: -69.9312, capitalLat: 18.4861 },
         "Panama": { wbPop: 4515577, capital: "Ciudad de Panamá", iso2: "PA", president: "José Raúl Mulino", capitalLon: -79.5197, capitalLat: 8.9943 },
         "Ecuador": { wbPop: 18135478, capital: "Quito", iso2: "EC", president: "Daniel Noboa", capitalLon: -78.4678, capitalLat: -0.1807 },
-        "Peru": { wbPop: 34217848, capital: "Lima", iso2: "PE", president: "Dina Boluarte", capitalLon: -77.0428, capitalLat: -12.0464 },
+        "Perú": { wbPop: 34217848, capital: "Lima", iso2: "PE", president: "Dina Boluarte", capitalLon: -77.0428, capitalLat: -12.0464 },
         "Paraguay": { wbPop: 6929153, capital: "Asunción", iso2: "PY", president: "Santiago Peña", capitalLon: -57.5759, capitalLat: -25.2637 },
         "Guatemala": { wbPop: 18406359, capital: "Ciudad de Guatemala", iso2: "GT", president: "Bernardo Arévalo", capitalLon: -90.5133, capitalLat: 14.6349 },
         "Bolivia": { wbPop: 12413315, capital: "La Paz (sede de gobierno); Sucre (capital constitucional)", iso2: "BO", president: "Luis Arce", capitalLon: -68.1193, capitalLat: -16.4897 },
@@ -1067,7 +1067,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         opts = opts || {};
         const d = countryData[selectedKey];
         const m = profileMeta[selectedKey];
-        document.getElementById("profile-score-big").textContent = d.score.toFixed(1);
+        document.getElementById("profile-score-big").textContent = formatIndexPoint(d.score) || "—";
         const regimeEl = document.getElementById("profile-regime");
         regimeEl.textContent = d.category;
         const regimeBg =
@@ -1127,12 +1127,21 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         return null;
     }
 
-    /** Pillar / dimension score (0–100) or missing per workbook. */
+    /** Format a workbook point (may exceed 100 if the source cell does) with up to 4 decimal places, trimmed. */
+    function formatIndexPoint(value) {
+        if (value === null || value === undefined || Number.isNaN(Number(value))) return null;
+        let s = Number(value).toFixed(4);
+        s = s.replace(/(\.\d*?)0+$/, "$1");
+        if (s.endsWith(".")) s = s.slice(0, -1);
+        return s;
+    }
+
+    /** Pillar / dimension / variable / indicator or missing. */
     function formatWorkbook0100Display(workbook0100) {
         if (workbook0100 === null || workbook0100 === undefined || Number.isNaN(Number(workbook0100))) {
             return DATA_NOT_AVAILABLE_DISPLAY;
         }
-        return Number(workbook0100).toFixed(1) + " / 100";
+        return formatIndexPoint(workbook0100) + " / 100";
     }
 
     function formatVariableOrIndicatorScore(dimensionIdx, blockId, workbook0100, indicatorId) {
@@ -1153,7 +1162,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         if (workbook0100 === null || workbook0100 === undefined || Number.isNaN(Number(workbook0100))) {
             return DATA_NOT_AVAILABLE_DISPLAY;
         }
-        return Number(workbook0100).toFixed(1) + " / 100";
+        return formatIndexPoint(workbook0100) + " / 100";
     }
 
     function renderDimensionTable() {
@@ -1192,7 +1201,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         sImg.src = flagSvgUrl(m.iso2);
         sImg.alt = "";
         document.getElementById("profile-scroll-summary-country").textContent = selectedKey;
-        document.getElementById("profile-scroll-summary-score").textContent = d.score.toFixed(1);
+        document.getElementById("profile-scroll-summary-score").textContent = formatIndexPoint(d.score) || "—";
         const sReg = document.getElementById("profile-scroll-summary-regime");
         sReg.textContent = d.category;
         const sumBg =

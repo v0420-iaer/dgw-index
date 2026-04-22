@@ -8,14 +8,9 @@
  */
 const XLSX = require("xlsx");
 const path = require("path");
+const { toWorkbookScale, toWeightPercent } = require("./workbook-numeric.cjs");
 
 const xlsxPath = path.join(__dirname, "..", "the index", "part 3 democracy.xlsx");
-
-function parsePct(s) {
-  if (s == null || s === "") return null;
-  const m = String(s).replace(/\s/g, "").match(/([0-9]+(?:\.[0-9]+)?)%?/);
-  return m ? parseFloat(m[1]) : null;
-}
 
 /** Same order/labels as scripts/ingest-excel.js DIM_ORDER */
 const PILLAR_ORDER = [
@@ -39,7 +34,7 @@ function pillarKeyFromVariableCol(v) {
 
 const DATA_SHEET_NAME = "SOUTH AMERICA";
 const wb = XLSX.readFile(xlsxPath);
-const data = XLSX.utils.sheet_to_json(wb.Sheets[DATA_SHEET_NAME], { header: 1, defval: null, raw: false });
+const data = XLSX.utils.sheet_to_json(wb.Sheets[DATA_SHEET_NAME], { header: 1, defval: null, raw: true });
 
 let errors = 0;
 function warn(msg) {
@@ -122,7 +117,7 @@ for (let i = 1; i < data.length; i++) {
       validateWeightedTotal();
     }
     curState = state;
-    curTotal = parsePct(totalIdx);
+    curTotal = toWorkbookScale(totalIdx);
     pillarScores = {};
     pillarWeights = {};
     curPillar = null;
@@ -141,22 +136,22 @@ for (let i = 1; i < data.length; i++) {
     validatePillarDimSum();
     curPillar = pillarKey;
     dimSumWithinPillar = 0;
-    pillarScores[curPillar] = parsePct(scoreVar);
-    pillarWeights[curPillar] = parsePct(pctVar);
+    pillarScores[curPillar] = toWorkbookScale(scoreVar);
+    pillarWeights[curPillar] = toWeightPercent(pctVar);
   }
 
   if (dimHeading) {
     flushIndBlock(curState, curDimBlock, indParts);
     curDimBlock = String(dimHeading).trim();
     indParts = [];
-    const pd = parsePct(pctDim);
+    const pd = toWeightPercent(pctDim);
     if (pd != null) dimSumWithinPillar += pd;
     if (indName && pctInd != null) {
-      const p = parsePct(pctInd);
+      const p = toWeightPercent(pctInd);
       if (p != null) indParts.push(p);
     }
   } else if (indName && pctInd != null) {
-    const p = parsePct(pctInd);
+    const p = toWeightPercent(pctInd);
     if (p != null) indParts.push(p);
   }
 }

@@ -18,22 +18,18 @@ const blueprintIds = [...new Set([...slice.matchAll(/\{ id: "([^"]+)"/g)].map((x
 const j = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
 const names = j.countryNamesSorted || Object.keys(j.workbookIndicatorScores0100 || {});
 
-const missing = [];
-for (const id of blueprintIds) {
-  let ok = false;
-  for (const c of names) {
-    const s = j.workbookIndicatorScores0100[c];
-    const u = j.workbookIndicatorUnavailable[c];
-    if ((s && s[id] != null) || (u && u[id])) {
-      ok = true;
-      break;
-    }
+/** Every country must have each blueprint indicator with either a score or an explicit unavailable flag. */
+const gaps = [];
+for (const c of names) {
+  const s = j.workbookIndicatorScores0100[c] || {};
+  const u = j.workbookIndicatorUnavailable[c] || {};
+  for (const id of blueprintIds) {
+    if (s[id] == null && !u[id]) gaps.push(`${c}: ${id}`);
   }
-  if (!ok) missing.push(id);
 }
-
-if (missing.length) {
-  console.error("verify-blueprint-ingest: no score/unavailable for ids:", missing.join(", "));
+if (gaps.length) {
+  console.error("verify-blueprint-ingest: missing score/unavailable for:\n" + gaps.slice(0, 50).join("\n"));
+  if (gaps.length > 50) console.error("… and", gaps.length - 50, "more");
   process.exit(1);
 }
 
