@@ -469,8 +469,8 @@
 <img id="profile-scroll-summary-flag" src="" alt="" width="44" height="33" loading="lazy" decoding="async">
 </div>
 <p class="font-headline text-base sm:text-lg text-primary tracking-tight min-w-0 flex-1 truncate" id="profile-scroll-summary-country">—</p>
-<div class="shrink-0 tabular-nums">
-<span id="profile-scroll-summary-score" class="font-headline text-lg sm:text-xl text-primary">—</span>
+<div class="shrink-0">
+<span id="profile-scroll-summary-score" class="font-headline inline-flex items-baseline gap-x-0.5 flex-wrap text-lg sm:text-xl text-primary tabular-nums">—</span>
 </div>
 <span id="profile-scroll-summary-regime" class="font-label text-[10px] sm:text-xs font-semibold uppercase tracking-wider px-2.5 py-1 border border-outline-variant/20 shrink-0 text-end leading-snug max-w-[42%] sm:max-w-[13.5rem]">—</span>
 </div>
@@ -494,7 +494,7 @@
 <div class="relative z-10 flex flex-col items-start">
 <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-5">Index score</span>
 <div class="mb-2">
-<span id="profile-score-big" class="font-headline text-5xl sm:text-6xl md:text-7xl tracking-tighter text-primary leading-none">—</span>
+<span id="profile-score-big" class="font-headline inline-flex items-baseline gap-x-0.5 flex-wrap tracking-tighter text-primary leading-none">—</span>
 </div>
 <div class="mt-8 pt-6 border-t border-outline-variant/20 w-full flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
 <span class="font-label text-sm text-on-surface-variant">Regime type</span>
@@ -559,7 +559,7 @@
 <header class="mb-10 md:mb-14">
 <h2 class="font-headline text-2xl sm:text-3xl md:text-4xl text-primary tracking-tight mb-3 text-balance">Index variables &amp; indicators</h2>
 <p class="font-body text-base md:text-lg text-on-surface-variant leading-relaxed max-w-2xl text-pretty">
-Structure and weights follow the index workbook (Part3); the table above lists each pillar’s <span class="font-label text-on-surface">%</span> weight. Below, every pillar, variable block, and indicator shows the country’s score in the form <span class="font-label text-on-surface">XX.XX/100</span> on the workbook scale. Tap <span class="font-label text-primary">+</span> to expand.
+Structure and weights follow the index workbook (Part3); the table above lists each pillar’s <span class="font-label text-on-surface">%</span> weight. Below, every pillar, variable block, and indicator shows the country’s score on the workbook scale: bold <span class="text-on-surface">XX.XX</span> with a smaller, subtler <span class="text-on-surface-variant">/100</span>. Tap <span class="font-label text-primary">+</span> to expand.
 </p>
 </header>
 <div id="categories-root" class="flex flex-col gap-4 md:gap-5"></div>
@@ -1065,7 +1065,15 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         opts = opts || {};
         const d = countryData[selectedKey];
         const m = profileMeta[selectedKey];
-        document.getElementById("profile-score-big").textContent = formatScoreSlash100(d.score) || "—";
+        {
+            const scoreEl = document.getElementById("profile-score-big");
+            const h = formatScoreSlash100Html(d.score, "hero");
+            if (h) {
+                scoreEl.innerHTML = h;
+            } else {
+                scoreEl.textContent = "—";
+            }
+        }
         const regimeEl = document.getElementById("profile-regime");
         regimeEl.textContent = d.category;
         const regimeBg =
@@ -1125,10 +1133,57 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         return null;
     }
 
-    /** Always `XX.XX/100` (two decimal places). */
-    function formatScoreSlash100(value) {
+    /**
+     * `XX.XX/100` with the fraction in smaller, muted type (for /100 only).
+     * @param {"hero"|"summary"|"table"|"dimHeader"|"varBlock"|"indicator"} variant
+     */
+    function formatScoreSlash100Html(value, variant) {
         if (value === null || value === undefined || Number.isNaN(Number(value))) return null;
-        return Number(value).toFixed(2) + "/100";
+        const m = Number(value).toFixed(2);
+        const den =
+            "text-on-surface-variant/60 font-body font-normal not-italic leading-none";
+        const byVar = {
+            hero: {
+                main: "text-5xl sm:text-6xl md:text-7xl font-headline text-primary tracking-tighter leading-none",
+                den: den + " text-2xl sm:text-3xl md:text-4xl tracking-tight ml-0.5",
+            },
+            summary: {
+                main: "font-headline text-lg sm:text-xl text-primary",
+                den: den + " text-xs sm:text-sm tracking-tight ml-0.5",
+            },
+            table: {
+                main: "text-on-surface tabular-nums",
+                den: den + " text-[0.72em] sm:text-[0.78em] ml-0.5 align-baseline",
+            },
+            dimHeader: {
+                main: "font-headline font-medium tracking-tight text-3xl sm:text-4xl md:text-[2.75rem] text-primary",
+                den: den + " text-base sm:text-lg md:text-xl ml-0.5 align-baseline",
+            },
+            varBlock: {
+                main: "font-headline font-medium tracking-tight text-xl sm:text-2xl text-primary",
+                den: den + " text-sm sm:text-base ml-0.5",
+            },
+            indicator: {
+                main: "font-body text-sm sm:text-base font-medium text-primary",
+                den: den + " text-xs sm:text-sm ml-0.5",
+            },
+        };
+        const p = byVar[variant] || byVar.table;
+        return (
+            '<span class="' +
+            p.main +
+            ' tabular-nums">' +
+            m +
+            '</span><span class="' +
+            p.den +
+            '">/100</span>'
+        );
+    }
+
+    /** Plain text (DATA NOT AVAILABLE) or score HTML. */
+    function scoreOrEscapedLabel(s) {
+        if (s && s.indexOf("<span") === 0) return s;
+        return escHtml(s);
     }
 
     /** Pillar / dimension / variable / indicator or missing. */
@@ -1136,7 +1191,7 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         if (workbook0100 === null || workbook0100 === undefined || Number.isNaN(Number(workbook0100))) {
             return DATA_NOT_AVAILABLE_DISPLAY;
         }
-        return formatScoreSlash100(workbook0100);
+        return formatScoreSlash100Html(workbook0100, "table");
     }
 
     function formatVariableOrIndicatorScore(dimensionIdx, blockId, workbook0100, indicatorId) {
@@ -1157,7 +1212,10 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         if (workbook0100 === null || workbook0100 === undefined || Number.isNaN(Number(workbook0100))) {
             return DATA_NOT_AVAILABLE_DISPLAY;
         }
-        return formatScoreSlash100(workbook0100);
+        if (indicatorId) {
+            return formatScoreSlash100Html(workbook0100, "indicator");
+        }
+        return formatScoreSlash100Html(workbook0100, "varBlock");
     }
 
     function renderDimensionTable() {
@@ -1173,7 +1231,10 @@ Structure and weights follow the index workbook (Part3); the table above lists e
             parts.push(
                 "<tr class=\"border-t border-outline-variant/10\">" +
                 "<td class=\"px-3 py-2.5\">" + escHtml(label) + "</td>" +
-                "<td class=\"px-3 py-2.5 text-right tabular-nums\">" + escHtml(scoreCell) + "</td>" +
+                '<td class="px-3 py-2.5 text-right">' +
+                '<div class="inline-flex items-baseline justify-end flex-wrap gap-x-0.5 w-full tabular-nums">' +
+                scoreOrEscapedLabel(scoreCell) +
+                "</div></td>" +
                 "<td class=\"px-3 py-2.5 text-right tabular-nums\">" + weightCell + "</td>" +
                 "</tr>"
             );
@@ -1196,7 +1257,15 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         sImg.src = flagSvgUrl(m.iso2);
         sImg.alt = "";
         document.getElementById("profile-scroll-summary-country").textContent = selectedKey;
-        document.getElementById("profile-scroll-summary-score").textContent = formatScoreSlash100(d.score) || "—";
+        {
+            const sEl = document.getElementById("profile-scroll-summary-score");
+            const h = formatScoreSlash100Html(d.score, "summary");
+            if (h) {
+                sEl.innerHTML = h;
+            } else {
+                sEl.textContent = "—";
+            }
+        }
         const sReg = document.getElementById("profile-scroll-summary-regime");
         sReg.textContent = d.category;
         const sumBg =
@@ -1234,9 +1303,13 @@ Structure and weights follow the index workbook (Part3); the table above lists e
         INDEX_BLUEPRINT.forEach((bp, idx) => {
             const dimVal = dimensionWorkbookValue0100(selectedKey, idx);
             const dimScoreHtml =
-                "<span class=\"font-headline font-medium tracking-tight leading-none text-3xl sm:text-4xl md:text-[2.75rem] text-primary tabular-nums shrink-0 whitespace-nowrap\">" +
-                escHtml(formatWorkbook0100Display(dimVal)) +
-                "</span>";
+                '<div class="inline-flex items-baseline gap-x-0.5 shrink-0 max-w-full min-w-0">' +
+                (dimVal === null || dimVal === undefined || Number.isNaN(Number(dimVal))
+                    ? '<span class="font-headline font-medium text-3xl sm:text-4xl md:text-[2.75rem] text-on-surface-variant">' +
+                      escHtml(DATA_NOT_AVAILABLE_DISPLAY) +
+                      "</span>"
+                    : formatScoreSlash100Html(dimVal, "dimHeader")) +
+                "</div>";
 
             const det = document.createElement("details");
             det.className = "profile-category bg-surface-container-lowest ambient-shadow border border-outline-variant/10 transition-shadow duration-300";
@@ -1259,8 +1332,8 @@ Structure and weights follow the index workbook (Part3); the table above lists e
                     "<h4 class=\"font-label text-[10px] uppercase tracking-widest text-on-surface-variant min-w-0 pr-2\">" +
                     escHtml(block.heading) +
                     "</h4>" +
-                    "<span class=\"font-headline font-medium tracking-tight leading-none text-xl sm:text-2xl text-primary tabular-nums shrink-0 whitespace-nowrap\">" +
-                    escHtml(varScoreCell) +
+                    "<span class=\"font-headline font-medium tracking-tight leading-none inline-flex items-baseline gap-x-0.5 shrink-0 max-w-full min-w-0 text-xl sm:text-2xl\">" +
+                    scoreOrEscapedLabel(varScoreCell) +
                     "</span>" +
                     "</div>" +
                     "<ul class=\"divide-y divide-outline-variant/10\">";
@@ -1282,8 +1355,8 @@ Structure and weights follow the index workbook (Part3); the table above lists e
                         "</p>" +
                         "<span class=\"" +
                         scoreClass +
-                        "\">" +
-                        escHtml(scoreCell) +
+                        " inline-flex items-baseline gap-x-0.5 max-w-full min-w-0 justify-end text-right\">" +
+                        scoreOrEscapedLabel(scoreCell) +
                         "</span>" +
                         "</li>";
                 });

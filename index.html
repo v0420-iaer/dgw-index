@@ -529,7 +529,7 @@
 <span id="tooltip-country" class="font-label text-[9px] sm:text-[10px] uppercase tracking-widest text-on-surface-variant mb-1 leading-snug">Country: --</span>
 <div class="flex items-baseline gap-1.5">
 <span class="font-label text-xs text-on-surface-variant">Score:</span>
-<span id="tooltip-score" class="font-headline text-xl sm:text-2xl text-primary font-medium tracking-tight">--</span>
+<span id="tooltip-score" class="inline-flex items-baseline gap-x-0.5 flex-wrap font-headline text-xl sm:text-2xl text-primary font-medium tracking-tight">--</span>
 </div>
 </div>
 </div>
@@ -614,9 +614,17 @@
         if (!geoName) return "";
         return GEO_NAME_TO_DGW_KEY[geoName] != null ? GEO_NAME_TO_DGW_KEY[geoName] : String(geoName);
     }
-    function formatIndexPointScore(n) {
-        if (n == null || n === undefined || typeof n !== "number" || isNaN(n)) return String(n);
-        return n.toFixed(2) + "/100";
+    function formatIndexPointScoreHtml(n) {
+        if (n == null || n === undefined || typeof n !== "number" || isNaN(n)) {
+            return escHtmlTbl(String(n));
+        }
+        var m = n.toFixed(2);
+        return (
+            '<div class="inline-flex items-baseline justify-end flex-wrap gap-x-0.5 w-full tabular-nums">' +
+            '<span class="font-medium text-primary">' +
+            m +
+            '</span><span class="text-on-surface-variant/60 font-body font-normal text-xs sm:text-sm leading-none">/100</span></div>'
+        );
     }
 
     function escHtmlTbl(s) {
@@ -645,7 +653,7 @@
             var cat = d.category;
             var bg = window.DGWScale.flatCategoryColor(cat);
             var fg = window.DGWScale.contrastTextColor(bg);
-            var sc = typeof d.score === "number" ? formatIndexPointScore(d.score) : escHtmlTbl(String(d.score));
+            var sc = formatIndexPointScoreHtml(d.score);
             parts.push(
                 "<tr class=\"border-b border-outline-variant/15 hover:bg-surface-container-high transition-colors duration-300\">" +
                 "<td class=\"py-5 px-2\">" + escHtmlTbl(name) + "</td>" +
@@ -977,10 +985,15 @@
         const svgEl = svg.node();
 
         tooltipCountry.textContent = "Country: " + name;
-        tooltipScore.textContent =
-            typeof countryData[name].score === "number"
-                ? formatIndexPointScore(countryData[name].score)
-                : String(countryData[name].score);
+        if (typeof countryData[name].score === "number") {
+            var ts = countryData[name].score;
+            tooltipScore.innerHTML =
+                '<span class="tabular-nums text-primary">' +
+                ts.toFixed(2) +
+                '</span><span class="text-on-surface-variant/60 font-body font-normal text-sm sm:text-base ml-0.5">/100</span>';
+        } else {
+            tooltipScore.textContent = String(countryData[name].score);
+        }
 
         const revealCard = () => {
             const gap = 16;
