@@ -535,7 +535,7 @@
 <div class="min-w-0 flex-1 flex flex-col justify-center gap-4 py-0.5">
 <div>
 <p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1.5">Capital</p>
-<p id="profile-capital" class="font-headline text-lg sm:text-xl text-primary tracking-tight leading-snug">
+<p id="profile-capital" class="font-headline text-lg sm:text-xl text-primary tracking-tight leading-snug break-words">
 <span id="profile-capital-name">—</span>
 </p>
 </div>
@@ -602,27 +602,27 @@ Structure and weights follow the index workbook (Part3); the table above lists e
     /* Set reparationsExcluded: true on a country when the Reparations sub-component (Democratic memory) is not used — see the note on indicators.html. */
     const profileMeta = {
         "Uruguay": { wbPop: 3386588, capital: "Montevideo", iso2: "UY", president: "Yamandú Orsi", capitalLon: -56.1645, capitalLat: -34.9011 },
-        "Chile": { wbPop: 19764771, capital: "Santiago", iso2: "CL", president: "José Antonio Kast", capitalLon: -70.6483, capitalLat: -33.4489 },
-        "Brasil": { wbPop: 211998573, capital: "Brasília", iso2: "BR", president: "Luiz Inácio Lula da Silva", capitalLon: -47.8828, capitalLat: -15.7939 },
-        "Argentina": { wbPop: 45696159, capital: "Buenos Aires", iso2: "AR", president: "Javier Milei", capitalLon: -58.3816, capitalLat: -34.6037 },
-        "Colombia": { wbPop: 52886363, capital: "Bogotá", iso2: "CO", president: "Gustavo Petro", capitalLon: -74.0721, capitalLat: 4.7110 },
+        "Chile": { wbPop: 19764771, capital: "Santiago de Chile", iso2: "CL", president: "José Antonio Kast", capitalLon: -70.6483, capitalLat: -33.4489 },
+        "Brasil": { wbPop: 211998573, capital: "Brasília, Distrito Federal", iso2: "BR", president: "Luiz Inácio Lula da Silva", capitalLon: -47.8828, capitalLat: -15.7939 },
+        "Argentina": { wbPop: 45696159, capital: "Ciudad Autónoma de Buenos Aires", iso2: "AR", president: "Javier Milei", capitalLon: -58.3816, capitalLat: -34.6037 },
+        "Colombia": { wbPop: 52886363, capital: "Bogotá, Distrito Capital", iso2: "CO", president: "Gustavo Petro", capitalLon: -74.0721, capitalLat: 4.7110 },
         "Costa Rica": { wbPop: 5129910, capital: "San José", iso2: "CR", president: "Rodrigo Chaves Robles", capitalLon: -84.0907, capitalLat: 9.9281 },
-        "Dominican Republic": { wbPop: 11427557, capital: "Santo Domingo", iso2: "DO", president: "Luis Abinader", capitalLon: -69.9312, capitalLat: 18.4861 },
+        "Dominican Republic": { wbPop: 11427557, capital: "Santo Domingo de Guzmán", iso2: "DO", president: "Luis Abinader", capitalLon: -69.9312, capitalLat: 18.4861 },
         "Panama": { wbPop: 4515577, capital: "Ciudad de Panamá", iso2: "PA", president: "José Raúl Mulino", capitalLon: -79.5197, capitalLat: 8.9943 },
-        "Ecuador": { wbPop: 18135478, capital: "Quito", iso2: "EC", president: "Daniel Noboa", capitalLon: -78.4678, capitalLat: -0.1807 },
-        "Perú": { wbPop: 34217848, capital: "Lima", iso2: "PE", president: "Dina Boluarte", capitalLon: -77.0428, capitalLat: -12.0464 },
-        "Paraguay": { wbPop: 6929153, capital: "Asunción", iso2: "PY", president: "Santiago Peña", capitalLon: -57.5759, capitalLat: -25.2637 },
-        "Guatemala": { wbPop: 18406359, capital: "Ciudad de Guatemala", iso2: "GT", president: "Bernardo Arévalo", capitalLon: -90.5133, capitalLat: 14.6349 },
-        "Bolivia": { wbPop: 12413315, capital: "La Paz (sede de gobierno); Sucre (capital constitucional)", iso2: "BO", president: "Luis Arce", capitalLon: -68.1193, capitalLat: -16.4897 },
+        "Ecuador": { wbPop: 18135478, capital: "San Francisco de Quito", iso2: "EC", president: "Daniel Noboa", capitalLon: -78.4678, capitalLat: -0.1807 },
+        "Perú": { wbPop: 34217848, capital: "Lima, Ciudad de los Reyes", iso2: "PE", president: "Dina Boluarte", capitalLon: -77.0428, capitalLat: -12.0464 },
+        "Paraguay": { wbPop: 6929153, capital: "Nuestra Señora Santa María de la Asunción", iso2: "PY", president: "Santiago Peña", capitalLon: -57.5759, capitalLat: -25.2637 },
+        "Guatemala": { wbPop: 18406359, capital: "Nueva Guatemala de la Asunción", iso2: "GT", president: "Bernardo Arévalo", capitalLon: -90.5133, capitalLat: 14.6349 },
+        "Bolivia": { wbPop: 12413315, capital: "Nuestra Señora de La Paz (sede de gobierno); Sucre (capital constitucional)", iso2: "BO", president: "Luis Arce", capitalLon: -68.1193, capitalLat: -16.4897 },
         "Suriname": { wbPop: 634431, capital: "Paramaribo", iso2: "SR", president: "Chan Santokhi", capitalLon: -55.2038, capitalLat: 5.8520 },
         "Mexico": { wbPop: 130861007, capital: "Ciudad de México", iso2: "MX", president: "Claudia Sheinbaum Pardo", capitalLon: -99.1332, capitalLat: 19.4326 },
-        "Honduras": { wbPop: 10825703, capital: "Tegucigalpa", iso2: "HN", president: "Nasry Asfura", capitalLon: -87.2068, capitalLat: 14.0723 },
+        "Honduras": { wbPop: 10825703, capital: "Tegucigalpa, Distrito Central", iso2: "HN", president: "Nasry Asfura", capitalLon: -87.2068, capitalLat: 14.0723 },
         "Guyana": { wbPop: 831087, capital: "Georgetown", iso2: "GY", president: "Mohamed Irfaan Ali", capitalLon: -58.1551, capitalLat: 6.8013, reparationsExcluded: true },
         "El Salvador": { wbPop: 6338193, capital: "San Salvador", iso2: "SV", president: "Nayib Bukele", capitalLon: -89.2182, capitalLat: 13.6929 },
-        "Cuba": { wbPop: 10979783, capital: "La Habana", iso2: "CU", president: "Miguel Díaz-Canel", capitalLon: -82.3666, capitalLat: 23.1136 },
+        "Cuba": { wbPop: 10979783, capital: "Ciudad de La Habana", iso2: "CU", president: "Miguel Díaz-Canel", capitalLon: -82.3666, capitalLat: 23.1136 },
         "Haiti": { wbPop: 11772557, capital: "Port-au-Prince", iso2: "HT", president: "Alix Didier Fils-Aimé (primer ministro, transición)", capitalLon: -72.3074, capitalLat: 18.5944 },
-        "Nicaragua": { wbPop: 6916140, capital: "Managua", iso2: "NI", president: "Daniel Ortega y Rosario Murillo (copresidencia)", capitalLon: -86.2514, capitalLat: 12.1364 },
-        "Venezuela": { wbPop: 28405543, capital: "Caracas", iso2: "VE", president: "Delcy Rodríguez (presidenta encargada)", capitalLon: -66.9036, capitalLat: 10.4806 }
+        "Nicaragua": { wbPop: 6916140, capital: "Leal Villa de Santiago de Managua", iso2: "NI", president: "Daniel Ortega y Rosario Murillo (copresidencia)", capitalLon: -86.2514, capitalLat: 12.1364 },
+        "Venezuela": { wbPop: 28405543, capital: "Santiago de León de Caracas", iso2: "VE", president: "Delcy Rodríguez (presidenta encargada)", capitalLon: -66.9036, capitalLat: 10.4806 }
     };
 
     /** When true in profileMeta, Reparations (Democratic memory) is not scored — see Indicators page. */
