@@ -1,6 +1,6 @@
 /**
  * Democracy index: regime thresholds + colours.
- * Stages: Non-democratic 0–35; Transitional 36–59; Developed 60–79; Consolidated 80–100.
+ * Categories: Non-democratic regime 0–35; Illiberal democracy 36–59; Developed democracy 60–79; Consolidated democracy 80–100.
  * Palette: Amaranth #D1495B, Honey Bronze #EDAE49, Stormy Teal #00798C,
  * Baltic Blue #30638E, Yale Blue #003D5B — flat category hues + continuous ramp.
  * Keep data/democracy-scale.js aligned.
@@ -12,13 +12,13 @@ function clamp0100(v) {
   return Math.max(0, Math.min(100, Number(v)));
 }
 
-/** Democracy stage labels — 0–35; 36–59; 60–79; 80–100 (see Indicators page). */
+/** Regime category labels — 0–35; 36–59; 60–79; 80–100 (see Indicators page). */
 function categoryFromScore(score) {
   const s = clamp0100(score);
-  if (s >= 80) return "Consolidated stage";
-  if (s >= 60) return "Developed stage";
-  if (s >= 36) return "Transitional stage";
-  return "Non-democratic stage";
+  if (s >= 80) return "Consolidated democracy";
+  if (s >= 60) return "Developed democracy";
+  if (s >= 36) return "Illiberal democracy";
+  return "Non-democratic regime";
 }
 
 function lerp(a, b, t) {
@@ -80,19 +80,22 @@ function linearGradientBackground() {
   return `linear-gradient(to right, ${parts.join(", ")})`;
 }
 
-/** One solid colour per stage (map “category” view, ranking table, badges). */
+/** One solid colour per regime category (map “category” view, ranking table, badges). */
 function flatCategoryColor(category) {
   switch (category) {
-    case "Consolidated stage":
     case "Consolidated democracy":
+    case "Consolidated stage":
       return "rgb(0, 61, 91)";
+    case "Developed democracy":
     case "Developed stage":
     case "Electoral democracy":
       return "rgb(48, 99, 142)";
+    case "Illiberal democracy":
     case "Transitional stage":
     case "Transitional":
     case "Transition":
       return "rgb(237, 174, 73)";
+    case "Non-democratic regime":
     case "Non-democratic stage":
     case "No democracy":
       return "rgb(209, 73, 91)";

@@ -512,13 +512,13 @@
 <div class="mt-2 sm:mt-3.5 flex flex-col gap-3 sm:gap-5 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
 <div class="min-w-0 flex-1 space-y-1.5 sm:space-y-2 lg:max-w-[28rem]">
 <h3 id="map-mode-title" class="map-headline-mobile font-headline text-base sm:text-lg md:text-[1.35rem] text-primary leading-[1.2] tracking-[-0.02em] text-balance">Continuous scores across the 0–100 scale</h3>
-<p id="map-mode-blurb" class="font-body text-[12px] sm:text-[0.9375rem] text-on-surface-variant leading-snug sm:leading-[1.55] text-pretty max-lg:line-clamp-4" aria-live="polite">Exact index values drive a smooth colour ramp so neighbouring scores read subtly different. The full 0–100 scale, stage bands, and colour key are on the <a href="indicators.html" class="text-primary font-medium underline decoration-primary/30 underline-offset-2 hover:decoration-primary">Indicators</a> page.</p>
+<p id="map-mode-blurb" class="font-body text-[12px] sm:text-[0.9375rem] text-on-surface-variant leading-snug sm:leading-[1.55] text-pretty max-lg:line-clamp-4" aria-live="polite">Exact index values drive a smooth colour ramp so neighbouring scores read subtly different. The full 0–100 scale, category bands, and colour key are on the <a href="indicators.html" class="text-primary font-medium underline decoration-primary/30 underline-offset-2 hover:decoration-primary">Indicators</a> page.</p>
 </div>
 <div class="flex flex-col gap-2 shrink-0 w-full sm:w-auto sm:min-w-[17rem] lg:min-w-[18rem] lg:pt-0.5 max-lg:flex-row max-lg:items-center max-lg:justify-between max-lg:gap-3">
 <span class="font-label text-[9px] uppercase tracking-[0.18em] text-on-surface-variant/75 max-lg:sr-only sm:text-right">View</span>
 <div class="map-mode-track flex p-1 rounded-sm bg-surface-container-low/90 border border-outline-variant/25 gap-1 flex-1 min-w-0 max-lg:max-w-[20rem] max-lg:ml-auto" role="group" aria-label="Choose how countries are coloured on the map">
 <button type="button" id="map-mode-score" class="map-mode-btn flex min-h-[40px] sm:min-h-0 items-center justify-center flex-1 px-2.5 sm:px-3 py-2 sm:py-2 text-[10px] sm:text-xs font-label font-medium uppercase tracking-[0.12em] rounded-sm transition-all duration-200 bg-primary text-on-primary shadow-[0_1px_2px_rgba(7,41,12,0.12)]" aria-pressed="true">Exact scores</button>
-<button type="button" id="map-mode-category" class="map-mode-btn flex min-h-[40px] sm:min-h-0 items-center justify-center flex-1 px-2.5 sm:px-3 py-2 sm:py-2 text-[10px] sm:text-xs font-label font-medium uppercase tracking-[0.12em] rounded-sm transition-all duration-200 text-on-background/65 hover:text-primary hover:bg-surface-container-high/70" aria-pressed="false">By stage</button>
+<button type="button" id="map-mode-category" class="map-mode-btn flex min-h-[40px] sm:min-h-0 items-center justify-center flex-1 px-2.5 sm:px-3 py-2 sm:py-2 text-[10px] sm:text-xs font-label font-medium uppercase tracking-[0.12em] rounded-sm transition-all duration-200 text-on-background/65 hover:text-primary hover:bg-surface-container-high/70" aria-pressed="false">By category</button>
 </div>
 </div>
 </div>
@@ -566,7 +566,7 @@
 <tr class="border-b border-outline-variant/15">
 <th class="font-label text-xs uppercase tracking-widest text-on-surface-variant font-normal py-4 px-2">Country</th>
 <th class="font-label text-xs uppercase tracking-widest text-on-surface-variant font-normal py-4 px-2 text-right">Score</th>
-<th class="font-label text-xs uppercase tracking-widest text-on-surface-variant font-normal py-4 px-2 pl-6">Stage</th>
+<th class="font-label text-xs uppercase tracking-widest text-on-surface-variant font-normal py-4 px-2 pl-6">Category</th>
 </tr>
 </thead>
 <tbody id="ranking-table-body" class="font-body text-sm sm:text-base md:text-lg text-on-surface">
@@ -730,7 +730,7 @@
     let focusProgress = 0;
     let revealed = false;
     let lastRevealed = false;
-    /** "score" = gradient by exact score; "category" = flat four democracy stage colours. */
+    /** "score" = gradient by exact score; "category" = flat four regime category colours. */
     let mapColorMode = "score";
     let tableLinkedCountry = null;
     let graticule = d3.geoGraticule().step([20, 20]);
@@ -841,14 +841,14 @@
         score: {
             title: "Continuous scores across the 0–100 scale",
             blurbHtml:
-                "Exact index values drive a smooth colour ramp so neighbouring scores read subtly different. The full 0–100 scale, stage bands, and colour key are on the <a href=\"indicators.html\" class=\"" +
+                "Exact index values drive a smooth colour ramp so neighbouring scores read subtly different. The full 0–100 scale, category bands, and colour key are on the <a href=\"indicators.html\" class=\"" +
                 linkCls +
                 "\">Indicators</a> page."
         },
         category: {
-            title: "Four democracy stages, one solid colour each",
+            title: "Four regime categories, one solid colour each",
             blurbHtml:
-                "Each country uses one flat colour for its democracy stage. Stages, score ranges, and the legend are on the <a href=\"indicators.html\" class=\"" +
+                "Each country uses one flat colour for its regime category. Categories, score ranges, and the legend are on the <a href=\"indicators.html\" class=\"" +
                 linkCls +
                 "\">Indicators</a> page."
         }
@@ -1142,7 +1142,7 @@
                 if (mapColorMode === "category") {
                     mapEl.setAttribute(
                         "aria-label",
-                        "Globe centred on Latin America; index countries are coloured by democracy stage (four flat colours)."
+                        "Globe centred on Latin America; index countries are coloured by regime category (four flat colours)."
                     );
                 } else {
                     mapEl.setAttribute(

@@ -26,133 +26,133 @@
   "countryData": {
     "Uruguay": {
       "score": 84.98267,
-      "category": "Consolidated stage",
+      "category": "Consolidated democracy",
       "color": "rgb(36, 83, 121)",
       "regionalRank": 1
     },
     "Chile": {
       "score": 82.162885,
-      "category": "Consolidated stage",
+      "category": "Consolidated democracy",
       "color": "rgb(43, 92, 133)",
       "regionalRank": 2
     },
     "Costa Rica": {
       "score": 77.46975,
-      "category": "Developed stage",
+      "category": "Developed democracy",
       "color": "rgb(47, 100, 143)",
       "regionalRank": 3
     },
     "Brasil": {
       "score": 71.592645,
-      "category": "Developed stage",
+      "category": "Developed democracy",
       "color": "rgb(32, 122, 158)",
       "regionalRank": 4
     },
     "Colombia": {
       "score": 69.26541499999999,
-      "category": "Developed stage",
+      "category": "Developed democracy",
       "color": "rgb(23, 135, 166)",
       "regionalRank": 5
     },
     "Argentina": {
       "score": 69.128715,
-      "category": "Developed stage",
+      "category": "Developed democracy",
       "color": "rgb(23, 136, 166)",
       "regionalRank": 6
     },
     "Dominican Republic": {
       "score": 65.24162,
-      "category": "Developed stage",
+      "category": "Developed democracy",
       "color": "rgb(9, 155, 179)",
       "regionalRank": 7
     },
     "Panama": {
       "score": 63.50356,
-      "category": "Developed stage",
+      "category": "Developed democracy",
       "color": "rgb(4, 162, 184)",
       "regionalRank": 8
     },
     "Ecuador": {
       "score": 59.262024999999994,
-      "category": "Transitional stage",
+      "category": "Illiberal democracy",
       "color": "rgb(186, 110, 30)",
       "regionalRank": 9
     },
     "Perú": {
       "score": 58.669455000000006,
-      "category": "Transitional stage",
+      "category": "Illiberal democracy",
       "color": "rgb(187, 112, 32)",
       "regionalRank": 10
     },
     "Paraguay": {
       "score": 58.379214999999995,
-      "category": "Transitional stage",
+      "category": "Illiberal democracy",
       "color": "rgb(188, 114, 35)",
       "regionalRank": 11
     },
     "Guatemala": {
       "score": 56.623464999999996,
-      "category": "Transitional stage",
+      "category": "Illiberal democracy",
       "color": "rgb(193, 123, 47)",
       "regionalRank": 12
     },
     "Bolivia": {
       "score": 54.822314999999996,
-      "category": "Transitional stage",
+      "category": "Illiberal democracy",
       "color": "rgb(199, 134, 61)",
       "regionalRank": 13
     },
     "Suriname": {
       "score": 54.518495,
-      "category": "Transitional stage",
+      "category": "Illiberal democracy",
       "color": "rgb(199, 135, 63)",
       "regionalRank": 14
     },
     "Mexico": {
       "score": 53.539415,
-      "category": "Transitional stage",
+      "category": "Illiberal democracy",
       "color": "rgb(202, 141, 70)",
       "regionalRank": 15
     },
     "Honduras": {
       "score": 52.889815,
-      "category": "Transitional stage",
+      "category": "Illiberal democracy",
       "color": "rgb(204, 145, 75)",
       "regionalRank": 16
     },
     "Guyana": {
       "score": 49.13162,
-      "category": "Transitional stage",
+      "category": "Illiberal democracy",
       "color": "rgb(216, 166, 102)",
       "regionalRank": 17
     },
     "El Salvador": {
       "score": 41.74542,
-      "category": "Transitional stage",
+      "category": "Illiberal democracy",
       "color": "rgb(238, 208, 156)",
       "regionalRank": 18
     },
     "Cuba": {
       "score": 32.517655,
-      "category": "Non-democratic stage",
+      "category": "Non-democratic regime",
       "color": "rgb(206, 77, 98)",
       "regionalRank": 19
     },
     "Haiti": {
       "score": 31.52892,
-      "category": "Non-democratic stage",
+      "category": "Non-democratic regime",
       "color": "rgb(207, 81, 101)",
       "regionalRank": 20
     },
     "Nicaragua": {
       "score": 23.24965,
-      "category": "Non-democratic stage",
+      "category": "Non-democratic regime",
       "color": "rgb(220, 117, 133)",
       "regionalRank": 21
     },
     "Venezuela": {
       "score": 21.042595,
-      "category": "Non-democratic stage",
+      "category": "Non-democratic regime",
       "color": "rgb(223, 127, 141)",
       "regionalRank": 22
     }

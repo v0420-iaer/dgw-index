@@ -1,5 +1,5 @@
 /**
- * Mirrors scripts/democracy-scale.cjs — continuous scale + flat stage colours (shared five-colour palette).
+ * Mirrors scripts/democracy-scale.cjs — continuous scale + flat regime category colours (shared five-colour palette).
  */
 (function (global) {
   "use strict";
@@ -11,10 +11,10 @@
 
   function categoryFromScore(score) {
     const s = clamp0100(score);
-    if (s >= 80) return "Consolidated stage";
-    if (s >= 60) return "Developed stage";
-    if (s >= 36) return "Transitional stage";
-    return "Non-democratic stage";
+    if (s >= 80) return "Consolidated democracy";
+    if (s >= 60) return "Developed democracy";
+    if (s >= 36) return "Illiberal democracy";
+    return "Non-democratic regime";
   }
 
   function lerp(a, b, t) {
@@ -76,16 +76,19 @@
 
   function flatCategoryColor(category) {
     switch (category) {
-      case "Consolidated stage":
       case "Consolidated democracy":
+      case "Consolidated stage":
         return "rgb(0, 61, 91)";
+      case "Developed democracy":
       case "Developed stage":
       case "Electoral democracy":
         return "rgb(48, 99, 142)";
+      case "Illiberal democracy":
       case "Transitional stage":
       case "Transitional":
       case "Transition":
         return "rgb(237, 174, 73)";
+      case "Non-democratic regime":
       case "Non-democratic stage":
       case "No democracy":
         return "rgb(209, 73, 91)";
