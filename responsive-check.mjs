@@ -16,6 +16,7 @@ const viewports = [
 const paths = [
   "index.html",
   "country-profiles.html",
+  "comparison.html",
   "indicators.html",
   "references.html",
 ];

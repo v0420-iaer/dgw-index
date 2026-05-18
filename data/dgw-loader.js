@@ -14,6 +14,7 @@
         category: v.category,
         color: v.color,
         regionalRank: v.regionalRank,
+        region: v.region,
       };
     }
     return countryDataForWeb;
@@ -26,6 +27,7 @@
   function assignBundleFromFullJson(full) {
     window.__DGW__ = {
       countryNamesSorted: full.countryNamesSorted || [],
+      regions: full.regions || {},
       countryData: stripCountryDataForWeb(full),
       workbookDimensionScores: full.workbookDimensionScores || {},
       workbookIndicatorScores0100: full.workbookIndicatorScores0100 || {},

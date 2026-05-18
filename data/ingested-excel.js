@@ -4,158 +4,352 @@ window.__DGW__ = {
     "Uruguay",
     "Chile",
     "Costa Rica",
+    "Ghana",
     "Brasil",
     "Colombia",
     "Argentina",
+    "The Gambia",
     "Dominican Republic",
     "Panama",
+    "Senegal",
     "Ecuador",
     "Perú",
+    "Liberia",
     "Paraguay",
     "Guatemala",
     "Bolivia",
     "Suriname",
+    "Sierra Leone",
+    "Cape Verde",
     "Mexico",
+    "Benin",
     "Honduras",
     "Guyana",
+    "Nigeria",
+    "Mali",
+    "Côte d'Ivoire",
+    "Burkina Faso",
+    "Niger",
     "El Salvador",
+    "Togo",
+    "Mauritania",
+    "Guinea-Bissau",
     "Cuba",
     "Haiti",
+    "Guinea",
     "Nicaragua",
     "Venezuela"
   ],
+  "regions": {
+    "Latin America": [
+      "Uruguay",
+      "Chile",
+      "Costa Rica",
+      "Brasil",
+      "Colombia",
+      "Argentina",
+      "Dominican Republic",
+      "Panama",
+      "Ecuador",
+      "Perú",
+      "Paraguay",
+      "Guatemala",
+      "Bolivia",
+      "Suriname",
+      "Mexico",
+      "Honduras",
+      "Guyana",
+      "El Salvador",
+      "Cuba",
+      "Haiti",
+      "Nicaragua",
+      "Venezuela"
+    ],
+    "West Africa": [
+      "Ghana",
+      "The Gambia",
+      "Senegal",
+      "Liberia",
+      "Sierra Leone",
+      "Cape Verde",
+      "Benin",
+      "Nigeria",
+      "Mali",
+      "Côte d'Ivoire",
+      "Burkina Faso",
+      "Niger",
+      "Togo",
+      "Mauritania",
+      "Guinea-Bissau",
+      "Guinea"
+    ]
+  },
   "countryData": {
     "Uruguay": {
       "score": 84.98267,
       "category": "Consolidated democracy",
       "color": "rgb(36, 83, 121)",
-      "regionalRank": 1
+      "regionalRank": 1,
+      "region": "Latin America"
     },
     "Chile": {
       "score": 82.162885,
       "category": "Consolidated democracy",
       "color": "rgb(43, 92, 133)",
-      "regionalRank": 2
+      "regionalRank": 2,
+      "region": "Latin America"
     },
     "Costa Rica": {
       "score": 77.46975,
       "category": "Developed democracy",
       "color": "rgb(47, 100, 143)",
-      "regionalRank": 3
+      "regionalRank": 3,
+      "region": "Latin America"
+    },
+    "Ghana": {
+      "score": 74.89561,
+      "category": "Developed democracy",
+      "color": "rgb(42, 107, 148)",
+      "regionalRank": 1,
+      "region": "West Africa"
     },
     "Brasil": {
       "score": 71.592645,
       "category": "Developed democracy",
       "color": "rgb(32, 122, 158)",
-      "regionalRank": 4
+      "regionalRank": 4,
+      "region": "Latin America"
     },
     "Colombia": {
       "score": 69.26541499999999,
       "category": "Developed democracy",
       "color": "rgb(23, 135, 166)",
-      "regionalRank": 5
+      "regionalRank": 5,
+      "region": "Latin America"
     },
     "Argentina": {
       "score": 69.128715,
       "category": "Developed democracy",
       "color": "rgb(23, 136, 166)",
-      "regionalRank": 6
+      "regionalRank": 6,
+      "region": "Latin America"
+    },
+    "The Gambia": {
+      "score": 67.55266,
+      "category": "Developed democracy",
+      "color": "rgb(17, 144, 172)",
+      "regionalRank": 2,
+      "region": "West Africa"
     },
     "Dominican Republic": {
       "score": 65.24162,
       "category": "Developed democracy",
       "color": "rgb(9, 155, 179)",
-      "regionalRank": 7
+      "regionalRank": 7,
+      "region": "Latin America"
     },
     "Panama": {
       "score": 63.50356,
       "category": "Developed democracy",
       "color": "rgb(4, 162, 184)",
-      "regionalRank": 8
+      "regionalRank": 8,
+      "region": "Latin America"
+    },
+    "Senegal": {
+      "score": 60.779059999999994,
+      "category": "Developed democracy",
+      "color": "rgb(0, 168, 188)",
+      "regionalRank": 3,
+      "region": "West Africa"
     },
     "Ecuador": {
       "score": 59.262024999999994,
       "category": "Illiberal democracy",
       "color": "rgb(186, 110, 30)",
-      "regionalRank": 9
+      "regionalRank": 9,
+      "region": "Latin America"
     },
     "Perú": {
       "score": 58.669455000000006,
       "category": "Illiberal democracy",
       "color": "rgb(187, 112, 32)",
-      "regionalRank": 10
+      "regionalRank": 10,
+      "region": "Latin America"
+    },
+    "Liberia": {
+      "score": 58.40324999999999,
+      "category": "Illiberal democracy",
+      "color": "rgb(188, 113, 34)",
+      "regionalRank": 4,
+      "region": "West Africa"
     },
     "Paraguay": {
       "score": 58.379214999999995,
       "category": "Illiberal democracy",
       "color": "rgb(188, 114, 35)",
-      "regionalRank": 11
+      "regionalRank": 11,
+      "region": "Latin America"
     },
     "Guatemala": {
       "score": 56.623464999999996,
       "category": "Illiberal democracy",
       "color": "rgb(193, 123, 47)",
-      "regionalRank": 12
+      "regionalRank": 12,
+      "region": "Latin America"
     },
     "Bolivia": {
       "score": 54.822314999999996,
       "category": "Illiberal democracy",
       "color": "rgb(199, 134, 61)",
-      "regionalRank": 13
+      "regionalRank": 13,
+      "region": "Latin America"
     },
     "Suriname": {
       "score": 54.518495,
       "category": "Illiberal democracy",
       "color": "rgb(199, 135, 63)",
-      "regionalRank": 14
+      "regionalRank": 14,
+      "region": "Latin America"
+    },
+    "Sierra Leone": {
+      "score": 53.812035,
+      "category": "Illiberal democracy",
+      "color": "rgb(202, 139, 68)",
+      "regionalRank": 5,
+      "region": "West Africa"
+    },
+    "Cape Verde": {
+      "score": 53.565525,
+      "category": "Illiberal democracy",
+      "color": "rgb(202, 141, 70)",
+      "regionalRank": 6,
+      "region": "West Africa"
     },
     "Mexico": {
       "score": 53.539415,
       "category": "Illiberal democracy",
       "color": "rgb(202, 141, 70)",
-      "regionalRank": 15
+      "regionalRank": 15,
+      "region": "Latin America"
+    },
+    "Benin": {
+      "score": 53.016845,
+      "category": "Illiberal democracy",
+      "color": "rgb(204, 144, 74)",
+      "regionalRank": 7,
+      "region": "West Africa"
     },
     "Honduras": {
       "score": 52.889815,
       "category": "Illiberal democracy",
       "color": "rgb(204, 145, 75)",
-      "regionalRank": 16
+      "regionalRank": 16,
+      "region": "Latin America"
     },
     "Guyana": {
       "score": 49.13162,
       "category": "Illiberal democracy",
       "color": "rgb(216, 166, 102)",
-      "regionalRank": 17
+      "regionalRank": 17,
+      "region": "Latin America"
+    },
+    "Nigeria": {
+      "score": 46.83861,
+      "category": "Illiberal democracy",
+      "color": "rgb(222, 179, 119)",
+      "regionalRank": 8,
+      "region": "West Africa"
+    },
+    "Mali": {
+      "score": 46.6508,
+      "category": "Illiberal democracy",
+      "color": "rgb(223, 180, 120)",
+      "regionalRank": 9,
+      "region": "West Africa"
+    },
+    "Côte d'Ivoire": {
+      "score": 46.22741,
+      "category": "Illiberal democracy",
+      "color": "rgb(224, 182, 123)",
+      "regionalRank": 10,
+      "region": "West Africa"
+    },
+    "Burkina Faso": {
+      "score": 44.59861,
+      "category": "Illiberal democracy",
+      "color": "rgb(229, 191, 135)",
+      "regionalRank": 11,
+      "region": "West Africa"
+    },
+    "Niger": {
+      "score": 43.560379999999995,
+      "category": "Illiberal democracy",
+      "color": "rgb(232, 197, 143)",
+      "regionalRank": 12,
+      "region": "West Africa"
     },
     "El Salvador": {
       "score": 41.74542,
       "category": "Illiberal democracy",
       "color": "rgb(238, 208, 156)",
-      "regionalRank": 18
+      "regionalRank": 18,
+      "region": "Latin America"
+    },
+    "Togo": {
+      "score": 40.560295,
+      "category": "Illiberal democracy",
+      "color": "rgb(241, 214, 165)",
+      "regionalRank": 13,
+      "region": "West Africa"
+    },
+    "Mauritania": {
+      "score": 36.84525,
+      "category": "Illiberal democracy",
+      "color": "rgb(252, 235, 192)",
+      "regionalRank": 14,
+      "region": "West Africa"
+    },
+    "Guinea-Bissau": {
+      "score": 34.17334,
+      "category": "Non-democratic regime",
+      "color": "rgb(203, 70, 91)",
+      "regionalRank": 15,
+      "region": "West Africa"
     },
     "Cuba": {
       "score": 32.517655,
       "category": "Non-democratic regime",
       "color": "rgb(206, 77, 98)",
-      "regionalRank": 19
+      "regionalRank": 19,
+      "region": "Latin America"
     },
     "Haiti": {
       "score": 31.52892,
       "category": "Non-democratic regime",
       "color": "rgb(207, 81, 101)",
-      "regionalRank": 20
+      "regionalRank": 20,
+      "region": "Latin America"
+    },
+    "Guinea": {
+      "score": 29.971745,
+      "category": "Non-democratic regime",
+      "color": "rgb(210, 88, 107)",
+      "regionalRank": 16,
+      "region": "West Africa"
     },
     "Nicaragua": {
       "score": 23.24965,
       "category": "Non-democratic regime",
       "color": "rgb(220, 117, 133)",
-      "regionalRank": 21
+      "regionalRank": 21,
+      "region": "Latin America"
     },
     "Venezuela": {
       "score": 21.042595,
       "category": "Non-democratic regime",
       "color": "rgb(223, 127, 141)",
-      "regionalRank": 22
+      "regionalRank": 22,
+      "region": "Latin America"
     }
   },
   "workbookDimensionScores": {
@@ -180,6 +374,13 @@ window.__DGW__ = {
       96.713125,
       1.28
     ],
+    "Ghana": [
+      89.6537,
+      62.470000000000006,
+      73.22,
+      81.3175,
+      45.98
+    ],
     "Brasil": [
       71.5784,
       61.49,
@@ -201,6 +402,13 @@ window.__DGW__ = {
       92.229375,
       76
     ],
+    "The Gambia": [
+      66.25720000000001,
+      53.87375,
+      68.82000000000001,
+      82.45375,
+      66.46
+    ],
     "Dominican Republic": [
       62.104150000000004,
       59.221250000000005,
@@ -215,6 +423,13 @@ window.__DGW__ = {
       93.06,
       34.96
     ],
+    "Senegal": [
+      59.713950000000004,
+      57.5775,
+      77.64999999999999,
+      77.41687499999999,
+      3.36
+    ],
     "Ecuador": [
       51.5305,
       56.73125,
@@ -228,6 +443,13 @@ window.__DGW__ = {
       39.269999999999996,
       87.38375,
       55.04
+    ],
+    "Liberia": [
+      54.0825,
+      45.16,
+      65.13,
+      78.32249999999999,
+      44.56
     ],
     "Paraguay": [
       53.36405,
@@ -257,12 +479,33 @@ window.__DGW__ = {
       93.705625,
       1.92
     ],
+    "Sierra Leone": [
+      53.094699999999996,
+      49.855,
+      62.03999999999999,
+      50.533125,
+      53.98
+    ],
+    "Cape Verde": [
+      55.671749999999996,
+      55.87,
+      33.629999999999995,
+      94.66,
+      0.32
+    ],
     "Mexico": [
       43.5993,
       59.32625,
       48.59,
       69.38187500000001,
       50
+    ],
+    "Benin": [
+      58.993649999999995,
+      55.989999999999995,
+      47.27,
+      71.97375000000001,
+      2.7199999999999998
     ],
     "Honduras": [
       49.567299999999996,
@@ -278,12 +521,68 @@ window.__DGW__ = {
       74.739375,
       10
     ],
+    "Nigeria": [
+      48.5387,
+      44.2675,
+      41.85,
+      55.86750000000001,
+      38.800000000000004
+    ],
+    "Mali": [
+      39.481,
+      45.9275,
+      39.44,
+      61.595,
+      54.14
+    ],
+    "Côte d'Ivoire": [
+      44.2797,
+      48.91875,
+      43.04,
+      50.24875,
+      45.019999999999996
+    ],
+    "Burkina Faso": [
+      36.89245,
+      48.809999999999995,
+      25.22,
+      70.704375,
+      45.839999999999996
+    ],
+    "Niger": [
+      46.560849999999995,
+      43.806250000000006,
+      46.83,
+      56.604375,
+      1.44
+    ],
     "El Salvador": [
       26.3139,
       49.830000000000005,
       30.18,
       62.04625,
       54.400000000000006
+    ],
+    "Togo": [
+      31.578899999999997,
+      50.17125,
+      47.27,
+      57.191875,
+      1.6
+    ],
+    "Mauritania": [
+      31.64625,
+      44.93625,
+      35.58,
+      54.440625,
+      3.5999999999999996
+    ],
+    "Guinea-Bissau": [
+      36.58905,
+      43.51875,
+      22.52,
+      49.144375000000004,
+      1.6
     ],
     "Cuba": [
       19.69885,
@@ -298,6 +597,13 @@ window.__DGW__ = {
       38.51,
       13.364999999999998,
       35.120000000000005
+    ],
+    "Guinea": [
+      28.612900000000003,
+      39.808749999999996,
+      24.59,
+      41.500625,
+      2.08
     ],
     "Nicaragua": [
       12.49175,
@@ -429,6 +735,44 @@ window.__DGW__ = {
       "amnesty_law": 0,
       "domestic_trials": 8
     },
+    "Ghana": {
+      "equal_protection_index": 79,
+      "rule_of_law_index": 56.99999999999999,
+      "civil_liberties": 5.88,
+      "access_to_justice": 73,
+      "division_of_power_index": 80,
+      "high_court_independence": 75,
+      "control_of_corruption": 43.94,
+      "corruption_perception_index": 42,
+      "diagonal_accountability_index": 89,
+      "open_government_index": 51,
+      "government_censorship_effort": 79.25,
+      "social_safety_nets": 50,
+      "educational_equality": 30.25,
+      "health_equality": 49.5,
+      "access_public_services_social_group": 73.75,
+      "hdi": 62.8,
+      "infant_mortality_rate": 72,
+      "freedom_academic_cultural_expression": 93.75,
+      "gini_coefficient": 56.49999999999999,
+      "power_distributed_socioeconomic": 55.00000000000001,
+      "poverty_headcount_ratio": 76.6,
+      "deliberative_component_index": 82,
+      "reasoned_justification": 76,
+      "steering_capacity": 60,
+      "political_culture": 80,
+      "clean_elections_index": 71,
+      "election_free_and_fair": 79.5,
+      "opposition_parties_autonomy": 92,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 63.74999999999999,
+      "election_losers_accept_results": 92,
+      "election_government_intimidation": 86,
+      "truth_commission": 100,
+      "reparatory_policies": 33,
+      "amnesty_law": 0,
+      "domestic_trials": 38
+    },
     "Brasil": {
       "equal_protection_index": 62,
       "rule_of_law_index": 86,
@@ -542,6 +886,44 @@ window.__DGW__ = {
       "amnesty_law": 0,
       "domestic_trials": 100
     },
+    "The Gambia": {
+      "equal_protection_index": 77,
+      "rule_of_law_index": 80,
+      "civil_liberties": 41.199999999999996,
+      "access_to_justice": 87,
+      "division_of_power_index": 70,
+      "high_court_independence": 86.25,
+      "control_of_corruption": 41.089999999999996,
+      "corruption_perception_index": 38,
+      "diagonal_accountability_index": 87,
+      "open_government_index": 39,
+      "government_censorship_effort": 77,
+      "social_safety_nets": 40,
+      "educational_equality": 48.75,
+      "health_equality": 42.75,
+      "access_public_services_social_group": 47.25,
+      "hdi": 52.400000000000006,
+      "infant_mortality_rate": 67,
+      "freedom_academic_cultural_expression": 78.75,
+      "gini_coefficient": 61.199999999999996,
+      "power_distributed_socioeconomic": 54,
+      "poverty_headcount_ratio": 46.6,
+      "deliberative_component_index": 74,
+      "reasoned_justification": 69.66666667,
+      "steering_capacity": 63.333333329999995,
+      "political_culture": 70,
+      "clean_elections_index": 78,
+      "election_free_and_fair": 96.5,
+      "opposition_parties_autonomy": 73.5,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 72.25,
+      "election_losers_accept_results": 69,
+      "election_government_intimidation": 86,
+      "truth_commission": 100,
+      "reparatory_policies": 33,
+      "amnesty_law": 100,
+      "domestic_trials": 16
+    },
     "Dominican Republic": {
       "equal_protection_index": 46,
       "rule_of_law_index": 56.00000000000001,
@@ -618,6 +1000,44 @@ window.__DGW__ = {
       "amnesty_law": 0,
       "domestic_trials": 31
     },
+    "Senegal": {
+      "equal_protection_index": 70,
+      "rule_of_law_index": 69,
+      "civil_liberties": 55.900000000000006,
+      "access_to_justice": 66,
+      "division_of_power_index": 60,
+      "high_court_independence": 46.25,
+      "control_of_corruption": 50.13999999999999,
+      "corruption_perception_index": 45,
+      "diagonal_accountability_index": 86,
+      "open_government_index": 45,
+      "government_censorship_effort": 56.25,
+      "social_safety_nets": 40,
+      "educational_equality": 45,
+      "health_equality": 52,
+      "access_public_services_social_group": 36.5,
+      "hdi": 53,
+      "infant_mortality_rate": 71,
+      "freedom_academic_cultural_expression": 93.25,
+      "gini_coefficient": 63.800000000000004,
+      "power_distributed_socioeconomic": 66.25,
+      "poverty_headcount_ratio": 62.5,
+      "deliberative_component_index": 89,
+      "reasoned_justification": 65.66666667,
+      "steering_capacity": 66.66666667,
+      "political_culture": 90,
+      "clean_elections_index": 70,
+      "election_free_and_fair": 82.25,
+      "opposition_parties_autonomy": 72,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 61.25000000000001,
+      "election_losers_accept_results": 90,
+      "election_government_intimidation": 75,
+      "truth_commission": 0,
+      "reparatory_policies": 0,
+      "amnesty_law": 0,
+      "domestic_trials": 21
+    },
     "Ecuador": {
       "equal_protection_index": 22,
       "rule_of_law_index": 37,
@@ -693,6 +1113,44 @@ window.__DGW__ = {
       "reparatory_policies": 33.333333329999995,
       "amnesty_law": 0,
       "domestic_trials": 94
+    },
+    "Liberia": {
+      "equal_protection_index": 69,
+      "rule_of_law_index": 36,
+      "civil_liberties": 55.900000000000006,
+      "access_to_justice": 73,
+      "division_of_power_index": 60,
+      "high_court_independence": 81.25,
+      "control_of_corruption": 26.650000000000002,
+      "corruption_perception_index": 27,
+      "diagonal_accountability_index": 87,
+      "open_government_index": 46,
+      "government_censorship_effort": 59.75,
+      "social_safety_nets": 30,
+      "educational_equality": 34.25,
+      "health_equality": 21.75,
+      "access_public_services_social_group": 15.25,
+      "hdi": 51,
+      "infant_mortality_rate": 37,
+      "freedom_academic_cultural_expression": 82.25,
+      "gini_coefficient": 64.7,
+      "power_distributed_socioeconomic": 65.25,
+      "poverty_headcount_ratio": 49.1,
+      "deliberative_component_index": 81,
+      "reasoned_justification": 75.33333333,
+      "steering_capacity": 43.33333333,
+      "political_culture": 70,
+      "clean_elections_index": 59,
+      "election_free_and_fair": 80.5,
+      "opposition_parties_autonomy": 87.5,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 65.75,
+      "election_losers_accept_results": 99.25,
+      "election_government_intimidation": 76.25,
+      "truth_commission": 100,
+      "reparatory_policies": 0,
+      "amnesty_law": 50,
+      "domestic_trials": 16
     },
     "Paraguay": {
       "equal_protection_index": 27,
@@ -841,6 +1299,77 @@ window.__DGW__ = {
       "amnesty_law": 0,
       "domestic_trials": 12
     },
+    "Sierra Leone": {
+      "equal_protection_index": 71,
+      "rule_of_law_index": 54,
+      "civil_liberties": 50,
+      "access_to_justice": 82,
+      "division_of_power_index": 40,
+      "high_court_independence": 43.5,
+      "control_of_corruption": 33.64,
+      "corruption_perception_index": 33,
+      "diagonal_accountability_index": 89,
+      "open_government_index": 38,
+      "government_censorship_effort": 85,
+      "social_safety_nets": 30,
+      "educational_equality": 42.5,
+      "health_equality": 39.25,
+      "access_public_services_social_group": 49.5,
+      "hdi": 46.7,
+      "infant_mortality_rate": 45,
+      "freedom_academic_cultural_expression": 80.25,
+      "gini_coefficient": 64.3,
+      "power_distributed_socioeconomic": 63.24999999999999,
+      "poverty_headcount_ratio": 43.2,
+      "deliberative_component_index": 90,
+      "reasoned_justification": 63,
+      "steering_capacity": 40,
+      "political_culture": 60,
+      "clean_elections_index": 32,
+      "election_free_and_fair": 46.75,
+      "opposition_parties_autonomy": 90,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 30.75,
+      "election_losers_accept_results": 42.5,
+      "election_government_intimidation": 54.50000000000001,
+      "truth_commission": 100,
+      "reparatory_policies": 33,
+      "amnesty_law": 50,
+      "domestic_trials": 13
+    },
+    "Cape Verde": {
+      "equal_protection_index": 82,
+      "rule_of_law_index": 80,
+      "civil_liberties": 85.3,
+      "access_to_justice": 75,
+      "high_court_independence": 70.25,
+      "control_of_corruption": 66.9,
+      "corruption_perception_index": 62,
+      "diagonal_accountability_index": 87,
+      "government_censorship_effort": 77.25,
+      "educational_equality": 47.75,
+      "health_equality": 51.74999999999999,
+      "access_public_services_social_group": 24.75,
+      "hdi": 66.8,
+      "infant_mortality_rate": 89,
+      "freedom_academic_cultural_expression": 82,
+      "gini_coefficient": 57.599999999999994,
+      "power_distributed_socioeconomic": 59.25,
+      "poverty_headcount_ratio": 75.2,
+      "deliberative_component_index": 69,
+      "reasoned_justification": 83.33333333,
+      "clean_elections_index": 84,
+      "election_free_and_fair": 94.25,
+      "opposition_parties_autonomy": 96.25,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 97.25,
+      "election_losers_accept_results": 98.5,
+      "election_government_intimidation": 98.5,
+      "truth_commission": 0,
+      "reparatory_policies": 0,
+      "amnesty_law": 0,
+      "domestic_trials": 2
+    },
     "Mexico": {
       "equal_protection_index": 36,
       "rule_of_law_index": 35,
@@ -878,6 +1407,43 @@ window.__DGW__ = {
       "reparatory_policies": 33.333333329999995,
       "amnesty_law": 100,
       "domestic_trials": 100
+    },
+    "Benin": {
+      "equal_protection_index": 76,
+      "rule_of_law_index": 77,
+      "civil_liberties": 44.1,
+      "access_to_justice": 82,
+      "division_of_power_index": 60,
+      "high_court_independence": 33.75,
+      "control_of_corruption": 42.980000000000004,
+      "corruption_perception_index": 45,
+      "diagonal_accountability_index": 76,
+      "open_government_index": 38,
+      "government_censorship_effort": 68.75,
+      "social_safety_nets": 40,
+      "educational_equality": 88.5,
+      "health_equality": 50,
+      "access_public_services_social_group": 37,
+      "hdi": 51.5,
+      "infant_mortality_rate": 55.00000000000001,
+      "freedom_academic_cultural_expression": 77,
+      "gini_coefficient": 65.60000000000001,
+      "power_distributed_socioeconomic": 56.49999999999999,
+      "poverty_headcount_ratio": 63.800000000000004,
+      "deliberative_component_index": 53,
+      "reasoned_justification": 67,
+      "steering_capacity": 63.333333329999995,
+      "clean_elections_index": 64,
+      "election_free_and_fair": 47.75,
+      "opposition_parties_autonomy": 65.75,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 69.25,
+      "election_losers_accept_results": 93.25,
+      "election_government_intimidation": 82.5,
+      "truth_commission": 0,
+      "reparatory_policies": 0,
+      "amnesty_law": 0,
+      "domestic_trials": 17
     },
     "Honduras": {
       "equal_protection_index": 49,
@@ -950,6 +1516,191 @@ window.__DGW__ = {
       "amnesty_law": 0,
       "domestic_trials": 25
     },
+    "Nigeria": {
+      "equal_protection_index": 74,
+      "rule_of_law_index": 28.999999999999996,
+      "civil_liberties": 44.1,
+      "access_to_justice": 87,
+      "division_of_power_index": 50,
+      "high_court_independence": 41.25,
+      "control_of_corruption": 25.290000000000003,
+      "corruption_perception_index": 26,
+      "diagonal_accountability_index": 86,
+      "open_government_index": 41,
+      "government_censorship_effort": 68.25,
+      "social_safety_nets": 30,
+      "educational_equality": 30.5,
+      "health_equality": 33,
+      "access_public_services_social_group": 50,
+      "hdi": 56.00000000000001,
+      "infant_mortality_rate": 30,
+      "freedom_academic_cultural_expression": 77,
+      "gini_coefficient": 66.10000000000001,
+      "power_distributed_socioeconomic": 28.749999999999996,
+      "poverty_headcount_ratio": 43.8,
+      "deliberative_component_index": 63,
+      "reasoned_justification": 64.66666667,
+      "steering_capacity": 40,
+      "clean_elections_index": 35,
+      "election_free_and_fair": 52.75,
+      "opposition_parties_autonomy": 85.25,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 55.00000000000001,
+      "election_losers_accept_results": 41.5,
+      "election_government_intimidation": 59.25,
+      "truth_commission": 100,
+      "reparatory_policies": 0,
+      "amnesty_law": 0,
+      "domestic_trials": 55.00000000000001
+    },
+    "Mali": {
+      "equal_protection_index": 82,
+      "rule_of_law_index": 42,
+      "civil_liberties": 35.3,
+      "access_to_justice": 48,
+      "division_of_power_index": 10,
+      "high_court_independence": 78.5,
+      "control_of_corruption": 28.000000000000004,
+      "corruption_perception_index": 27,
+      "diagonal_accountability_index": 56.00000000000001,
+      "open_government_index": 43,
+      "government_censorship_effort": 37.75,
+      "social_safety_nets": 40,
+      "educational_equality": 17.25,
+      "health_equality": 13,
+      "access_public_services_social_group": 18,
+      "hdi": 41.9,
+      "infant_mortality_rate": 52,
+      "freedom_academic_cultural_expression": 78.75,
+      "gini_coefficient": 64.3,
+      "power_distributed_socioeconomic": 75,
+      "poverty_headcount_ratio": 54.50000000000001,
+      "deliberative_component_index": 70,
+      "reasoned_justification": 53,
+      "steering_capacity": 33.333333329999995,
+      "clean_elections_index": 0,
+      "election_free_and_fair": 60.25,
+      "opposition_parties_autonomy": 82.75,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 61.25000000000001,
+      "election_losers_accept_results": 69.75,
+      "election_government_intimidation": 95.75,
+      "truth_commission": 100,
+      "reparatory_policies": 33,
+      "amnesty_law": 50,
+      "domestic_trials": 14.000000000000002
+    },
+    "Côte d'Ivoire": {
+      "equal_protection_index": 67,
+      "rule_of_law_index": 40,
+      "civil_liberties": 38.2,
+      "access_to_justice": 53,
+      "division_of_power_index": 30,
+      "high_court_independence": 34.75,
+      "control_of_corruption": 42.089999999999996,
+      "corruption_perception_index": 45,
+      "diagonal_accountability_index": 73,
+      "open_government_index": 35,
+      "government_censorship_effort": 53.75,
+      "social_safety_nets": 50,
+      "educational_equality": 16.5,
+      "health_equality": 23.25,
+      "access_public_services_social_group": 30.5,
+      "hdi": 58.199999999999996,
+      "infant_mortality_rate": 55.00000000000001,
+      "freedom_academic_cultural_expression": 76.25,
+      "gini_coefficient": 64.5,
+      "power_distributed_socioeconomic": 43.25,
+      "poverty_headcount_ratio": 62.5,
+      "deliberative_component_index": 50,
+      "reasoned_justification": 48,
+      "steering_capacity": 63.333333329999995,
+      "clean_elections_index": 33,
+      "election_free_and_fair": 40.25,
+      "opposition_parties_autonomy": 81.25,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 44,
+      "election_losers_accept_results": 62,
+      "election_government_intimidation": 38.25,
+      "truth_commission": 100,
+      "reparatory_policies": 33,
+      "amnesty_law": 0,
+      "domestic_trials": 32
+    },
+    "Burkina Faso": {
+      "equal_protection_index": 69,
+      "rule_of_law_index": 48,
+      "civil_liberties": 35.3,
+      "access_to_justice": 56.99999999999999,
+      "division_of_power_index": 10,
+      "high_court_independence": 37.75,
+      "control_of_corruption": 42.74,
+      "corruption_perception_index": 41,
+      "diagonal_accountability_index": 27,
+      "open_government_index": 44,
+      "government_censorship_effort": 33.75,
+      "social_safety_nets": 30,
+      "educational_equality": 23.5,
+      "health_equality": 23.75,
+      "access_public_services_social_group": 34,
+      "hdi": 45.9,
+      "infant_mortality_rate": 56.00000000000001,
+      "freedom_academic_cultural_expression": 86.5,
+      "gini_coefficient": 62.6,
+      "power_distributed_socioeconomic": 68,
+      "poverty_headcount_ratio": 56.8,
+      "deliberative_component_index": 14.000000000000002,
+      "reasoned_justification": 39.66666667,
+      "steering_capacity": 43.33333333,
+      "clean_elections_index": 0,
+      "election_free_and_fair": 79.5,
+      "opposition_parties_autonomy": 77.75,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 86.5,
+      "election_losers_accept_results": 92.25,
+      "election_government_intimidation": 92.25,
+      "truth_commission": 100,
+      "reparatory_policies": 0,
+      "amnesty_law": 50,
+      "domestic_trials": 24
+    },
+    "Niger": {
+      "equal_protection_index": 88,
+      "rule_of_law_index": 57.99999999999999,
+      "civil_liberties": 44.1,
+      "access_to_justice": 86,
+      "division_of_power_index": 10,
+      "high_court_independence": 51.5,
+      "control_of_corruption": 35.370000000000005,
+      "corruption_perception_index": 24,
+      "diagonal_accountability_index": 79,
+      "open_government_index": 34,
+      "government_censorship_effort": 65.25,
+      "social_safety_nets": 30,
+      "educational_equality": 21.75,
+      "health_equality": 19.25,
+      "access_public_services_social_group": 25,
+      "hdi": 41.9,
+      "infant_mortality_rate": 34,
+      "freedom_academic_cultural_expression": 75.25,
+      "gini_coefficient": 67.10000000000001,
+      "power_distributed_socioeconomic": 70.5,
+      "poverty_headcount_ratio": 58.8,
+      "deliberative_component_index": 77,
+      "reasoned_justification": 71.33333333,
+      "steering_capacity": 40,
+      "clean_elections_index": 0,
+      "election_free_and_fair": 66,
+      "opposition_parties_autonomy": 94.75,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 61.75000000000001,
+      "election_losers_accept_results": 69.75,
+      "election_government_intimidation": 56.00000000000001,
+      "truth_commission": 0,
+      "reparatory_policies": 0,
+      "amnesty_law": 0,
+      "domestic_trials": 9
+    },
     "El Salvador": {
       "equal_protection_index": 20,
       "rule_of_law_index": 8,
@@ -986,6 +1737,112 @@ window.__DGW__ = {
       "reparatory_policies": 33.333333329999995,
       "amnesty_law": 0,
       "domestic_trials": 90
+    },
+    "Togo": {
+      "equal_protection_index": 64,
+      "rule_of_law_index": 21,
+      "civil_liberties": 17.5,
+      "access_to_justice": 14.000000000000002,
+      "division_of_power_index": 30,
+      "high_court_independence": 26.75,
+      "control_of_corruption": 34.43,
+      "corruption_perception_index": 32,
+      "diagonal_accountability_index": 56.00000000000001,
+      "open_government_index": 30,
+      "government_censorship_effort": 26.5,
+      "social_safety_nets": 30,
+      "educational_equality": 64,
+      "health_equality": 24,
+      "access_public_services_social_group": 44.5,
+      "hdi": 57.099999999999994,
+      "infant_mortality_rate": 65,
+      "freedom_academic_cultural_expression": 77.5,
+      "gini_coefficient": 62.1,
+      "power_distributed_socioeconomic": 27,
+      "poverty_headcount_ratio": 56.2,
+      "deliberative_component_index": 71,
+      "reasoned_justification": 76.66666667000001,
+      "steering_capacity": 43.33333333,
+      "clean_elections_index": 31,
+      "election_free_and_fair": 57.99999999999999,
+      "opposition_parties_autonomy": 65.25,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 73,
+      "election_losers_accept_results": 52.75,
+      "election_government_intimidation": 52.5,
+      "amnesty_law": 0,
+      "domestic_trials": 4
+    },
+    "Mauritania": {
+      "equal_protection_index": 45,
+      "rule_of_law_index": 12,
+      "civil_liberties": 50,
+      "access_to_justice": 9,
+      "division_of_power_index": 30,
+      "high_court_independence": 6.75,
+      "control_of_corruption": 28.999999999999996,
+      "corruption_perception_index": 30,
+      "diagonal_accountability_index": 68,
+      "open_government_index": 28.999999999999996,
+      "government_censorship_effort": 63,
+      "social_safety_nets": 40,
+      "educational_equality": 5,
+      "health_equality": 32,
+      "access_public_services_social_group": 20.5,
+      "hdi": 56.3,
+      "infant_mortality_rate": 70,
+      "freedom_academic_cultural_expression": 56.75,
+      "gini_coefficient": 68,
+      "power_distributed_socioeconomic": 26.25,
+      "poverty_headcount_ratio": 68.2,
+      "deliberative_component_index": 56.00000000000001,
+      "reasoned_justification": 40.33333333,
+      "steering_capacity": 40,
+      "clean_elections_index": 28.999999999999996,
+      "election_free_and_fair": 49,
+      "opposition_parties_autonomy": 53.75,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 48,
+      "election_losers_accept_results": 58.75,
+      "election_government_intimidation": 68.5,
+      "amnesty_law": 0,
+      "domestic_trials": 9
+    },
+    "Guinea-Bissau": {
+      "equal_protection_index": 71,
+      "rule_of_law_index": 17,
+      "civil_liberties": 2.35,
+      "access_to_justice": 33,
+      "division_of_power_index": 30,
+      "high_court_independence": 15,
+      "control_of_corruption": 20.61,
+      "corruption_perception_index": 21,
+      "diagonal_accountability_index": 62,
+      "government_censorship_effort": 22.5,
+      "social_safety_nets": 40,
+      "educational_equality": 30.5,
+      "health_equality": 25,
+      "access_public_services_social_group": 22.25,
+      "hdi": 51.4,
+      "infant_mortality_rate": 57.99999999999999,
+      "freedom_academic_cultural_expression": 47.75,
+      "gini_coefficient": 66.60000000000001,
+      "power_distributed_socioeconomic": 38.25,
+      "poverty_headcount_ratio": 49.5,
+      "deliberative_component_index": 32,
+      "reasoned_justification": 16,
+      "steering_capacity": 33.333333329999995,
+      "clean_elections_index": 0,
+      "election_free_and_fair": 44,
+      "opposition_parties_autonomy": 74.75,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 86,
+      "election_losers_accept_results": 29.5,
+      "election_government_intimidation": 59.25,
+      "truth_commission": 0,
+      "reparatory_policies": 0,
+      "amnesty_law": 0,
+      "domestic_trials": 10
     },
     "Cuba": {
       "equal_protection_index": 68,
@@ -1058,6 +1915,43 @@ window.__DGW__ = {
       "reparatory_policies": 0,
       "amnesty_law": 0,
       "domestic_trials": 32
+    },
+    "Guinea": {
+      "equal_protection_index": 63,
+      "rule_of_law_index": 11,
+      "civil_liberties": 20.599999999999998,
+      "access_to_justice": 28.000000000000004,
+      "division_of_power_index": 10,
+      "high_court_independence": 24.5,
+      "control_of_corruption": 24.08,
+      "corruption_perception_index": 28.000000000000004,
+      "diagonal_accountability_index": 49,
+      "open_government_index": 36,
+      "government_censorship_effort": 75,
+      "social_safety_nets": 40,
+      "educational_equality": 8.75,
+      "health_equality": 12.25,
+      "access_public_services_social_group": 39.25,
+      "hdi": 50,
+      "infant_mortality_rate": 40,
+      "freedom_academic_cultural_expression": 19.75,
+      "gini_coefficient": 70.39999999999999,
+      "power_distributed_socioeconomic": 45.75,
+      "poverty_headcount_ratio": 56.3,
+      "deliberative_component_index": 27,
+      "reasoned_justification": 16.666666669999998,
+      "steering_capacity": 43.33333333,
+      "clean_elections_index": 0,
+      "election_free_and_fair": 30.25,
+      "opposition_parties_autonomy": 78,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 64.5,
+      "election_losers_accept_results": 37,
+      "election_government_intimidation": 40.5,
+      "truth_commission": 0,
+      "reparatory_policies": 0,
+      "amnesty_law": 0,
+      "domestic_trials": 13
     },
     "Nicaragua": {
       "equal_protection_index": 23,
@@ -1181,6 +2075,21 @@ window.__DGW__ = {
       "reparations": 0,
       "legal": 3.2
     },
+    "Ghana": {
+      "rule_of_law": 1.4315,
+      "separation_of_powers": 78.5,
+      "accountability": 59.129,
+      "transparency": 62.3,
+      "welfare_frameworks": 53.075,
+      "living_standards": 71.75,
+      "distribution_of_resources": 60.775,
+      "discourse": 79.60000000000001,
+      "policies_and_legitimacy": 68,
+      "free_and_fair_elections": 81.475,
+      "peaceful_transition_of_power": 81.125,
+      "reparations": 66.5,
+      "legal": 15.2
+    },
     "Brasil": {
       "rule_of_law": 78.925,
       "separation_of_powers": 81.2,
@@ -1226,6 +2135,21 @@ window.__DGW__ = {
       "reparations": 100,
       "legal": 40
     },
+    "The Gambia": {
+      "rule_of_law": 75.13,
+      "separation_of_powers": 74.875,
+      "accountability": 56.231500000000004,
+      "transparency": 54.2,
+      "welfare_frameworks": 44.474999999999994,
+      "living_standards": 62.050000000000004,
+      "distribution_of_resources": 53.949999999999996,
+      "discourse": 72.26666667,
+      "policies_and_legitimacy": 66,
+      "free_and_fair_elections": 87.1,
+      "peaceful_transition_of_power": 76.775,
+      "reparations": 66.5,
+      "legal": 66.4
+    },
     "Dominican Republic": {
       "rule_of_law": 56.125,
       "separation_of_powers": 69.625,
@@ -1256,6 +2180,21 @@ window.__DGW__ = {
       "reparations": 50,
       "legal": 12.4
     },
+    "Senegal": {
+      "rule_of_law": 66.58500000000001,
+      "separation_of_powers": 55.875,
+      "accountability": 61.149,
+      "transparency": 49.5,
+      "welfare_frameworks": 42.35,
+      "living_standards": 66.45,
+      "distribution_of_resources": 64.7,
+      "discourse": 79.66666667,
+      "policies_and_legitimacy": 76,
+      "free_and_fair_elections": 79.0875,
+      "peaceful_transition_of_power": 75.375,
+      "reparations": 0,
+      "legal": 8.4
+    },
     "Ecuador": {
       "rule_of_law": 41.22,
       "separation_of_powers": 68.575,
@@ -1285,6 +2224,21 @@ window.__DGW__ = {
       "peaceful_transition_of_power": 84.125,
       "reparations": 66.66666667,
       "legal": 37.6
+    },
+    "Liberia": {
+      "rule_of_law": 51.334999999999994,
+      "separation_of_powers": 66.375,
+      "accountability": 47.8775,
+      "transparency": 51.5,
+      "welfare_frameworks": 24.775,
+      "living_standards": 53.05,
+      "distribution_of_resources": 61.075,
+      "discourse": 78.73333333,
+      "policies_and_legitimacy": 54,
+      "free_and_fair_elections": 76.95,
+      "peaceful_transition_of_power": 80,
+      "reparations": 50,
+      "legal": 36.4
     },
     "Paraguay": {
       "rule_of_law": 41.375,
@@ -1346,6 +2300,36 @@ window.__DGW__ = {
       "reparations": 0,
       "legal": 4.8
     },
+    "Sierra Leone": {
+      "rule_of_law": 61.550000000000004,
+      "separation_of_powers": 41.05,
+      "accountability": 52.824000000000005,
+      "transparency": 56.8,
+      "welfare_frameworks": 40.2,
+      "living_standards": 52.900000000000006,
+      "distribution_of_resources": 58.5,
+      "discourse": 79.2,
+      "policies_and_legitimacy": 48,
+      "free_and_fair_elections": 56.06250000000001,
+      "peaceful_transition_of_power": 43.775,
+      "reparations": 66.5,
+      "legal": 35.199999999999996
+    },
+    "Cape Verde": {
+      "rule_of_law": 80.095,
+      "separation_of_powers": 21.075,
+      "accountability": 72.465,
+      "transparency": 30.9,
+      "welfare_frameworks": 27.325,
+      "living_standards": 76.5,
+      "distribution_of_resources": 62.824999999999996,
+      "discourse": 74.73333333,
+      "policies_and_legitimacy": 0,
+      "free_and_fair_elections": 91.825,
+      "peaceful_transition_of_power": 98.125,
+      "reparations": 0,
+      "legal": 0.8
+    },
     "Mexico": {
       "rule_of_law": 38.085,
       "separation_of_powers": 49.875,
@@ -1360,6 +2344,21 @@ window.__DGW__ = {
       "peaceful_transition_of_power": 67.175,
       "reparations": 16.666666669999998,
       "legal": 100
+    },
+    "Benin": {
+      "rule_of_law": 72.91499999999999,
+      "separation_of_powers": 52.125,
+      "accountability": 55.143,
+      "transparency": 50.3,
+      "welfare_frameworks": 50.8,
+      "living_standards": 57.65,
+      "distribution_of_resources": 60.6,
+      "discourse": 58.599999999999994,
+      "policies_and_legitimacy": 38,
+      "free_and_fair_elections": 63.975,
+      "peaceful_transition_of_power": 81.75,
+      "reparations": 0,
+      "legal": 6.800000000000001
     },
     "Honduras": {
       "rule_of_law": 51.585,
@@ -1391,6 +2390,81 @@ window.__DGW__ = {
       "reparations": 0,
       "legal": 10
     },
+    "Nigeria": {
+      "rule_of_law": 49.614999999999995,
+      "separation_of_powers": 47.375,
+      "accountability": 46.7515,
+      "transparency": 51.9,
+      "welfare_frameworks": 36.7,
+      "living_standards": 52.400000000000006,
+      "distribution_of_resources": 41.85,
+      "discourse": 63.666666670000005,
+      "policies_and_legitimacy": 24,
+      "free_and_fair_elections": 58.5,
+      "peaceful_transition_of_power": 52.65,
+      "reparations": 50,
+      "legal": 22
+    },
+    "Mali": {
+      "rule_of_law": 48.195,
+      "separation_of_powers": 30.55,
+      "accountability": 37.5,
+      "transparency": 40.9,
+      "welfare_frameworks": 23.45,
+      "living_standards": 52.300000000000004,
+      "distribution_of_resources": 67.2,
+      "discourse": 63.2,
+      "policies_and_legitimacy": 20,
+      "free_and_fair_elections": 48.5,
+      "peaceful_transition_of_power": 77.60000000000001,
+      "reparations": 66.5,
+      "legal": 35.6
+    },
+    "Côte d'Ivoire": {
+      "rule_of_law": 46.379999999999995,
+      "separation_of_powers": 31.424999999999997,
+      "accountability": 53.7815,
+      "transparency": 42.5,
+      "welfare_frameworks": 32.1,
+      "living_standards": 60.85,
+      "distribution_of_resources": 53.37499999999999,
+      "discourse": 49.2,
+      "policies_and_legitimacy": 38,
+      "free_and_fair_elections": 52.825,
+      "peaceful_transition_of_power": 47.099999999999994,
+      "reparations": 66.5,
+      "legal": 12.8
+    },
+    "Burkina Faso": {
+      "rule_of_law": 51.044999999999995,
+      "separation_of_powers": 18.325,
+      "accountability": 36.709,
+      "transparency": 39.900000000000006,
+      "welfare_frameworks": 28.65,
+      "living_standards": 57.05,
+      "distribution_of_resources": 63.849999999999994,
+      "discourse": 24.26666667,
+      "policies_and_legitimacy": 26,
+      "free_and_fair_elections": 54.4875,
+      "peaceful_transition_of_power": 90.525,
+      "reparations": 50,
+      "legal": 39.6
+    },
+    "Niger": {
+      "rule_of_law": 66.015,
+      "separation_of_powers": 22.45,
+      "accountability": 47.2295,
+      "transparency": 46.5,
+      "welfare_frameworks": 24.7,
+      "living_standards": 46.2,
+      "distribution_of_resources": 66.725,
+      "discourse": 74.73333333,
+      "policies_and_legitimacy": 24,
+      "free_and_fair_elections": 52.31249999999999,
+      "peaceful_transition_of_power": 61.85000000000001,
+      "reparations": 0,
+      "legal": 3.5999999999999996
+    },
     "El Salvador": {
       "rule_of_law": 16.3,
       "separation_of_powers": 21.9,
@@ -1405,6 +2479,49 @@ window.__DGW__ = {
       "peaceful_transition_of_power": 65.8,
       "reparations": 66.66666667,
       "legal": 36
+    },
+    "Togo": {
+      "rule_of_law": 25.525,
+      "separation_of_powers": 29.025000000000002,
+      "accountability": 41.2505,
+      "transparency": 28.599999999999998,
+      "welfare_frameworks": 39.95,
+      "living_standards": 63.55,
+      "distribution_of_resources": 43.075,
+      "discourse": 73.26666667,
+      "policies_and_legitimacy": 26,
+      "free_and_fair_elections": 55.93749999999999,
+      "peaceful_transition_of_power": 58.72500000000001,
+      "legal": 1.6
+    },
+    "Mauritania": {
+      "rule_of_law": 22.05,
+      "separation_of_powers": 23.025000000000002,
+      "accountability": 42.95,
+      "transparency": 42.6,
+      "welfare_frameworks": 25.55,
+      "living_standards": 60.5,
+      "distribution_of_resources": 47.175,
+      "discourse": 49.73333333,
+      "policies_and_legitimacy": 24,
+      "free_and_fair_elections": 50.3625,
+      "peaceful_transition_of_power": 59.425,
+      "legal": 3.5999999999999996
+    },
+    "Guinea-Bissau": {
+      "rule_of_law": 61,
+      "separation_of_powers": 25.5,
+      "accountability": 35.213499999999996,
+      "transparency": 9,
+      "welfare_frameworks": 29.775000000000002,
+      "living_standards": 52.65,
+      "distribution_of_resources": 48.15,
+      "discourse": 25.6,
+      "policies_and_legitimacy": 20,
+      "free_and_fair_elections": 41.612500000000004,
+      "peaceful_transition_of_power": 58.35,
+      "reparations": 0,
+      "legal": 4
     },
     "Cuba": {
       "rule_of_law": 22.41,
@@ -1435,6 +2552,21 @@ window.__DGW__ = {
       "peaceful_transition_of_power": 0,
       "reparations": 50,
       "legal": 12.8
+    },
+    "Guinea": {
+      "rule_of_law": 23.64,
+      "separation_of_powers": 14.35,
+      "accountability": 33.978,
+      "transparency": 51.6,
+      "welfare_frameworks": 27.975,
+      "living_standards": 40.949999999999996,
+      "distribution_of_resources": 54.55,
+      "discourse": 22.86666667,
+      "policies_and_legitimacy": 26,
+      "free_and_fair_elections": 37.2875,
+      "peaceful_transition_of_power": 46.650000000000006,
+      "reparations": 0,
+      "legal": 5.2
     },
     "Nicaragua": {
       "rule_of_law": 8.125,
@@ -1471,23 +2603,39 @@ window.__DGW__ = {
     "Uruguay": {},
     "Chile": {},
     "Costa Rica": {},
+    "Ghana": {},
     "Brasil": {},
     "Colombia": {},
     "Argentina": {},
+    "The Gambia": {},
     "Dominican Republic": {},
     "Panama": {},
+    "Senegal": {},
     "Ecuador": {},
     "Perú": {},
+    "Liberia": {},
     "Paraguay": {},
     "Guatemala": {},
     "Bolivia": {},
     "Suriname": {},
+    "Sierra Leone": {},
+    "Cape Verde": {},
     "Mexico": {},
+    "Benin": {},
     "Honduras": {},
     "Guyana": {},
+    "Nigeria": {},
+    "Mali": {},
+    "Côte d'Ivoire": {},
+    "Burkina Faso": {},
+    "Niger": {},
     "El Salvador": {},
+    "Togo": {},
+    "Mauritania": {},
+    "Guinea-Bissau": {},
     "Cuba": {},
     "Haiti": {},
+    "Guinea": {},
     "Nicaragua": {},
     "Venezuela": {}
   },
@@ -1495,15 +2643,19 @@ window.__DGW__ = {
     "Uruguay": {},
     "Chile": {},
     "Costa Rica": {},
+    "Ghana": {},
     "Brasil": {
       "poverty_headcount_ratio": true
     },
     "Colombia": {},
     "Argentina": {},
+    "The Gambia": {},
     "Dominican Republic": {},
     "Panama": {},
+    "Senegal": {},
     "Ecuador": {},
     "Perú": {},
+    "Liberia": {},
     "Paraguay": {},
     "Guatemala": {
       "political_culture": true
@@ -1515,7 +2667,18 @@ window.__DGW__ = {
       "political_culture": true,
       "division_of_power_index": true
     },
+    "Sierra Leone": {},
+    "Cape Verde": {
+      "division_of_power_index": true,
+      "open_government_index": true,
+      "social_safety_nets": true,
+      "steering_capacity": true,
+      "political_culture": true
+    },
     "Mexico": {},
+    "Benin": {
+      "political_culture": true
+    },
     "Honduras": {},
     "Guyana": {
       "social_safety_nets": true,
@@ -1524,7 +2687,36 @@ window.__DGW__ = {
       "political_culture": true,
       "division_of_power_index": true
     },
+    "Nigeria": {
+      "political_culture": true
+    },
+    "Mali": {
+      "political_culture": true
+    },
+    "Côte d'Ivoire": {
+      "political_culture": true
+    },
+    "Burkina Faso": {
+      "political_culture": true
+    },
+    "Niger": {
+      "political_culture": true
+    },
     "El Salvador": {
+      "political_culture": true
+    },
+    "Togo": {
+      "political_culture": true,
+      "truth_commission": true,
+      "reparatory_policies": true
+    },
+    "Mauritania": {
+      "political_culture": true,
+      "truth_commission": true,
+      "reparatory_policies": true
+    },
+    "Guinea-Bissau": {
+      "open_government_index": true,
       "political_culture": true
     },
     "Cuba": {
@@ -1534,6 +2726,9 @@ window.__DGW__ = {
     "Haiti": {
       "political_culture": true,
       "election_free_and_fair": true
+    },
+    "Guinea": {
+      "political_culture": true
     },
     "Nicaragua": {
       "political_culture": true

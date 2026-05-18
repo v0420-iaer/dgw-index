@@ -479,6 +479,7 @@
 <div class="hidden md:flex gap-6 lg:gap-8 items-center font-label text-sm tracking-wide whitespace-nowrap">
 <a class="text-primary font-bold border-b border-primary pb-1 hover:text-primary transition-all duration-300 shrink-0" href="index.html" aria-current="page">The Index</a>
 <a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300 shrink-0" href="country-profiles.html">Country Profiles</a>
+<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300 shrink-0" href="comparison.html">Comparison</a>
 <a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300 shrink-0" href="indicators.html">Indicators</a>
 <a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300 shrink-0" href="references.html">References</a>
 </div>
@@ -492,6 +493,7 @@
 <div class="nav-mobile-panel absolute right-0 top-full mt-2 w-[min(calc(100vw-2rem),18rem)] border border-outline-variant/25 py-1 z-[60]">
 <a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-primary font-semibold border-b border-outline-variant/15 hover:bg-surface-container-high/90" href="index.html" aria-current="page">The Index</a>
 <a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-on-background/85 hover:bg-surface-container-high/90 hover:text-primary" href="country-profiles.html">Country Profiles</a>
+<a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-on-background/85 hover:bg-surface-container-high/90 hover:text-primary" href="comparison.html">Comparison</a>
 <a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-on-background/85 hover:bg-surface-container-high/90 hover:text-primary" href="indicators.html">Indicators</a>
 <a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-on-background/85 hover:bg-surface-container-high/90 hover:text-primary" href="references.html">References</a>
 </div>
@@ -508,7 +510,15 @@
 <div class="w-full flex-1 min-h-0 flex flex-col bg-surface-container-lowest border border-outline-variant/20 p-2.5 sm:p-4 relative group shadow-[0_28px_56px_-16px_rgba(27,28,27,0.14),0_10px_22px_-12px_rgba(27,28,27,0.08),0_2px_6px_-2px_rgba(27,28,27,0.05)] max-lg:min-h-[min(78svh,34rem)] sm:max-lg:min-h-[min(76svh,36rem)] md:max-lg:min-h-[min(74svh,38rem)] lg:min-h-0 lg:h-full">
 <header class="map-mode-header shrink-0 mb-2 sm:mb-4 px-0 sm:px-0.5 pb-2 sm:pb-4 border-b border-outline-variant/15">
 <p class="font-label text-[9px] sm:text-[11px] uppercase tracking-[0.2em] text-on-surface-variant/90 max-lg:mb-0">How to read this map</p>
-<p class="font-label text-[10px] sm:text-[11px] text-primary font-medium tracking-[0.06em] mt-1.5 mb-0">Latin America</p>
+<p id="map-region-label" class="font-label text-[10px] sm:text-[11px] text-primary font-medium tracking-[0.06em] mt-1.5 mb-0">Latin America</p>
+<div class="mt-2 sm:mt-3 flex flex-wrap items-center gap-2">
+<span class="font-label text-[9px] uppercase tracking-[0.18em] text-on-surface-variant/75">Region</span>
+<div class="region-track flex p-1 rounded-sm bg-surface-container-low/90 border border-outline-variant/25 gap-1" role="group" aria-label="Choose which region to focus on">
+<button type="button" id="region-latam" class="region-btn flex items-center justify-center px-2.5 py-1.5 text-[10px] sm:text-xs font-label font-medium uppercase tracking-[0.12em] rounded-sm transition-all duration-200 text-on-background/65 hover:text-primary hover:bg-surface-container-high/70" aria-pressed="false">Latin America</button>
+<button type="button" id="region-wa" class="region-btn flex items-center justify-center px-2.5 py-1.5 text-[10px] sm:text-xs font-label font-medium uppercase tracking-[0.12em] rounded-sm transition-all duration-200 text-on-background/65 hover:text-primary hover:bg-surface-container-high/70" aria-pressed="false">West Africa</button>
+<button type="button" id="region-both" class="region-btn flex items-center justify-center px-2.5 py-1.5 text-[10px] sm:text-xs font-label font-medium uppercase tracking-[0.12em] rounded-sm transition-all duration-200 bg-primary text-on-primary shadow-[0_1px_2px_rgba(7,41,12,0.12)]" aria-pressed="true">Both</button>
+</div>
+</div>
 <div class="mt-2 sm:mt-3.5 flex flex-col gap-3 sm:gap-5 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
 <div class="min-w-0 flex-1 space-y-1.5 sm:space-y-2 lg:max-w-[28rem]">
 <h3 id="map-mode-title" class="map-headline-mobile font-headline text-base sm:text-lg md:text-[1.35rem] text-primary leading-[1.2] tracking-[-0.02em] text-balance">Continuous scores across the 0–100 scale</h3>
@@ -592,6 +602,7 @@
 </footer>
 
 <script src="data/democracy-scale.js"></script>
+<script src="data/dgw-blueprint.js"></script>
 <script src="data/dgw-loader.js"></script>
 <script src="data/ingested-excel.js"></script>
 <script>
@@ -608,11 +619,42 @@
         }
         var countryData = dgw.countryData;
 
-    /** Natural Earth (EN) → keys from the Excel/ingest (Brasil, Perú, …). */
-    var GEO_NAME_TO_DGW_KEY = { Brazil: "Brasil", Peru: "Perú" };
+    /** Natural Earth (EN) → keys from the Excel/ingest (Brasil, Perú, Ivory Coast, …). */
+    var GEO_NAME_TO_DGW_KEY = (window.DGWBlueprint && window.DGWBlueprint.GEO_NAME_TO_DGW_KEY) || {
+        Brazil: "Brasil",
+        Peru: "Perú",
+        "Ivory Coast": "Côte d'Ivoire",
+        "Guinea Bissau": "Guinea-Bissau",
+        Gambia: "The Gambia",
+    };
     function dgwDataKey(geoName) {
         if (!geoName) return "";
         return GEO_NAME_TO_DGW_KEY[geoName] != null ? GEO_NAME_TO_DGW_KEY[geoName] : String(geoName);
+    }
+
+    /** Region filter state: "latam" | "wa" | "both". Persisted in sessionStorage so other pages can read the same default. */
+    var REGION_KEY_TO_LABEL = { latam: "Latin America", wa: "West Africa", both: "Both regions" };
+    var REGION_LABEL_TO_KEY = { "Latin America": "latam", "West Africa": "wa" };
+    var REGION_CENTERS = { latam: [-78, -14], wa: [-2, 11], both: [-40, 5] };
+    function readPersistedRegion() {
+        try {
+            var v = sessionStorage.getItem("dgw.activeRegion");
+            if (v === "latam" || v === "wa" || v === "both") return v;
+        } catch (e) {}
+        return "both";
+    }
+    function writePersistedRegion(v) {
+        try { sessionStorage.setItem("dgw.activeRegion", v); } catch (e) {}
+    }
+    var activeRegion = readPersistedRegion();
+    function regionCenter() { return REGION_CENTERS[activeRegion] || REGION_CENTERS.both; }
+    function regionForName(name) {
+        var r = countryData[name] && countryData[name].region;
+        return r && REGION_LABEL_TO_KEY[r] ? REGION_LABEL_TO_KEY[r] : null;
+    }
+    function passesRegionFilter(name) {
+        if (activeRegion === "both") return true;
+        return regionForName(name) === activeRegion;
     }
     function formatIndexPointScoreHtml(n) {
         if (n == null || n === undefined || typeof n !== "number" || isNaN(n)) {
@@ -650,6 +692,7 @@
             var name = order[i];
             var d = countryData[name];
             if (!d) continue;
+            if (!passesRegionFilter(name)) continue;
             var cat = d.category;
             var bg = window.DGWScale.flatCategoryColor(cat);
             var fg = window.DGWScale.contrastTextColor(bg);
@@ -671,6 +714,7 @@
     }
 
     buildRankingTableFromDgw();
+    setupRegionToggle();
 
     const latAmSet = new Set(Object.keys(countryData));
     const NEUTRAL = "#dbdad8";
@@ -683,12 +727,8 @@
     const tooltipCountry = document.getElementById("tooltip-country");
     const tooltipScore = document.getElementById("tooltip-score");
 
-    /**
-     * Focal point [lon, lat] (°, EPSG-like: east+, north+). Centers the visible hemisphere on the land mass
-     * (Andes–Caribbean spine) so Latin America sits in the middle of the disk — not over the Atlantic
-     * (which pulls Africa in and shoves SA to the limb).
-     */
-    const latAmMapCenter = [-78, -14];
+    /** Focal point [lon, lat] (°, EPSG-like). Region-aware: centred on the active region's land mass. */
+    function activeRegionCenter() { return regionCenter(); }
     const SCROLL_TABLE_REVEAL = 96;
     const SCROLL_FOCUS_START = 96;
     const SCROLL_FOCUS_SPAN = 900;
@@ -799,6 +839,7 @@
     function landFill(d) {
         const name = dgwDataKey(featureName(d));
         if (!revealed || !countryData[name]) return NEUTRAL;
+        if (!passesRegionFilter(name)) return NEUTRAL;
         if (mapColorMode === "category") {
             const cat = regimeCategoryForName(name);
             if (cat && window.DGWScale && window.DGWScale.flatCategoryColor) {
@@ -900,6 +941,54 @@
             mapColorMode = "category";
             applyMapColorModeUi({ animate: true });
         });
+    }
+
+    function applyRegionUi() {
+        const buttons = [
+            { id: "region-latam", key: "latam" },
+            { id: "region-wa", key: "wa" },
+            { id: "region-both", key: "both" },
+        ];
+        buttons.forEach(function (b) {
+            const el = document.getElementById(b.id);
+            if (!el) return;
+            const on = b.key === activeRegion;
+            el.setAttribute("aria-pressed", on ? "true" : "false");
+            el.classList.toggle("bg-primary", on);
+            el.classList.toggle("text-on-primary", on);
+            el.classList.toggle("shadow-[0_1px_2px_rgba(7,41,12,0.12)]", on);
+            el.classList.toggle("text-on-background/65", !on);
+            el.classList.toggle("hover:text-primary", !on);
+            el.classList.toggle("hover:bg-surface-container-high/70", !on);
+        });
+        const label = document.getElementById("map-region-label");
+        if (label) label.textContent = REGION_KEY_TO_LABEL[activeRegion] || "";
+    }
+
+    function changeRegion(next) {
+        if (next === activeRegion) return;
+        activeRegion = next;
+        writePersistedRegion(next);
+        applyRegionUi();
+        buildRankingTableFromDgw();
+        bindRankingTableHighlight();
+        if (typeof window.__recomputeIndexedFeatures === "function") window.__recomputeIndexedFeatures();
+        if (svg && projection) {
+            applyProjection();
+            redrawStaticLayers();
+            if (landPaths) landPaths.attr("d", path);
+            applyAllLandFills({ animate: !reduceMotion, duration: 600 });
+        }
+    }
+
+    function setupRegionToggle() {
+        const map = { "region-latam": "latam", "region-wa": "wa", "region-both": "both" };
+        Object.keys(map).forEach(function (id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener("click", function () { changeRegion(map[id]); });
+        });
+        applyRegionUi();
     }
 
     function svgUserToParentLocal(svgEl, parentEl, x, y) {
@@ -1069,7 +1158,7 @@
          * Do NOT lerp Euler angles or use fitExtent on orthographic — both skew the continent to the limb
          * or shove the Atlantic (and Africa) into frame.
          */
-        const centerPath = d3.geoInterpolate([idleLon, idleLat], latAmMapCenter);
+        const centerPath = d3.geoInterpolate([idleLon, idleLat], activeRegionCenter());
         const [lon, lat] = centerPath(q);
         const scale = idleScale * (1 - q) + maxScale * q;
 
@@ -1223,7 +1312,15 @@
             .on("mouseleave", handleMouseOut)
             .on("click", handleCountryClick);
 
-        indexedFeatures = world.features.filter(d => countryData[dgwDataKey(featureName(d))]);
+        function recomputeIndexedFeatures() {
+            indexedFeatures = world.features.filter(d => {
+                const name = dgwDataKey(featureName(d));
+                if (!countryData[name]) return false;
+                return passesRegionFilter(name);
+            });
+        }
+        window.__recomputeIndexedFeatures = recomputeIndexedFeatures;
+        recomputeIndexedFeatures();
 
         outlinePath = gMain.append("path")
             .datum({ type: "Sphere" })
@@ -1260,6 +1357,7 @@
 
         bindRankingTableHighlight();
         setupMapModeToggle();
+        setupRegionToggle();
         applyMapColorModeUi();
 
         cancelAnimationFrame(rafId);

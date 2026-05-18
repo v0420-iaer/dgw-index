@@ -1,0 +1,904 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport">
+<title>Comparison — Democracy Index</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Public+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+                    "on-tertiary-fixed": "#2a1700",
+                    "on-error-container": "#93000a",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#e4e2e0",
+                    "on-primary-fixed": "#012106",
+                    "inverse-surface": "#30302f",
+                    "outline": "#737970",
+                    "outline-variant": "#c2c8be",
+                    "on-tertiary-container": "#ca9857",
+                    "inverse-on-surface": "#f2f0ee",
+                    "surface-tint": "#446744",
+                    "tertiary-container": "#503100",
+                    "primary-fixed": "#c5edc1",
+                    "on-tertiary-fixed-variant": "#643f03",
+                    "tertiary": "#331e00",
+                    "inverse-primary": "#aad1a6",
+                    "on-secondary-fixed-variant": "#703629",
+                    "primary-fixed-dim": "#aad1a6",
+                    "tertiary-fixed": "#ffddb7",
+                    "primary": "#07290c",
+                    "on-primary": "#ffffff",
+                    "on-surface-variant": "#424840",
+                    "surface-variant": "#e4e2e0",
+                    "surface": "#fbf9f7",
+                    "secondary": "#8d4d3f",
+                    "surface-container-low": "#f5f3f1",
+                    "surface-bright": "#fbf9f7",
+                    "on-error": "#ffffff",
+                    "surface-container": "#efedec",
+                    "on-background": "#1b1c1b",
+                    "on-surface": "#1b1c1b",
+                    "on-primary-container": "#86ab83",
+                    "background": "#fbf9f7",
+                    "secondary-container": "#ffac9a",
+                    "primary-container": "#1e3f20",
+                    "on-secondary-fixed": "#390c04",
+                    "secondary-fixed": "#ffdad3",
+                    "surface-container-high": "#eae8e6",
+                    "on-secondary-container": "#7a3e31",
+                    "surface-dim": "#dbdad8",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed-dim": "#ffb4a4",
+                    "on-primary-fixed-variant": "#2d4e2e",
+                    "tertiary-fixed-dim": "#f3bd78",
+                    "error": "#ba1a1a"
+            },
+            borderRadius: { DEFAULT: "0px", lg: "0px", xl: "0px", full: "0px" },
+            fontFamily: {
+                    headline: ["Newsreader", "serif"],
+                    body: ["Newsreader", "serif"],
+                    label: ["Public Sans", "sans-serif"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .ghost-border-b {
+            border-bottom: 1px solid color-mix(in srgb, #c2c8be 15%, transparent);
+        }
+        .ghost-border-t {
+            border-top: 1px solid color-mix(in srgb, #c2c8be 15%, transparent);
+        }
+
+        .ambient-shadow {
+            box-shadow: 0px 12px 32px rgba(27, 28, 27, 0.06);
+        }
+
+        details > summary {
+            list-style: none;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .nav-glass {
+            background: rgba(251, 249, 247, 0.58);
+            -webkit-backdrop-filter: blur(18px) saturate(1.45);
+            backdrop-filter: blur(18px) saturate(1.45);
+            border-bottom: 1px solid rgba(194, 200, 190, 0.5);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.75),
+                0 8px 28px -10px rgba(27, 28, 27, 0.14);
+        }
+
+        @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+            .nav-glass {
+                background: rgba(251, 249, 247, 0.94);
+            }
+        }
+
+        .layout-gutter {
+            padding-left: max(1rem, env(safe-area-inset-left, 0px));
+            padding-right: max(1rem, env(safe-area-inset-right, 0px));
+        }
+        @media (min-width: 640px) {
+            .layout-gutter {
+                padding-left: max(1.5rem, env(safe-area-inset-left, 0px));
+                padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
+            }
+        }
+        @media (min-width: 1024px) {
+            .layout-gutter {
+                padding-left: max(3rem, env(safe-area-inset-left, 0px));
+                padding-right: max(3rem, env(safe-area-inset-right, 0px));
+            }
+        }
+
+        .profile-hero-gutter {
+            padding-left: max(1rem, env(safe-area-inset-left, 0px));
+            padding-right: max(1rem, env(safe-area-inset-right, 0px));
+        }
+        @media (min-width: 640px) {
+            .profile-hero-gutter {
+                padding-left: max(2rem, env(safe-area-inset-left, 0px));
+                padding-right: max(2rem, env(safe-area-inset-right, 0px));
+            }
+        }
+        @media (min-width: 768px) {
+            .profile-hero-gutter {
+                padding-left: max(3rem, env(safe-area-inset-left, 0px));
+                padding-right: max(3rem, env(safe-area-inset-right, 0px));
+            }
+        }
+
+        .profile-article-gutter {
+            padding-left: max(1rem, env(safe-area-inset-left, 0px));
+            padding-right: max(1rem, env(safe-area-inset-right, 0px));
+        }
+        @media (min-width: 640px) {
+            .profile-article-gutter {
+                padding-left: max(2rem, env(safe-area-inset-left, 0px));
+                padding-right: max(2rem, env(safe-area-inset-right, 0px));
+            }
+        }
+        @media (min-width: 768px) {
+            .profile-article-gutter {
+                padding-left: max(env(safe-area-inset-left, 0px), 0px);
+                padding-right: max(env(safe-area-inset-right, 0px), 0px);
+            }
+        }
+
+        .smooth-x-scroll {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
+        }
+
+        .nav-mobile-menu {
+            -webkit-tap-highlight-color: transparent;
+        }
+        .nav-mobile-menu > summary {
+            transition:
+                background-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.28s ease,
+                box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                color 0.2s ease;
+        }
+        .nav-mobile-menu[open] > summary {
+            color: rgb(7, 41, 12);
+            background-color: rgba(255, 255, 255, 0.92);
+            border-color: rgba(7, 41, 12, 0.22);
+            box-shadow:
+                0 12px 32px -10px rgba(27, 28, 27, 0.14),
+                inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        }
+        .nav-mobile-icon-close {
+            display: none;
+        }
+        .nav-mobile-menu[open] .nav-mobile-icon-open {
+            display: none;
+        }
+        .nav-mobile-menu[open] .nav-mobile-icon-close {
+            display: inline-block;
+        }
+        .nav-mobile-menu[open]::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 45;
+            background: rgba(27, 28, 27, 0.1);
+            animation: nav-mobile-backdrop-in 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            pointer-events: none;
+        }
+        @keyframes nav-mobile-backdrop-in {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .nav-mobile-panel {
+            transform-origin: top right;
+            will-change: transform, opacity;
+            -webkit-backdrop-filter: blur(22px) saturate(1.5);
+            backdrop-filter: blur(22px) saturate(1.5);
+            background: rgba(255, 255, 255, 0.94) !important;
+            box-shadow:
+                0 28px 56px -16px rgba(27, 28, 27, 0.2),
+                0 12px 28px -10px rgba(27, 28, 27, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            opacity: 0;
+            transform: translate3d(0, -0.6rem, 0) scale(0.97);
+            visibility: hidden;
+            pointer-events: none;
+            transition:
+                opacity 0.01ms step-end,
+                transform 0.01ms step-end,
+                visibility 0.01ms step-end;
+        }
+        .nav-mobile-menu[open] .nav-mobile-panel {
+            visibility: visible;
+            pointer-events: auto;
+            animation: nav-mobile-panel-in 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes nav-mobile-panel-in {
+            from {
+                opacity: 0;
+                transform: translate3d(0, -0.6rem, 0) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0) scale(1);
+            }
+        }
+        @keyframes nav-mobile-link-in {
+            from {
+                opacity: 0;
+                transform: translate3d(0.35rem, 0, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+        .nav-mobile-menu[open] .nav-mobile-panel .nav-mobile-link {
+            animation: nav-mobile-link-in 0.42s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+        }
+        .nav-mobile-menu[open] .nav-mobile-panel .nav-mobile-link:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+        .nav-mobile-menu[open] .nav-mobile-panel .nav-mobile-link:nth-child(2) {
+            animation-delay: 0.09s;
+        }
+        .nav-mobile-menu[open] .nav-mobile-panel .nav-mobile-link:nth-child(3) {
+            animation-delay: 0.13s;
+        }
+        .nav-mobile-menu[open] .nav-mobile-panel .nav-mobile-link:nth-child(4) {
+            animation-delay: 0.17s;
+        }
+        .nav-mobile-link {
+            transition:
+                background-color 0.22s ease,
+                color 0.2s ease,
+                transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nav-mobile-link:active {
+            transform: scale(0.99);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .nav-mobile-menu[open]::before {
+                animation: none;
+                opacity: 1;
+            }
+            .nav-mobile-menu[open] .nav-mobile-panel {
+                animation: none;
+                opacity: 1;
+                transform: none;
+                visibility: visible;
+            }
+            .nav-mobile-menu[open] .nav-mobile-panel .nav-mobile-link {
+                animation: none;
+            }
+        }
+
+        .profile-globe .country-land {
+            stroke: #fbf9f7;
+            stroke-width: 0.35px;
+            transition: fill 0.45s ease, opacity 0.25s ease;
+        }
+
+        #profile-globe-container svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .profile-category[open] {
+            box-shadow: 0 16px 40px -16px rgba(27, 28, 27, 0.12);
+        }
+
+        #country-select-trigger .country-select-chevron {
+            transition: transform 0.25s ease;
+        }
+
+        #country-select-wrap.is-open #country-select-trigger .country-select-chevron {
+            transform: rotate(180deg);
+        }
+
+        #country-select-menu {
+            scrollbar-width: thin;
+            scrollbar-color: color-mix(in srgb, #737970 45%, transparent) transparent;
+        }
+
+        .profile-expand-icon {
+            font-size: 1.5rem;
+            font-weight: 300;
+            line-height: 1;
+            color: #07290c;
+            width: 2rem;
+            text-align: center;
+            font-family: "Public Sans", system-ui, sans-serif;
+        }
+
+        .profile-category[open] > summary .profile-expand-icon {
+            font-size: 1.35rem;
+        }
+
+        .profile-category[open] > summary .profile-expand-icon::before {
+            content: "−";
+        }
+
+        .profile-category:not([open]) > summary .profile-expand-icon::before {
+            content: "+";
+        }
+
+        .capital-callout {
+            pointer-events: none;
+        }
+
+        /* Fixed landscape frame (4:3) so wide flags are never cropped into a “vertical slice”. */
+        .profile-flag-tile {
+            width: 7.35rem;
+            aspect-ratio: 4 / 3;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eae8e6;
+        }
+
+        @media (min-width: 640px) {
+            .profile-flag-tile {
+                width: 8.25rem;
+            }
+        }
+
+        #profile-flag-display {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            display: block;
+        }
+
+        .profile-scroll-summary {
+            position: fixed;
+            left: 0;
+            right: 0;
+            z-index: 40;
+            background: rgba(251, 249, 247, 0.92);
+            -webkit-backdrop-filter: blur(16px) saturate(1.35);
+            backdrop-filter: blur(16px) saturate(1.35);
+            border-bottom: 1px solid rgba(194, 200, 190, 0.55);
+            box-shadow: 0 6px 20px -8px rgba(27, 28, 27, 0.12);
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            transition: transform 0.28s ease, opacity 0.28s ease, visibility 0.28s;
+        }
+
+        .profile-scroll-summary.is-visible {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+
+        @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+            .profile-scroll-summary {
+                background: rgba(251, 249, 247, 0.98);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .profile-scroll-summary {
+                transition: none;
+            }
+        }
+
+        .profile-scroll-summary-flag-wrap {
+            width: 2.75rem;
+            aspect-ratio: 4 / 3;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eae8e6;
+            border: 1px solid rgba(194, 200, 190, 0.45);
+            overflow: hidden;
+        }
+
+        .profile-scroll-summary-flag-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            display: block;
+        }
+    </style>
+</head>
+<body class="min-h-dvh min-h-screen flex flex-col bg-surface text-on-surface antialiased font-body selection:bg-primary-container selection:text-white overflow-x-clip">
+<nav class="nav-glass text-primary font-headline leading-tight tracking-tight w-full sticky top-0 z-50 overflow-visible transition-opacity duration-200 supports-[padding:max(0px)]:pt-[env(safe-area-inset-top)]">
+<div class="flex items-center gap-3 sm:gap-4 w-full layout-gutter py-4 md:py-6 max-w-screen-2xl mx-auto overflow-visible">
+<a class="font-bold font-headline text-primary tracking-tight leading-none shrink-0 min-w-0" href="index.html" aria-label="Democracy Index home"><span class="md:hidden text-xl sm:text-2xl tabular-nums">DI</span><span class="hidden md:inline text-lg md:text-xl lg:text-2xl whitespace-nowrap">Democracy Index</span></a>
+<div class="flex-1 min-w-0 flex justify-center">
+<div class="hidden md:flex gap-6 lg:gap-8 items-center font-label text-sm tracking-wide whitespace-nowrap">
+<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300 shrink-0" href="index.html">The Index</a>
+<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300 shrink-0" href="country-profiles.html">Country Profiles</a>
+<a class="text-primary font-bold border-b border-primary pb-1 shrink-0" href="comparison.html" aria-current="page">Comparison</a>
+<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300 shrink-0" href="indicators.html">Indicators</a>
+<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300 shrink-0" href="references.html">References</a>
+</div>
+</div>
+<div class="flex items-center gap-2 sm:gap-4 md:gap-6 shrink-0">
+<details class="nav-mobile-menu relative z-[60] md:hidden group">
+<summary class="flex items-center justify-center w-11 h-11 text-on-background/70 hover:text-primary cursor-pointer border border-outline-variant/30 bg-surface-container-low/80" aria-label="Open navigation menu">
+<span class="material-symbols-outlined nav-mobile-icon-open text-2xl transition-transform duration-300 ease-out">menu</span>
+<span class="material-symbols-outlined nav-mobile-icon-close text-2xl transition-transform duration-300 ease-out">close</span>
+</summary>
+<div class="nav-mobile-panel absolute right-0 top-full mt-2 w-[min(calc(100vw-2rem),18rem)] border border-outline-variant/25 py-1 z-[60]">
+<a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-on-background/85 hover:bg-surface-container-high/90 hover:text-primary" href="index.html">The Index</a>
+<a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-on-background/85 hover:bg-surface-container-high/90 hover:text-primary" href="country-profiles.html">Country Profiles</a>
+<a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-primary font-semibold border-b border-outline-variant/15 hover:bg-surface-container-high/90" href="comparison.html" aria-current="page">Comparison</a>
+<a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-on-background/85 hover:bg-surface-container-high/90 hover:text-primary" href="indicators.html">Indicators</a>
+<a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-on-background/85 hover:bg-surface-container-high/90 hover:text-primary" href="references.html">References</a>
+</div>
+</details>
+</div>
+</div>
+</nav>
+<div id="dgw-load-error" class="hidden w-full max-w-screen-2xl mx-auto layout-gutter py-3 bg-error-container text-on-error-container font-label text-sm border-b border-error/30" role="alert"></div>
+
+<main class="flex-grow pb-32 min-w-0 w-full max-w-full overflow-x-clip">
+<header class="max-w-screen-2xl mx-auto w-full min-w-0 layout-gutter py-12 sm:py-16 md:py-20">
+<p class="font-label text-[10px] sm:text-xs uppercase tracking-[0.2em] text-on-surface-variant mb-3">Tool</p>
+<h1 class="font-headline text-[1.85rem] sm:text-4xl md:text-5xl leading-[1.08] tracking-[-0.02em] text-primary-container text-balance">Country comparison</h1>
+<p class="mt-4 font-body text-base md:text-lg text-on-surface-variant leading-relaxed max-w-3xl">Pick up to three countries and view their overall score, regime category, and every pillar / variable / indicator side by side. Use the finder below to surface the highest or lowest scoring countries on any indicator.</p>
+</header>
+
+<section class="max-w-screen-2xl mx-auto w-full min-w-0 layout-gutter">
+<div class="flex flex-wrap items-center gap-4 mb-8">
+<span class="font-label text-[10px] uppercase tracking-[0.18em] text-on-surface-variant">Region</span>
+<div class="region-track flex p-1 rounded-sm bg-surface-container-low/90 border border-outline-variant/25 gap-1" role="group" aria-label="Choose which region to focus on">
+<button type="button" id="region-latam" class="region-btn flex items-center justify-center px-3 py-1.5 text-[10px] sm:text-xs font-label font-medium uppercase tracking-[0.12em] rounded-sm transition-all duration-200 text-on-background/65 hover:text-primary hover:bg-surface-container-high/70" aria-pressed="false">Latin America</button>
+<button type="button" id="region-wa" class="region-btn flex items-center justify-center px-3 py-1.5 text-[10px] sm:text-xs font-label font-medium uppercase tracking-[0.12em] rounded-sm transition-all duration-200 text-on-background/65 hover:text-primary hover:bg-surface-container-high/70" aria-pressed="false">West Africa</button>
+<button type="button" id="region-both" class="region-btn flex items-center justify-center px-3 py-1.5 text-[10px] sm:text-xs font-label font-medium uppercase tracking-[0.12em] rounded-sm transition-all duration-200 bg-primary text-on-primary shadow-[0_1px_2px_rgba(7,41,12,0.12)]" aria-pressed="true">Both</button>
+</div>
+</div>
+
+<div id="compare-pickers" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10"></div>
+
+<div id="compare-grid-wrap" class="overflow-x-auto smooth-x-scroll mb-16"></div>
+</section>
+
+<section class="max-w-screen-2xl mx-auto w-full min-w-0 layout-gutter mb-24">
+<header class="mb-8">
+<h2 class="font-headline text-2xl md:text-3xl text-primary tracking-tight">Highest & lowest by indicator</h2>
+<p class="mt-2 font-body text-sm md:text-base text-on-surface-variant max-w-3xl">Pick any pillar, variable, or indicator from the index. The list updates with the top or bottom countries in the active region.</p>
+</header>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6">
+<label class="md:col-span-6 flex flex-col gap-1.5">
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">Metric</span>
+<select id="topbottom-metric" class="font-label text-sm bg-surface-container-low border border-outline-variant/30 px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/25"></select>
+</label>
+<label class="md:col-span-3 flex flex-col gap-1.5">
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">Direction</span>
+<select id="topbottom-direction" class="font-label text-sm bg-surface-container-low border border-outline-variant/30 px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/25">
+<option value="desc">Highest</option>
+<option value="asc">Lowest</option>
+</select>
+</label>
+<label class="md:col-span-3 flex flex-col gap-1.5">
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">Show</span>
+<select id="topbottom-count" class="font-label text-sm bg-surface-container-low border border-outline-variant/30 px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/25">
+<option value="3">Top 3</option>
+<option value="5" selected>Top 5</option>
+<option value="10">Top 10</option>
+</select>
+</label>
+</div>
+<div id="topbottom-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+</section>
+</main>
+
+<script src="data/democracy-scale.js"></script>
+<script src="data/dgw-blueprint.js"></script>
+<script src="data/dgw-loader.js"></script>
+<script src="data/ingested-excel.js"></script>
+<script>
+(function () {
+    __ensureDGW(function (err, dgw) {
+        if (err) {
+            console.error(err);
+            var banner = document.getElementById("dgw-load-error");
+            if (banner) { banner.textContent = err.message; banner.classList.remove("hidden"); }
+            return;
+        }
+        const B = window.DGWBlueprint;
+        const countryData = dgw.countryData;
+        const REGION_KEY_TO_LABEL = { latam: "Latin America", wa: "West Africa", both: "Both regions" };
+        const REGION_LABEL_TO_KEY = { "Latin America": "latam", "West Africa": "wa" };
+        const NUM_SLOTS = 3;
+
+        function readPersistedRegion() {
+            try {
+                var v = sessionStorage.getItem("dgw.activeRegion");
+                if (v === "latam" || v === "wa" || v === "both") return v;
+            } catch (e) {}
+            return "both";
+        }
+        function writePersistedRegion(v) { try { sessionStorage.setItem("dgw.activeRegion", v); } catch (e) {} }
+
+        function regionForName(name) {
+            var r = countryData[name] && countryData[name].region;
+            return r && REGION_LABEL_TO_KEY[r] ? REGION_LABEL_TO_KEY[r] : null;
+        }
+        function passesRegionFilter(name, region) {
+            if (region === "both") return true;
+            return regionForName(name) === region;
+        }
+
+        // ---- URL state ----
+        const params = new URLSearchParams(window.location.search);
+        let activeRegion = params.get("r") || readPersistedRegion();
+        if (!["latam", "wa", "both"].includes(activeRegion)) activeRegion = "both";
+        const initialSlots = [params.get("a"), params.get("b"), params.get("c")];
+        let selected = initialSlots.map((n) => (n && countryData[n] ? n : null));
+
+        function syncUrl() {
+            const p = new URLSearchParams();
+            if (selected[0]) p.set("a", selected[0]);
+            if (selected[1]) p.set("b", selected[1]);
+            if (selected[2]) p.set("c", selected[2]);
+            if (activeRegion !== "both") p.set("r", activeRegion);
+            const next = p.toString() ? "?" + p.toString() : window.location.pathname;
+            window.history.replaceState(null, "", next);
+        }
+
+        // ---- Region toggle ----
+        function applyRegionUi() {
+            [{ id: "region-latam", k: "latam" }, { id: "region-wa", k: "wa" }, { id: "region-both", k: "both" }].forEach(function (b) {
+                const el = document.getElementById(b.id);
+                if (!el) return;
+                const on = b.k === activeRegion;
+                el.setAttribute("aria-pressed", on ? "true" : "false");
+                el.classList.toggle("bg-primary", on);
+                el.classList.toggle("text-on-primary", on);
+                el.classList.toggle("shadow-[0_1px_2px_rgba(7,41,12,0.12)]", on);
+                el.classList.toggle("text-on-background/65", !on);
+                el.classList.toggle("hover:text-primary", !on);
+                el.classList.toggle("hover:bg-surface-container-high/70", !on);
+            });
+        }
+        function setRegion(next) {
+            if (next === activeRegion) return;
+            activeRegion = next;
+            writePersistedRegion(next);
+            // Drop selections that no longer match the region
+            selected = selected.map((n) => (n && passesRegionFilter(n, activeRegion) ? n : null));
+            applyRegionUi();
+            buildPickers();
+            renderGrid();
+            renderTopBottom();
+            syncUrl();
+        }
+        document.getElementById("region-latam").addEventListener("click", () => setRegion("latam"));
+        document.getElementById("region-wa").addEventListener("click", () => setRegion("wa"));
+        document.getElementById("region-both").addEventListener("click", () => setRegion("both"));
+
+        // ---- Country pickers ----
+        function eligibleNames() {
+            const order = (dgw.countryNamesSorted || Object.keys(countryData)).slice();
+            return order.filter((n) => countryData[n] && passesRegionFilter(n, activeRegion));
+        }
+
+        function buildPickers() {
+            const wrap = document.getElementById("compare-pickers");
+            wrap.innerHTML = "";
+            for (let i = 0; i < NUM_SLOTS; i++) {
+                wrap.appendChild(makePicker(i));
+            }
+        }
+
+        function makePicker(slot) {
+            const card = document.createElement("div");
+            card.className = "relative";
+            const cur = selected[slot];
+            const triggerLabel = cur ? B.escHtml(cur) : "Pick a country…";
+            card.innerHTML =
+                '<label class="font-label text-on-surface-variant text-xs uppercase tracking-widest mb-2 block">Country ' + (slot + 1) + '</label>' +
+                '<div class="relative">' +
+                '<button type="button" data-slot="' + slot + '" class="picker-trigger group w-full flex items-center justify-between gap-3 font-headline text-base sm:text-lg tracking-tight text-primary bg-surface-container-low border border-outline-variant/25 px-3.5 py-2.5 hover:border-primary/35 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:ring-offset-2 focus-visible:ring-offset-surface transition-colors" aria-haspopup="listbox" aria-expanded="false">' +
+                '<span class="min-w-0 truncate text-left ' + (cur ? "" : "text-on-surface-variant/70") + '">' + triggerLabel + '</span>' +
+                '<span class="material-symbols-outlined text-outline-variant group-hover:text-primary text-xl shrink-0" aria-hidden="true">expand_more</span>' +
+                '</button>' +
+                '<div class="picker-menu hidden absolute z-30 left-0 right-0 mt-1 max-h-64 overflow-y-auto border border-outline-variant/20 bg-surface-container-lowest shadow-[0_20px_48px_-16px_rgba(27,28,27,0.18)]" role="listbox" tabindex="-1"></div>' +
+                (cur ? '<button type="button" data-clear-slot="' + slot + '" class="absolute -top-7 right-0 text-[11px] font-label text-on-surface-variant hover:text-primary">Clear</button>' : "") +
+                '</div>';
+            return card;
+        }
+
+        function closeAllMenus() {
+            document.querySelectorAll(".picker-menu").forEach((m) => m.classList.add("hidden"));
+            document.querySelectorAll(".picker-trigger").forEach((t) => t.setAttribute("aria-expanded", "false"));
+        }
+
+        document.addEventListener("click", function (e) {
+            const trigger = e.target.closest(".picker-trigger");
+            const clear = e.target.closest("[data-clear-slot]");
+            if (clear) {
+                e.preventDefault();
+                const slot = Number(clear.dataset.clearSlot);
+                selected[slot] = null;
+                buildPickers();
+                renderGrid();
+                syncUrl();
+                return;
+            }
+            if (trigger) {
+                e.preventDefault();
+                const slot = Number(trigger.dataset.slot);
+                const menu = trigger.parentElement.querySelector(".picker-menu");
+                const willOpen = menu.classList.contains("hidden");
+                closeAllMenus();
+                if (willOpen) {
+                    fillMenu(menu, slot);
+                    menu.classList.remove("hidden");
+                    trigger.setAttribute("aria-expanded", "true");
+                }
+                return;
+            }
+            const inside = e.target.closest(".picker-menu");
+            if (!inside) closeAllMenus();
+        });
+
+        function fillMenu(menu, slot) {
+            menu.innerHTML = "";
+            const others = new Set(selected.filter((v, i) => i !== slot && v));
+            const names = eligibleNames().filter((n) => !others.has(n));
+            if (!names.length) {
+                menu.innerHTML = '<div class="px-4 py-3 font-label text-sm text-on-surface-variant">No countries available.</div>';
+                return;
+            }
+            names.forEach((name) => {
+                const meta = B.profileMeta[name] || {};
+                const flag = meta.iso2 ? B.flagSvgUrl(meta.iso2) : "";
+                const row = document.createElement("button");
+                row.type = "button";
+                row.setAttribute("role", "option");
+                row.className = "w-full text-left px-4 py-2.5 font-label text-sm text-on-surface hover:bg-surface-container-high border-b border-outline-variant/10 last:border-b-0 transition-colors flex items-center justify-between gap-2";
+                row.innerHTML =
+                    '<span class="truncate">' + B.escHtml(name) + '</span>' +
+                    (flag ? '<img src="' + flag + '" alt="" width="36" height="27" class="w-9 aspect-[4/3] object-contain border border-outline-variant/25 shrink-0 bg-surface-container-high" loading="lazy" decoding="async">' : "");
+                row.addEventListener("click", function () {
+                    selected[slot] = name;
+                    closeAllMenus();
+                    buildPickers();
+                    renderGrid();
+                    syncUrl();
+                });
+                menu.appendChild(row);
+            });
+        }
+
+        // ---- Comparison grid ----
+        function diffClassFor(value, allValues) {
+            const nums = allValues.filter((v) => v != null && !Number.isNaN(Number(v))).map(Number);
+            if (nums.length < 2 || value == null) return "";
+            const hi = Math.max(...nums);
+            const lo = Math.min(...nums);
+            if (hi === lo) return "";
+            const v = Number(value);
+            if (v === hi) return "compare-diff-hi";
+            if (v === lo) return "compare-diff-lo";
+            return "";
+        }
+
+        function cellHtml(country, dimensionIdx, blockId, value, indicatorId, kind) {
+            const out = B.formatVariableOrIndicatorScore({
+                country: country,
+                dgw: dgw,
+                dimensionIdx: dimensionIdx,
+                blockId: blockId,
+                workbook0100: value,
+                indicatorId: indicatorId,
+                variantBlock: kind === "block" ? "compare" : "varBlock",
+                variantIndicator: kind === "indicator" ? "table" : "indicator",
+            });
+            if (typeof out === "string" && out.indexOf("<span") === 0) return out;
+            return '<span class="font-label text-xs uppercase tracking-wide text-on-surface-variant">' + B.escHtml(out) + '</span>';
+        }
+
+        function renderGrid() {
+            const wrap = document.getElementById("compare-grid-wrap");
+            const countries = selected.filter(Boolean);
+            if (!countries.length) {
+                wrap.innerHTML = '<div class="border border-dashed border-outline-variant/40 bg-surface-container-low/40 p-10 text-center font-label text-sm text-on-surface-variant">Pick at least one country to start comparing.</div>';
+                return;
+            }
+            const headerCells = countries.map(function (name) {
+                const d = countryData[name];
+                const meta = B.profileMeta[name] || {};
+                const bg = window.DGWScale.flatCategoryColor(d.category);
+                const fg = window.DGWScale.contrastTextColor(bg);
+                return '<div class="bg-surface-container-lowest border border-outline-variant/15 p-5 sm:p-6 flex flex-col gap-4">' +
+                    (meta.iso2 ? '<img src="' + B.flagSvgUrl(meta.iso2) + '" alt="Flag of ' + B.escHtml(name) + '" class="w-16 aspect-[4/3] object-contain border border-outline-variant/25 bg-surface-container-high">' : "") +
+                    '<div>' +
+                    '<p class="font-headline text-xl sm:text-2xl text-primary tracking-tight">' + B.escHtml(name) + '</p>' +
+                    '<p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mt-1">' + B.escHtml(d.region || "") +
+                    (d.regionalRank ? ' · ' + B.ordinal(d.regionalRank) + " in region" : "") + '</p>' +
+                    '</div>' +
+                    '<div>' + (B.formatScoreSlash100Html(d.score, "compare") || "—") + '</div>' +
+                    '<span class="inline-block px-2.5 py-1 font-label text-xs normal-case tracking-wide text-balance" style="background-color:' + bg + ';color:' + fg + ';">' + B.escHtml(d.category) + '</span>' +
+                    '</div>';
+            }).join("");
+            const cols = countries.length;
+            const colTemplate = "minmax(200px, 1.4fr) repeat(" + cols + ", minmax(140px, 1fr))";
+
+            const rows = [];
+            B.INDEX_BLUEPRINT.forEach(function (dim, di) {
+                rows.push('<div class="compare-row compare-row-dim" style="grid-template-columns:' + colTemplate + ';">' +
+                    '<div class="compare-cell-label compare-cell-dim"><span class="font-headline text-base sm:text-lg text-primary">' + B.escHtml(dim.title) + '</span><span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant ml-2">' + dim.weightPct + '%</span></div>' +
+                    countries.map(function (c) {
+                        const v = B.dimensionWorkbookValue0100(dgw, c, di);
+                        const cell = cellHtml(c, di, null, v, null, "dim");
+                        const cls = diffClassFor(v, countries.map((x) => B.dimensionWorkbookValue0100(dgw, x, di)));
+                        return '<div class="compare-cell compare-cell-dim ' + cls + '">' + cell + '</div>';
+                    }).join("") +
+                    '</div>');
+                dim.blocks.forEach(function (blk) {
+                    rows.push('<div class="compare-row compare-row-block" style="grid-template-columns:' + colTemplate + ';">' +
+                        '<div class="compare-cell-label compare-cell-block"><span class="font-label text-[11px] uppercase tracking-widest text-on-surface-variant">' + B.escHtml(blk.heading) + '</span><span class="font-label text-[10px] tracking-wide text-on-surface-variant/70 ml-2">' + blk.dimWeightPct + '%</span></div>' +
+                        countries.map(function (c) {
+                            const v = B.variableWorkbookValue0100(dgw, c, blk.id);
+                            const cell = cellHtml(c, di, blk.id, v, null, "block");
+                            const cls = diffClassFor(v, countries.map((x) => B.variableWorkbookValue0100(dgw, x, blk.id)));
+                            return '<div class="compare-cell compare-cell-block ' + cls + '">' + cell + '</div>';
+                        }).join("") +
+                        '</div>');
+                    blk.indicators.forEach(function (ind) {
+                        rows.push('<div class="compare-row compare-row-ind" style="grid-template-columns:' + colTemplate + ';">' +
+                            '<div class="compare-cell-label compare-cell-ind"><span class="font-body text-sm text-on-surface">' + B.escHtml(ind.name) + '</span><span class="font-label text-[10px] tracking-wide text-on-surface-variant/70 ml-2">' + ind.weightInDimPct + '%</span></div>' +
+                            countries.map(function (c) {
+                                const v = B.indicatorWorkbookValue0100(dgw, c, ind.id);
+                                const cell = cellHtml(c, di, blk.id, v, ind.id, "indicator");
+                                const cls = diffClassFor(v, countries.map((x) => B.indicatorWorkbookValue0100(dgw, x, ind.id)));
+                                return '<div class="compare-cell compare-cell-ind ' + cls + '">' + cell + '</div>';
+                            }).join("") +
+                            '</div>');
+                    });
+                });
+            });
+
+            wrap.innerHTML =
+                '<div class="compare-grid bg-surface-container-lowest border border-outline-variant/15">' +
+                '<div class="compare-row compare-row-head" style="grid-template-columns:' + colTemplate + ';">' +
+                '<div class="compare-cell-label"><span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">Country</span></div>' +
+                headerCells +
+                '</div>' +
+                rows.join("") +
+                '</div>';
+        }
+
+        // ---- Top/Bottom finder ----
+        function metricOptions() {
+            const opts = [{ value: "__score", label: "Overall index score", group: "" }];
+            B.INDEX_BLUEPRINT.forEach(function (dim, di) {
+                opts.push({ value: "dim:" + di, label: dim.title, group: "Pillars" });
+                dim.blocks.forEach(function (blk) {
+                    opts.push({ value: "var:" + blk.id, label: blk.heading, group: dim.title });
+                    blk.indicators.forEach(function (ind) {
+                        opts.push({ value: "ind:" + ind.id, label: ind.name, group: dim.title + " · " + blk.heading });
+                    });
+                });
+            });
+            return opts;
+        }
+
+        function fillMetricSelect() {
+            const sel = document.getElementById("topbottom-metric");
+            const opts = metricOptions();
+            const byGroup = {};
+            const order = [];
+            opts.forEach(function (o) {
+                if (!byGroup[o.group]) { byGroup[o.group] = []; order.push(o.group); }
+                byGroup[o.group].push(o);
+            });
+            sel.innerHTML = order.map(function (g) {
+                const inner = byGroup[g].map((o) => '<option value="' + o.value + '">' + B.escHtml(o.label) + '</option>').join("");
+                return g ? '<optgroup label="' + B.escHtml(g) + '">' + inner + '</optgroup>' : inner;
+            }).join("");
+        }
+
+        function valueFor(country, metric) {
+            if (metric === "__score") {
+                const d = countryData[country];
+                return d && typeof d.score === "number" ? d.score : null;
+            }
+            if (metric.indexOf("dim:") === 0) {
+                return B.dimensionWorkbookValue0100(dgw, country, Number(metric.slice(4)));
+            }
+            if (metric.indexOf("var:") === 0) {
+                return B.variableWorkbookValue0100(dgw, country, metric.slice(4));
+            }
+            if (metric.indexOf("ind:") === 0) {
+                return B.indicatorWorkbookValue0100(dgw, country, metric.slice(4));
+            }
+            return null;
+        }
+
+        function renderTopBottom() {
+            const list = document.getElementById("topbottom-list");
+            const metric = document.getElementById("topbottom-metric").value;
+            const dir = document.getElementById("topbottom-direction").value;
+            const n = Number(document.getElementById("topbottom-count").value);
+            const pool = (dgw.countryNamesSorted || Object.keys(countryData)).filter((c) => passesRegionFilter(c, activeRegion));
+            const rows = pool.map((c) => ({ c: c, v: valueFor(c, metric) }))
+                .filter((r) => r.v != null && !Number.isNaN(Number(r.v)));
+            rows.sort((a, b) => dir === "asc" ? a.v - b.v : b.v - a.v);
+            const top = rows.slice(0, n);
+            if (!top.length) {
+                list.innerHTML = '<div class="border border-dashed border-outline-variant/40 p-6 text-center font-label text-sm text-on-surface-variant col-span-full">No data for this selection.</div>';
+                return;
+            }
+            list.innerHTML = top.map(function (r, i) {
+                const meta = B.profileMeta[r.c] || {};
+                const d = countryData[r.c];
+                const bg = window.DGWScale.flatCategoryColor(d.category);
+                const fg = window.DGWScale.contrastTextColor(bg);
+                return '<div class="bg-surface-container-lowest border border-outline-variant/15 p-4 flex items-center gap-4">' +
+                    '<span class="font-headline text-2xl text-primary tabular-nums w-8 shrink-0">' + (i + 1) + '</span>' +
+                    (meta.iso2 ? '<img src="' + B.flagSvgUrl(meta.iso2) + '" alt="" class="w-12 aspect-[4/3] object-contain border border-outline-variant/25 bg-surface-container-high shrink-0">' : "") +
+                    '<div class="min-w-0 flex-1">' +
+                    '<p class="font-headline text-base text-primary truncate">' + B.escHtml(r.c) + '</p>' +
+                    '<p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant truncate">' + B.escHtml(d.region || "") + '</p>' +
+                    '</div>' +
+                    '<div class="text-right shrink-0">' + (B.formatScoreSlash100Html(r.v, "compare") || "—") + '</div>' +
+                    '</div>';
+            }).join("");
+        }
+
+        document.getElementById("topbottom-metric").addEventListener("change", renderTopBottom);
+        document.getElementById("topbottom-direction").addEventListener("change", renderTopBottom);
+        document.getElementById("topbottom-count").addEventListener("change", renderTopBottom);
+
+        // ---- Initial render ----
+        applyRegionUi();
+        buildPickers();
+        renderGrid();
+        fillMetricSelect();
+        renderTopBottom();
+        syncUrl();
+    });
+})();
+</script>
+<style>
+    .compare-grid { display: flex; flex-direction: column; min-width: 600px; }
+    .compare-row { display: grid; align-items: stretch; border-top: 1px solid rgba(115, 121, 112, 0.12); }
+    .compare-row-head { border-top: 0; }
+    .compare-row-dim { background: rgba(245, 243, 241, 0.55); }
+    .compare-cell, .compare-cell-label { padding: 0.65rem 0.85rem; }
+    .compare-cell { display: flex; align-items: center; justify-content: flex-end; text-align: right; border-left: 1px solid rgba(115, 121, 112, 0.08); }
+    .compare-cell-label { display: flex; align-items: baseline; }
+    .compare-cell-dim { padding-top: 1rem; padding-bottom: 1rem; }
+    .compare-cell-ind { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .compare-diff-hi { background: rgba(0, 105, 92, 0.08); box-shadow: inset 3px 0 0 rgba(0, 105, 92, 0.45); }
+    .compare-diff-lo { background: rgba(186, 26, 26, 0.06); box-shadow: inset 3px 0 0 rgba(186, 26, 26, 0.4); }
+</style>
+</body></html>

@@ -441,6 +441,7 @@
 <div class="hidden md:flex gap-6 lg:gap-8 items-center font-label text-sm tracking-wide whitespace-nowrap">
 <a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300 shrink-0" href="index.html">The Index</a>
 <a class="text-primary font-bold border-b border-primary pb-1 shrink-0" href="country-profiles.html" aria-current="page">Country Profiles</a>
+<a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300 shrink-0" href="comparison.html">Comparison</a>
 <a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300 shrink-0" href="indicators.html">Indicators</a>
 <a class="text-on-background/70 font-medium hover:text-primary transition-all duration-300 shrink-0" href="references.html">References</a>
 </div>
@@ -454,6 +455,7 @@
 <div class="nav-mobile-panel absolute right-0 top-full mt-2 w-[min(calc(100vw-2rem),18rem)] border border-outline-variant/25 py-1 z-[60]">
 <a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-on-background/85 hover:bg-surface-container-high/90 hover:text-primary" href="index.html">The Index</a>
 <a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-primary font-semibold border-b border-outline-variant/15 hover:bg-surface-container-high/90" href="country-profiles.html" aria-current="page">Country Profiles</a>
+<a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-on-background/85 hover:bg-surface-container-high/90 hover:text-primary" href="comparison.html">Comparison</a>
 <a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-on-background/85 hover:bg-surface-container-high/90 hover:text-primary" href="indicators.html">Indicators</a>
 <a class="nav-mobile-link block px-4 py-3.5 font-label text-sm text-on-background/85 hover:bg-surface-container-high/90 hover:text-primary" href="references.html">References</a>
 </div>
@@ -524,7 +526,8 @@
 <p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 px-1">Regional view</p>
 <div id="profile-globe-container" class="profile-globe w-full h-[min(52vh,22rem)] sm:h-[min(56vh,26rem)] md:h-[min(60vh,30rem)] bg-surface-container overflow-hidden min-h-[220px]" role="img" aria-label="Orthographic globe highlighting the selected country"></div>
 </div>
-<div class="px-1 font-label text-xs text-on-surface-variant">
+<div class="px-1 font-label text-xs text-on-surface-variant flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+<span id="profile-region-label" class="text-primary font-medium uppercase tracking-widest text-[10px]"></span>
 <span id="profile-rank-regional">Regional rank: —</span>
 </div>
 <div class="mt-2 border border-outline-variant/15 bg-surface-container-low/50 p-4 sm:p-5 shadow-[0_8px_24px_-12px_rgba(27,28,27,0.06)]">
@@ -539,13 +542,13 @@
 <span id="profile-capital-name">—</span>
 </p>
 </div>
-<div>
+<div id="profile-population-row">
 <p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1.5">Population</p>
 <p class="font-label text-sm text-on-surface leading-relaxed">
 <span id="profile-population-value">—</span><span class="text-on-surface-variant/70 font-normal normal-case tracking-normal text-xs"> · World Bank, <span id="profile-population-year">2024</span></span>
 </p>
 </div>
-<div>
+<div id="profile-president-row">
 <p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1.5">President</p>
 <p id="profile-president-value" class="font-label text-sm text-on-surface leading-relaxed">—</p>
 </div>
@@ -577,6 +580,7 @@ Every pillar, variable block, and indicator shows the country’s score on the w
 </footer>
 
 <script src="data/democracy-scale.js"></script>
+<script src="data/dgw-blueprint.js"></script>
 <script src="data/dgw-loader.js"></script>
 <script src="data/ingested-excel.js"></script>
 <script>
@@ -593,74 +597,30 @@ Every pillar, variable block, and indicator shows the country’s score on the w
         }
         var countryData = dgw.countryData;
 
-    const REGION_SIZE = Object.keys(countryData).length;
+    const B = window.DGWBlueprint;
     const GLOBE_ZOOM_FOCUS = 1.9;
     const GLOBE_ANIM_MS = 1550;
-    /** World Development Indicators SP.POP.TOTL — latest year returned by the World Bank API (retrieved 2026-04-18). */
-    const WORLD_BANK_POP_YEAR = 2024;
-
-    /* Set reparationsExcluded: true on a country when the Reparations sub-component (Democratic memory) is not used — see the note on indicators.html. */
-    const profileMeta = {
-        "Uruguay": { wbPop: 3386588, capital: "Montevideo", iso2: "UY", president: "Yamandú Orsi", capitalLon: -56.1645, capitalLat: -34.9011 },
-        "Chile": { wbPop: 19764771, capital: "Santiago de Chile", iso2: "CL", president: "José Antonio Kast", capitalLon: -70.6483, capitalLat: -33.4489 },
-        "Brasil": { wbPop: 211998573, capital: "Brasília, Distrito Federal", iso2: "BR", president: "Luiz Inácio Lula da Silva", capitalLon: -47.8828, capitalLat: -15.7939 },
-        "Argentina": { wbPop: 45696159, capital: "Ciudad Autónoma de Buenos Aires", iso2: "AR", president: "Javier Milei", capitalLon: -58.3816, capitalLat: -34.6037 },
-        "Colombia": { wbPop: 52886363, capital: "Bogotá, Distrito Capital", iso2: "CO", president: "Gustavo Petro", capitalLon: -74.0721, capitalLat: 4.7110 },
-        "Costa Rica": { wbPop: 5129910, capital: "San José", iso2: "CR", president: "Rodrigo Chaves Robles", capitalLon: -84.0907, capitalLat: 9.9281 },
-        "Dominican Republic": { wbPop: 11427557, capital: "Santo Domingo de Guzmán", iso2: "DO", president: "Luis Abinader", capitalLon: -69.9312, capitalLat: 18.4861 },
-        "Panama": { wbPop: 4515577, capital: "Ciudad de Panamá", iso2: "PA", president: "José Raúl Mulino", capitalLon: -79.5197, capitalLat: 8.9943 },
-        "Ecuador": { wbPop: 18135478, capital: "San Francisco de Quito", iso2: "EC", president: "Daniel Noboa", capitalLon: -78.4678, capitalLat: -0.1807 },
-        "Perú": { wbPop: 34217848, capital: "Lima, Ciudad de los Reyes", iso2: "PE", president: "Dina Boluarte", capitalLon: -77.0428, capitalLat: -12.0464 },
-        "Paraguay": { wbPop: 6929153, capital: "Nuestra Señora Santa María de la Asunción", iso2: "PY", president: "Santiago Peña", capitalLon: -57.5759, capitalLat: -25.2637 },
-        "Guatemala": { wbPop: 18406359, capital: "Nueva Guatemala de la Asunción", iso2: "GT", president: "Bernardo Arévalo", capitalLon: -90.5133, capitalLat: 14.6349 },
-        "Bolivia": { wbPop: 12413315, capital: "Nuestra Señora de La Paz (sede de gobierno); Sucre (capital constitucional)", iso2: "BO", president: "Luis Arce", capitalLon: -68.1193, capitalLat: -16.4897 },
-        "Suriname": { wbPop: 634431, capital: "Paramaribo", iso2: "SR", president: "Chan Santokhi", capitalLon: -55.2038, capitalLat: 5.8520 },
-        "Mexico": { wbPop: 130861007, capital: "Ciudad de México", iso2: "MX", president: "Claudia Sheinbaum Pardo", capitalLon: -99.1332, capitalLat: 19.4326 },
-        "Honduras": { wbPop: 10825703, capital: "Tegucigalpa, Distrito Central", iso2: "HN", president: "Nasry Asfura", capitalLon: -87.2068, capitalLat: 14.0723 },
-        "Guyana": { wbPop: 831087, capital: "Georgetown", iso2: "GY", president: "Mohamed Irfaan Ali", capitalLon: -58.1551, capitalLat: 6.8013, reparationsExcluded: true },
-        "El Salvador": { wbPop: 6338193, capital: "San Salvador", iso2: "SV", president: "Nayib Bukele", capitalLon: -89.2182, capitalLat: 13.6929 },
-        "Cuba": { wbPop: 10979783, capital: "Ciudad de La Habana", iso2: "CU", president: "Miguel Díaz-Canel", capitalLon: -82.3666, capitalLat: 23.1136 },
-        "Haiti": { wbPop: 11772557, capital: "Port-au-Prince", iso2: "HT", president: "Alix Didier Fils-Aimé (primer ministro, transición)", capitalLon: -72.3074, capitalLat: 18.5944 },
-        "Nicaragua": { wbPop: 6916140, capital: "Leal Villa de Santiago de Managua", iso2: "NI", president: "Daniel Ortega y Rosario Murillo (copresidencia)", capitalLon: -86.2514, capitalLat: 12.1364 },
-        "Venezuela": { wbPop: 28405543, capital: "Santiago de León de Caracas", iso2: "VE", president: "Delcy Rodríguez (presidenta encargada)", capitalLon: -66.9036, capitalLat: 10.4806 }
-    };
-
-    /** When true in profileMeta, Reparations (Democratic memory) is not scored — see Indicators page. */
-    const REPARATIONS_NA_DISPLAY = "DOES NOT APPLY";
-    const DATA_NOT_AVAILABLE_DISPLAY = "DATA NOT AVAILABLE";
-
-    function reparationsExcludedForCountry(name) {
-        const m = profileMeta[name];
-        return !!(m && m.reparationsExcluded);
+    const WORLD_BANK_POP_YEAR = B.WORLD_BANK_POP_YEAR;
+    const profileMeta = B.profileMeta;
+    /** Region-aware: number of peers in the same region (denominator for "Xth of N"). */
+    function regionSizeFor(name) {
+        const region = (countryData[name] && countryData[name].region) || null;
+        if (!region) return Object.keys(countryData).length;
+        const list = (dgw.regions && dgw.regions[region]) || [];
+        return list.length || Object.keys(countryData).filter(function (k) {
+            return countryData[k].region === region;
+        }).length;
     }
+    const REPARATIONS_NA_DISPLAY = B.REPARATIONS_NA_DISPLAY;
+    const DATA_NOT_AVAILABLE_DISPLAY = B.DATA_NOT_AVAILABLE_DISPLAY;
+    const reparationsExcludedForCountry = B.reparationsExcludedForCountry;
+    const formatWbPopulation = B.formatWbPopulation;
+    const flagSvgUrl = B.flagSvgUrl;
+    const ordinal = B.ordinal;
+    const escHtml = B.escHtml;
 
-    function formatWbPopulation(n) {
-        const m = n / 1e6;
-        if (m >= 100) return Math.round(m) + "M";
-        if (m >= 10) {
-            const v = Math.round(m * 10) / 10;
-            return (Number.isInteger(v) ? String(v) : v.toFixed(1)) + "M";
-        }
-        const v = Math.round(m * 100) / 100;
-        return String(v) + "M";
-    }
-
-    function flagSvgUrl(iso2) {
-        const cc = String(iso2).toLowerCase().replace(/[^a-z]/g, "");
-        if (cc.length !== 2) return "";
-        return "https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/" + cc + ".svg";
-    }
-
-    /** Workbook (Part3) variable weights and hierarchy; dimension % scores where the extract lists that country. */
-    /** Pillar names exactly as in the workbook (Excel column “Variable”). */
-    const DIMENSION_LABELS = [
-        "Institutional Integrity",
-        "Socio-economic development",
-        "Responsiveness",
-        "Electoral Integrity",
-        "Democratic memory"
-    ];
-    const DIMENSION_WEIGHTS_PCT = [30, 20, 20, 20, 10];
+    const DIMENSION_LABELS = B.DIMENSION_LABELS;
+    const DIMENSION_WEIGHTS_PCT = B.DIMENSION_WEIGHTS_PCT;
 
     const workbookDimensionScores = window.__DGW__.workbookDimensionScores;
 
@@ -673,174 +633,7 @@ Every pillar, variable block, and indicator shows the country’s score on the w
     const workbookIndicatorScores0100 = window.__DGW__.workbookIndicatorScores0100;
     const workbookIndicatorUnavailable = window.__DGW__.workbookIndicatorUnavailable || {};
 
-    /**
-     * Hierarchy: dimension (pillar) → variable (Excel “Dimension” column) → indicator.
-     * Labels and % weights match the index workbook (Part 3).
-     */
-    const INDEX_BLUEPRINT = [
-        {
-            label: "Dimension 1",
-            title: "Institutional Integrity",
-            weightPct: 30,
-            blocks: [
-                {
-                    id: "rule_of_law",
-                    heading: "Rule of Law",
-                    dimWeightPct: 30,
-                    indicators: [
-                        { id: "equal_protection_index", name: "Equal protection index", weightInDimPct: 15 },
-                        { id: "rule_of_law_index", name: "Rule of law index", weightInDimPct: 50 },
-                        { id: "civil_liberties", name: "Civil liberties", weightInDimPct: 15 },
-                        { id: "access_to_justice", name: "Access to justice", weightInDimPct: 20 }
-                    ]
-                },
-                {
-                    id: "separation_of_powers",
-                    heading: "Separation of powers",
-                    dimWeightPct: 25,
-                    indicators: [
-                        { id: "division_of_power_index", name: "Separations of power", weightInDimPct: 70 },
-                        { id: "high_court_independence", name: "High court independence", weightInDimPct: 30 }
-                    ]
-                },
-                {
-                    id: "accountability",
-                    heading: "Accountability",
-                    dimWeightPct: 30,
-                    indicators: [
-                        { id: "control_of_corruption", name: "Control of corruption", weightInDimPct: 35 },
-                        { id: "corruption_perception_index", name: "Corruption perceptions index", weightInDimPct: 30 },
-                        { id: "diagonal_accountability_index", name: "Diagonal accountability index", weightInDimPct: 35 }
-                    ]
-                },
-                {
-                    id: "transparency",
-                    heading: "Transparency",
-                    dimWeightPct: 15,
-                    indicators: [
-                        { id: "open_government_index", name: "Open government index", weightInDimPct: 60 },
-                        { id: "government_censorship_effort", name: "Government censorship effort", weightInDimPct: 40 }
-                    ]
-                }
-            ]
-        },
-        {
-            label: "Dimension 2",
-            title: "Socio-economic development",
-            weightPct: 20,
-            blocks: [
-                {
-                    id: "welfare_frameworks",
-                    heading: "Welfare Frameworks",
-                    dimWeightPct: 35,
-                    indicators: [
-                        { id: "social_safety_nets", name: "Social safety nets", weightInDimPct: 30 },
-                        { id: "educational_equality", name: "Educational equality", weightInDimPct: 20 },
-                        { id: "health_equality", name: "Health equality", weightInDimPct: 20 },
-                        { id: "access_public_services_social_group", name: "Access to public services by socio-economic position", weightInDimPct: 30 }
-                    ]
-                },
-                {
-                    id: "living_standards",
-                    heading: "Living Standards",
-                    dimWeightPct: 40,
-                    indicators: [
-                        { id: "hdi", name: "HDI", weightInDimPct: 50 },
-                        { id: "infant_mortality_rate", name: "Infant mortality rate (inverted)", weightInDimPct: 30 },
-                        { id: "freedom_academic_cultural_expression", name: "Freedom of academic & cultural expression", weightInDimPct: 20 }
-                    ]
-                },
-                {
-                    id: "distribution_of_resources",
-                    heading: "Distribution of Resources",
-                    dimWeightPct: 25,
-                    indicators: [
-                        { id: "gini_coefficient", name: "Gini Coefficient (inverted)", weightInDimPct: 25 },
-                        { id: "power_distributed_socioeconomic", name: "Power distributed by socioeconomic position", weightInDimPct: 50 },
-                        { id: "poverty_headcount_ratio", name: "Poverty headcount ratio (inverted)", weightInDimPct: 25 }
-                    ]
-                }
-            ]
-        },
-        {
-            label: "Dimension 3",
-            title: "Responsiveness",
-            weightPct: 20,
-            blocks: [
-                {
-                    id: "discourse",
-                    heading: "Discourse",
-                    dimWeightPct: 45,
-                    indicators: [
-                        { id: "deliberative_component_index", name: "Deliberative component index", weightInDimPct: 60 },
-                        { id: "reasoned_justification", name: "Reasoned justification", weightInDimPct: 40 }
-                    ]
-                },
-                {
-                    id: "policies_and_legitimacy",
-                    heading: "Policies and legitimacy",
-                    dimWeightPct: 55,
-                    indicators: [
-                        { id: "steering_capacity", name: "Steering Capability", weightInDimPct: 60 },
-                        { id: "political_culture", name: "Approval of democracy", weightInDimPct: 40 }
-                    ]
-                }
-            ]
-        },
-        {
-            label: "Dimension 4",
-            title: "Electoral Integrity",
-            weightPct: 20,
-            blocks: [
-                {
-                    id: "free_and_fair_elections",
-                    heading: "Free and fair elections",
-                    dimWeightPct: 55,
-                    indicators: [
-                        { id: "clean_elections_index", name: "Clean elections index", weightInDimPct: 35 },
-                        { id: "election_free_and_fair", name: "Election free and fair", weightInDimPct: 35 },
-                        { id: "opposition_parties_autonomy", name: "Opposition parties autonomy", weightInDimPct: 15 },
-                        { id: "share_population_suffrage", name: "Share of population with suffrage", weightInDimPct: 15 }
-                    ]
-                },
-                {
-                    id: "peaceful_transition_of_power",
-                    heading: "Peaceful transition of power",
-                    dimWeightPct: 45,
-                    indicators: [
-                        { id: "election_other_electoral_violence", name: "Election other electoral violence", weightInDimPct: 30 },
-                        { id: "election_losers_accept_results", name: "Election losers accept results", weightInDimPct: 30 },
-                        { id: "election_government_intimidation", name: "Election government intimidation", weightInDimPct: 40 }
-                    ]
-                }
-            ]
-        },
-        {
-            label: "Dimension 5",
-            title: "Democratic memory",
-            weightPct: 10,
-            blocks: [
-                {
-                    id: "reparations",
-                    heading: "Reparations",
-                    dimWeightPct: 60,
-                    indicators: [
-                        { id: "truth_commission", name: "Truth commission", weightInDimPct: 50 },
-                        { id: "reparatory_policies", name: "Reparatory policies", weightInDimPct: 50 }
-                    ]
-                },
-                {
-                    id: "legal",
-                    heading: "Legal",
-                    dimWeightPct: 40,
-                    indicators: [
-                        { id: "amnesty_law", name: "Amnesty law", weightInDimPct: 60 },
-                        { id: "domestic_trials", name: "Domestic trials", weightInDimPct: 40 }
-                    ]
-                }
-            ]
-        }
-    ];
+    const INDEX_BLUEPRINT = B.INDEX_BLUEPRINT;
 
     const NEUTRAL = "#dbdad8";
     const OCEAN = "#efedec";
@@ -852,17 +645,16 @@ Every pillar, variable block, and indicator shows the country’s score on the w
         return p.name || p.NAME || p.NAME_EN || "";
     }
 
+    function featureKey(d) {
+        const n = featureName(d);
+        return (B.GEO_NAME_TO_DGW_KEY && B.GEO_NAME_TO_DGW_KEY[n]) || n;
+    }
+
     function scoreFillColor(row) {
         if (row && typeof DGWScale !== "undefined" && DGWScale.colorFromScore) {
             return DGWScale.colorFromScore(row.score);
         }
         return row ? row.color : NEUTRAL;
-    }
-
-    function ordinal(n) {
-        const s = ["th", "st", "nd", "rd"];
-        const v = n % 100;
-        return n + (s[(v - 20) % 10] || s[v] || s[0]);
     }
 
     const countrySelectWrap = document.getElementById("country-select-wrap");
@@ -972,7 +764,7 @@ Every pillar, variable block, and indicator shows the country’s score on the w
         oceanPath.attr("d", path({ type: "Sphere" }));
         graticulePath.attr("d", path(d3.geoGraticule().step([20, 20])()));
         landPaths.attr("d", path).attr("fill", (d) =>
-            featureName(d) === selectedKey ? scoreFillColor(countryData[selectedKey]) : NEUTRAL
+            featureKey(d) === selectedKey ? scoreFillColor(countryData[selectedKey]) : NEUTRAL
         );
         outlinePath.attr("d", path({ type: "Sphere" }));
         updateCapitalCallout();
@@ -1088,11 +880,25 @@ Every pillar, variable block, and indicator shows the country’s score on the w
         const flagImg = document.getElementById("profile-flag-display");
         flagImg.src = flagSvgUrl(m.iso2);
         flagImg.alt = "Flag of " + selectedKey;
-        document.getElementById("profile-population-value").textContent = formatWbPopulation(m.wbPop);
-        document.getElementById("profile-population-year").textContent = String(WORLD_BANK_POP_YEAR);
-        document.getElementById("profile-president-value").textContent = m.president;
+        const popRow = document.getElementById("profile-population-row");
+        if (m.wbPop != null) {
+            popRow.classList.remove("hidden");
+            document.getElementById("profile-population-value").textContent = formatWbPopulation(m.wbPop);
+            document.getElementById("profile-population-year").textContent = String(WORLD_BANK_POP_YEAR);
+        } else {
+            popRow.classList.add("hidden");
+        }
+        const presRow = document.getElementById("profile-president-row");
+        if (m.president && String(m.president).trim()) {
+            presRow.classList.remove("hidden");
+            document.getElementById("profile-president-value").textContent = m.president;
+        } else {
+            presRow.classList.add("hidden");
+        }
+        const regionLabel = document.getElementById("profile-region-label");
+        regionLabel.textContent = d.region || "";
         document.getElementById("profile-rank-regional").textContent =
-            "Regional rank: " + ordinal(d.regionalRank) + " of " + REGION_SIZE;
+            "Regional rank: " + ordinal(d.regionalRank) + " of " + regionSizeFor(selectedKey);
         globeBox.setAttribute("aria-label", "Globe highlighting " + selectedKey);
 
         updateScrollSummary();
@@ -1101,122 +907,26 @@ Every pillar, variable block, and indicator shows the country’s score on the w
         applyGlobeView(!!opts.animateGlobe);
     }
 
-    function escHtml(s) {
-        return String(s)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;");
-    }
+    const formatScoreSlash100Html = B.formatScoreSlash100Html;
+    const scoreOrEscapedLabel = B.scoreOrEscapedLabel;
+    const formatWorkbook0100Display = B.formatWorkbook0100Display;
 
-    function dimensionWorkbookValue0100(country, dimensionIdx) {
-        const o = workbookDimensionScores0100[country];
-        if (o && o[dimensionIdx] != null && o[dimensionIdx] !== undefined) return o[dimensionIdx];
-        const row = workbookDimensionScores[country];
-        if (!row || row[dimensionIdx] == null || row[dimensionIdx] === undefined) return null;
-        return row[dimensionIdx];
-    }
+    const dimensionWorkbookValue0100 = (country, dimensionIdx) =>
+        B.dimensionWorkbookValue0100(window.__DGW__, country, dimensionIdx);
+    const variableWorkbookValue0100 = (country, _dimensionIdx, blockId) =>
+        B.variableWorkbookValue0100(window.__DGW__, country, blockId);
+    const indicatorWorkbookValue0100 = (country, _dimensionIdx, _blockId, indicatorId) =>
+        B.indicatorWorkbookValue0100(window.__DGW__, country, indicatorId);
 
-    function variableWorkbookValue0100(country, dimensionIdx, blockId) {
-        const vu = workbookVariableUnavailable[country];
-        if (vu && vu[blockId]) return null;
-        const byVar = workbookVariableScores0100[country];
-        if (byVar && byVar[blockId] != null && byVar[blockId] !== undefined) return byVar[blockId];
-        return null;
-    }
-
-    function indicatorWorkbookValue0100(country, dimensionIdx, blockId, indicatorId) {
-        const un = workbookIndicatorUnavailable[country];
-        if (un && un[indicatorId]) return null;
-        const byInd = workbookIndicatorScores0100[country];
-        if (byInd && byInd[indicatorId] != null && byInd[indicatorId] !== undefined) return byInd[indicatorId];
-        return null;
-    }
-
-    /**
-     * `XX.XX/100` with the fraction in smaller, muted type (for /100 only).
-     * @param {"hero"|"summary"|"table"|"dimHeader"|"varBlock"|"indicator"} variant
-     */
-    function formatScoreSlash100Html(value, variant) {
-        if (value === null || value === undefined || Number.isNaN(Number(value))) return null;
-        const m = Number(value).toFixed(2);
-        const den =
-            "text-on-surface-variant/60 font-body font-normal not-italic leading-none";
-        const byVar = {
-            hero: {
-                main: "text-5xl sm:text-6xl md:text-7xl font-headline text-primary tracking-tighter leading-none",
-                den: den + " text-2xl sm:text-3xl md:text-4xl tracking-tight ml-0.5",
-            },
-            summary: {
-                main: "font-headline text-lg sm:text-xl text-primary",
-                den: den + " text-xs sm:text-sm tracking-tight ml-0.5",
-            },
-            table: {
-                main: "text-on-surface tabular-nums",
-                den: den + " text-[0.72em] sm:text-[0.78em] ml-0.5 align-baseline",
-            },
-            dimHeader: {
-                main: "font-headline font-medium tracking-tight text-3xl sm:text-4xl md:text-[2.75rem] text-primary",
-                den: den + " text-base sm:text-lg md:text-xl ml-0.5 align-baseline",
-            },
-            varBlock: {
-                main: "font-headline font-medium tracking-tight text-xl sm:text-2xl text-primary",
-                den: den + " text-sm sm:text-base ml-0.5",
-            },
-            indicator: {
-                main: "font-body text-sm sm:text-base font-medium text-primary",
-                den: den + " text-xs sm:text-sm ml-0.5",
-            },
-        };
-        const p = byVar[variant] || byVar.table;
-        return (
-            '<span class="' +
-            p.main +
-            ' tabular-nums">' +
-            m +
-            '</span><span class="' +
-            p.den +
-            '">/100</span>'
-        );
-    }
-
-    /** Plain text (DATA NOT AVAILABLE) or score HTML. */
-    function scoreOrEscapedLabel(s) {
-        if (s && s.indexOf("<span") === 0) return s;
-        return escHtml(s);
-    }
-
-    /** Pillar / dimension / variable / indicator or missing. */
-    function formatWorkbook0100Display(workbook0100) {
-        if (workbook0100 === null || workbook0100 === undefined || Number.isNaN(Number(workbook0100))) {
-            return DATA_NOT_AVAILABLE_DISPLAY;
-        }
-        return formatScoreSlash100Html(workbook0100, "table");
-    }
-
-    function formatVariableOrIndicatorScore(dimensionIdx, blockId, workbook0100, indicatorId) {
-        if (dimensionIdx === 4 && blockId === "reparations" && reparationsExcludedForCountry(selectedKey)) {
-            return REPARATIONS_NA_DISPLAY;
-        }
-        if (!indicatorId) {
-            const vu = workbookVariableUnavailable[selectedKey];
-            if (vu && vu[blockId]) return DATA_NOT_AVAILABLE_DISPLAY;
-        }
-        if (
-            indicatorId &&
-            workbookIndicatorUnavailable[selectedKey] &&
-            workbookIndicatorUnavailable[selectedKey][indicatorId]
-        ) {
-            return DATA_NOT_AVAILABLE_DISPLAY;
-        }
-        if (workbook0100 === null || workbook0100 === undefined || Number.isNaN(Number(workbook0100))) {
-            return DATA_NOT_AVAILABLE_DISPLAY;
-        }
-        if (indicatorId) {
-            return formatScoreSlash100Html(workbook0100, "indicator");
-        }
-        return formatScoreSlash100Html(workbook0100, "varBlock");
-    }
+    const formatVariableOrIndicatorScore = (dimensionIdx, blockId, workbook0100, indicatorId) =>
+        B.formatVariableOrIndicatorScore({
+            country: selectedKey,
+            dgw: window.__DGW__,
+            dimensionIdx: dimensionIdx,
+            blockId: blockId,
+            workbook0100: workbook0100,
+            indicatorId: indicatorId,
+        });
 
     function renderDimensionTable() {
         const tbody = document.getElementById("profile-dimensions-body");

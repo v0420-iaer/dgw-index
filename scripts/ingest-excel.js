@@ -14,9 +14,19 @@ const {
   ensureAllBlueprintIndicatorSlots,
 } = require("./workbook-numeric.cjs");
 
-const xlsxPath = path.join(__dirname, "..", "the index", "part 3 democracy.xlsx");
-/** Regional data sheets (same column layout in each). */
-const DATA_SHEET_NAMES = ["SOUTH AMERICA", "CENTROAMERICA"];
+/** Each workbook contributes one or more sheets, all sharing the same column layout. */
+const WORKBOOKS = [
+  {
+    file: path.join(__dirname, "..", "the index", "part 3 democracy.xlsx"),
+    sheets: ["SOUTH AMERICA", "CENTROAMERICA"],
+    region: "Latin America",
+  },
+  {
+    file: path.join(__dirname, "..", "the index", "west africa.xlsx"),
+    sheets: ["West Africa"],
+    region: "West Africa",
+  },
+];
 
 /** Cell content that should not be stored as a numeric score. */
 function isUnavailableIndicatorCell(s) {
@@ -67,12 +77,20 @@ function normHeading(s) {
     .toLowerCase();
 }
 
+/** Strip trailing parenthetical annotations like "(2024)" or "(n/a)" so West-Africa labels match the canonical Latin-America names. */
+function stripIndicatorAnnotation(name) {
+  return String(name || "")
+    .replace(/\s*\((?:\d{4}|n\/a|N\/A)\)\s*$/, "")
+    .trim();
+}
+
 function indKeyFromName(name) {
-  const k = normHeading(name);
+  const k = normHeading(stripIndicatorAnnotation(name));
   const map = {
     "equal protection index": "equal_protection_index",
     "rule of law index": "rule_of_law_index",
     "civil liberties": "civil_liberties",
+    "civil rights": "civil_liberties",
     "access to justice": "access_to_justice",
     "division of power index": "division_of_power_index",
     "separations of powers": "division_of_power_index",
@@ -120,23 +138,32 @@ function indKeyFromName(name) {
   return map[k] || null;
 }
 
-function ensureCountry(countries, curState) {
+function ensureCountry(countries, curState, region) {
   if (!countries[curState]) {
     countries[curState] = {
       total: null,
+      region: region,
       dims: {},
       workbookIndicatorScores0100: {},
       workbookVariableScores0100: {},
       workbookVariableUnavailable: {},
       workbookIndicatorUnavailable: {},
     };
+  } else if (region && !countries[curState].region) {
+    countries[curState].region = region;
   }
 }
 
-function ingestSheetData(data, countries) {
+/** Some workbooks repeat the column header inside the sheet (West Africa: every 40 rows). Skip those rows. */
+function isHeaderRow(r) {
+  return r && r[0] === "State" && r[1] === "Variable";
+}
+
+function ingestSheetData(data, countries, region) {
   let curState = null;
   for (let i = 1; i < data.length; i++) {
     const r = data[i];
+    if (isHeaderRow(r)) continue;
     const state = r[0];
     const variableCol = r[1];
     const scoreVar = r[2];
@@ -148,12 +175,12 @@ function ingestSheetData(data, countries) {
 
     if (state) {
       curState = String(state).trim();
-      ensureCountry(countries, curState);
+      ensureCountry(countries, curState, region);
       const t = toWorkbookScale(totalIdx);
       if (t != null) countries[curState].total = t;
     }
     if (!curState) continue;
-    ensureCountry(countries, curState);
+    ensureCountry(countries, curState, region);
     const c = countries[curState];
 
     if (variableCol) {
@@ -193,22 +220,39 @@ function ingestSheetData(data, countries) {
   }
 }
 
-const wb = XLSX.readFile(xlsxPath);
 const countries = {};
-for (const sheetName of DATA_SHEET_NAMES) {
-  if (!wb.Sheets[sheetName]) {
-    throw new Error(
-      `Sheet "${sheetName}" not found in ${path.basename(xlsxPath)}. Available: ${wb.SheetNames.join(", ")}`
-    );
+for (const { file, sheets, region } of WORKBOOKS) {
+  const wb = XLSX.readFile(file);
+  for (const sheetName of sheets) {
+    if (!wb.Sheets[sheetName]) {
+      throw new Error(
+        `Sheet "${sheetName}" not found in ${path.basename(file)}. Available: ${wb.SheetNames.join(", ")}`
+      );
+    }
+    const data = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, defval: null, raw: true });
+    ingestSheetData(data, countries, region);
   }
-  const data = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, defval: null, raw: true });
-  ingestSheetData(data, countries);
 }
 
 const names = Object.keys(countries).sort((a, b) => (countries[b].total ?? 0) - (countries[a].total ?? 0));
 
 for (const n of names) {
   ensureAllBlueprintIndicatorSlots(countries[n]);
+}
+
+/** Per-region rank — countries within each region get a 1..N rank by descending score. */
+const regions = {};
+for (const name of names) {
+  const r = countries[name].region || "Unknown";
+  if (!regions[r]) regions[r] = [];
+  regions[r].push(name);
+}
+const regionalRankByName = {};
+for (const r of Object.keys(regions)) {
+  regions[r].sort((a, b) => (countries[b].total ?? 0) - (countries[a].total ?? 0));
+  regions[r].forEach((name, idx) => {
+    regionalRankByName[name] = idx + 1;
+  });
 }
 
 const workbookDimensionScores = {};
@@ -230,16 +274,22 @@ for (const name of names) {
 }
 
 const countryData = {};
-let rank = 1;
 for (const name of names) {
   const t = countries[name].total;
   const category = categoryFromScore(t);
   const color = colorFromScore(t);
-  countryData[name] = { score: t, category, color, regionalRank: rank++ };
+  countryData[name] = {
+    score: t,
+    category,
+    color,
+    regionalRank: regionalRankByName[name] || null,
+    region: countries[name].region || null,
+  };
 }
 
 const out = {
   countryNamesSorted: names,
+  regions,
   countryData,
   workbookDimensionScores,
   workbookIndicatorScores0100,
@@ -255,10 +305,17 @@ console.log("Wrote", outPath);
 
 const countryDataForWeb = {};
 for (const [k, v] of Object.entries(countryData)) {
-  countryDataForWeb[k] = { score: v.score, category: v.category, color: v.color, regionalRank: v.regionalRank };
+  countryDataForWeb[k] = {
+    score: v.score,
+    category: v.category,
+    color: v.color,
+    regionalRank: v.regionalRank,
+    region: v.region,
+  };
 }
 const bundle = {
   countryNamesSorted: names,
+  regions,
   countryData: countryDataForWeb,
   workbookDimensionScores,
   workbookIndicatorScores0100,
@@ -277,10 +334,14 @@ fs.writeFileSync(
 console.log("Wrote", jsPath);
 
 const allIds = new Set();
-for (const sheetName of DATA_SHEET_NAMES) {
-  const data = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, defval: null, raw: true });
-  for (let i = 1; i < data.length; i++) {
-    if (data[i][7]) allIds.add(String(data[i][7]).trim());
+for (const { file, sheets } of WORKBOOKS) {
+  const wb2 = XLSX.readFile(file);
+  for (const sheetName of sheets) {
+    const data = XLSX.utils.sheet_to_json(wb2.Sheets[sheetName], { header: 1, defval: null, raw: true });
+    for (let i = 1; i < data.length; i++) {
+      if (isHeaderRow(data[i])) continue;
+      if (data[i][7]) allIds.add(String(data[i][7]).trim());
+    }
   }
 }
 const unmapped = [...allIds].filter((n) => !indKeyFromName(n));

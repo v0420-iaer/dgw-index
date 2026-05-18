@@ -8,11 +8,13 @@
 const fs = require("fs");
 const path = require("path");
 
-const htmlPath = path.join(__dirname, "..", "country-profiles.html");
+const blueprintPath = path.join(__dirname, "..", "data", "dgw-blueprint.js");
 const jsonPath = path.join(__dirname, "..", "data", "ingested-excel.json");
 
-const html = fs.readFileSync(htmlPath, "utf8");
-const slice = html.split("const INDEX_BLUEPRINT")[1].split("];")[0];
+const blueprintJs = fs.readFileSync(blueprintPath, "utf8");
+const sliceStart = blueprintJs.indexOf("const INDEX_BLUEPRINT");
+const sliceEnd = blueprintJs.indexOf("];", sliceStart);
+const slice = blueprintJs.slice(sliceStart, sliceEnd);
 const blueprintIds = [...new Set([...slice.matchAll(/\{ id: "([^"]+)"/g)].map((x) => x[1]))];
 
 const j = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
