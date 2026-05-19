@@ -1136,6 +1136,11 @@
 
     function handleCountryClick(event, d) {
         event.stopPropagation();
+        const name = dgwDataKey(featureName(d));
+        if (countryData[name] && passesRegionFilter(name)) {
+            window.location.href = "country-profiles.html?country=" + encodeURIComponent(name);
+            return;
+        }
         showCountryCallout(event, d);
     }
 

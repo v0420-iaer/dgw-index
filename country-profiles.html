@@ -1179,6 +1179,16 @@ Every pillar, variable block, and indicator shows the country’s score on the w
     syncScrollSummaryTop();
     bindProfileFlagScrollSummary();
 
+    /** If the page is opened with ?country=Ghana, pre-select that country. */
+    (function applyCountryFromUrl() {
+        try {
+            const requested = new URLSearchParams(window.location.search).get("country");
+            if (requested && countryData[requested] && profileMeta[requested]) {
+                selectedKey = requested;
+            }
+        } catch (e) {}
+    })();
+
     buildCountryMenu();
     countrySelectValue.textContent = selectedKey;
     updateHero({ animateGlobe: false });
