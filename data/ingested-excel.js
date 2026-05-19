@@ -4,10 +4,10 @@ window.__DGW__ = {
     "Uruguay",
     "Chile",
     "Costa Rica",
-    "Ghana",
     "Brasil",
     "Colombia",
     "Argentina",
+    "Ghana",
     "The Gambia",
     "Dominican Republic",
     "Panama",
@@ -33,9 +33,9 @@ window.__DGW__ = {
     "El Salvador",
     "Togo",
     "Mauritania",
-    "Guinea-Bissau",
     "Cuba",
     "Haiti",
+    "Guinea-Bissau",
     "Guinea",
     "Nicaragua",
     "Venezuela"
@@ -106,13 +106,6 @@ window.__DGW__ = {
       "regionalRank": 3,
       "region": "Latin America"
     },
-    "Ghana": {
-      "score": 74.89561,
-      "category": "Developed democracy",
-      "color": "rgb(42, 107, 148)",
-      "regionalRank": 1,
-      "region": "West Africa"
-    },
     "Brasil": {
       "score": 71.592645,
       "category": "Developed democracy",
@@ -133,6 +126,13 @@ window.__DGW__ = {
       "color": "rgb(23, 136, 166)",
       "regionalRank": 6,
       "region": "Latin America"
+    },
+    "Ghana": {
+      "score": 67.75139999999999,
+      "category": "Developed democracy",
+      "color": "rgb(17, 143, 171)",
+      "regionalRank": 1,
+      "region": "West Africa"
     },
     "The Gambia": {
       "score": 67.55266,
@@ -309,13 +309,6 @@ window.__DGW__ = {
       "regionalRank": 14,
       "region": "West Africa"
     },
-    "Guinea-Bissau": {
-      "score": 34.17334,
-      "category": "Non-democratic regime",
-      "color": "rgb(203, 70, 91)",
-      "regionalRank": 15,
-      "region": "West Africa"
-    },
     "Cuba": {
       "score": 32.517655,
       "category": "Non-democratic regime",
@@ -329,6 +322,13 @@ window.__DGW__ = {
       "color": "rgb(207, 81, 101)",
       "regionalRank": 20,
       "region": "Latin America"
+    },
+    "Guinea-Bissau": {
+      "score": 31.318099999999998,
+      "category": "Non-democratic regime",
+      "color": "rgb(208, 82, 102)",
+      "regionalRank": 15,
+      "region": "West Africa"
     },
     "Guinea": {
       "score": 29.971745,
@@ -374,13 +374,6 @@ window.__DGW__ = {
       96.713125,
       1.28
     ],
-    "Ghana": [
-      89.6537,
-      62.470000000000006,
-      73.22,
-      81.3175,
-      45.98
-    ],
     "Brasil": [
       71.5784,
       61.49,
@@ -401,6 +394,13 @@ window.__DGW__ = {
       61.3,
       92.229375,
       76
+    ],
+    "Ghana": [
+      65.83970000000001,
+      62.470000000000006,
+      73.22,
+      81.3175,
+      45.98
     ],
     "The Gambia": [
       66.25720000000001,
@@ -577,13 +577,6 @@ window.__DGW__ = {
       54.440625,
       3.5999999999999996
     ],
-    "Guinea-Bissau": [
-      36.58905,
-      43.51875,
-      22.52,
-      49.144375000000004,
-      1.6
-    ],
     "Cuba": [
       19.69885,
       63.116249999999994,
@@ -597,6 +590,13 @@ window.__DGW__ = {
       38.51,
       13.364999999999998,
       35.120000000000005
+    ],
+    "Guinea-Bissau": [
+      27.071499999999997,
+      43.51875,
+      22.52,
+      49.144375000000004,
+      1.6
     ],
     "Guinea": [
       28.612900000000003,
@@ -735,44 +735,6 @@ window.__DGW__ = {
       "amnesty_law": 0,
       "domestic_trials": 8
     },
-    "Ghana": {
-      "equal_protection_index": 79,
-      "rule_of_law_index": 56.99999999999999,
-      "civil_liberties": 5.88,
-      "access_to_justice": 73,
-      "division_of_power_index": 80,
-      "high_court_independence": 75,
-      "control_of_corruption": 43.94,
-      "corruption_perception_index": 42,
-      "diagonal_accountability_index": 89,
-      "open_government_index": 51,
-      "government_censorship_effort": 79.25,
-      "social_safety_nets": 50,
-      "educational_equality": 30.25,
-      "health_equality": 49.5,
-      "access_public_services_social_group": 73.75,
-      "hdi": 62.8,
-      "infant_mortality_rate": 72,
-      "freedom_academic_cultural_expression": 93.75,
-      "gini_coefficient": 56.49999999999999,
-      "power_distributed_socioeconomic": 55.00000000000001,
-      "poverty_headcount_ratio": 76.6,
-      "deliberative_component_index": 82,
-      "reasoned_justification": 76,
-      "steering_capacity": 60,
-      "political_culture": 80,
-      "clean_elections_index": 71,
-      "election_free_and_fair": 79.5,
-      "opposition_parties_autonomy": 92,
-      "share_population_suffrage": 100,
-      "election_other_electoral_violence": 63.74999999999999,
-      "election_losers_accept_results": 92,
-      "election_government_intimidation": 86,
-      "truth_commission": 100,
-      "reparatory_policies": 33,
-      "amnesty_law": 0,
-      "domestic_trials": 38
-    },
     "Brasil": {
       "equal_protection_index": 62,
       "rule_of_law_index": 86,
@@ -885,6 +847,44 @@ window.__DGW__ = {
       "reparatory_policies": 100,
       "amnesty_law": 0,
       "domestic_trials": 100
+    },
+    "Ghana": {
+      "equal_protection_index": 79,
+      "rule_of_law_index": 56.99999999999999,
+      "civil_liberties": 58.8,
+      "access_to_justice": 73,
+      "division_of_power_index": 80,
+      "high_court_independence": 75,
+      "control_of_corruption": 43.94,
+      "corruption_perception_index": 42,
+      "diagonal_accountability_index": 89,
+      "open_government_index": 51,
+      "government_censorship_effort": 79.25,
+      "social_safety_nets": 50,
+      "educational_equality": 30.25,
+      "health_equality": 49.5,
+      "access_public_services_social_group": 73.75,
+      "hdi": 62.8,
+      "infant_mortality_rate": 72,
+      "freedom_academic_cultural_expression": 93.75,
+      "gini_coefficient": 56.49999999999999,
+      "power_distributed_socioeconomic": 55.00000000000001,
+      "poverty_headcount_ratio": 76.6,
+      "deliberative_component_index": 82,
+      "reasoned_justification": 76,
+      "steering_capacity": 60,
+      "political_culture": 80,
+      "clean_elections_index": 71,
+      "election_free_and_fair": 79.5,
+      "opposition_parties_autonomy": 92,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 63.74999999999999,
+      "election_losers_accept_results": 92,
+      "election_government_intimidation": 86,
+      "truth_commission": 100,
+      "reparatory_policies": 33,
+      "amnesty_law": 0,
+      "domestic_trials": 38
     },
     "The Gambia": {
       "equal_protection_index": 77,
@@ -1808,42 +1808,6 @@ window.__DGW__ = {
       "amnesty_law": 0,
       "domestic_trials": 9
     },
-    "Guinea-Bissau": {
-      "equal_protection_index": 71,
-      "rule_of_law_index": 17,
-      "civil_liberties": 2.35,
-      "access_to_justice": 33,
-      "division_of_power_index": 30,
-      "high_court_independence": 15,
-      "control_of_corruption": 20.61,
-      "corruption_perception_index": 21,
-      "diagonal_accountability_index": 62,
-      "government_censorship_effort": 22.5,
-      "social_safety_nets": 40,
-      "educational_equality": 30.5,
-      "health_equality": 25,
-      "access_public_services_social_group": 22.25,
-      "hdi": 51.4,
-      "infant_mortality_rate": 57.99999999999999,
-      "freedom_academic_cultural_expression": 47.75,
-      "gini_coefficient": 66.60000000000001,
-      "power_distributed_socioeconomic": 38.25,
-      "poverty_headcount_ratio": 49.5,
-      "deliberative_component_index": 32,
-      "reasoned_justification": 16,
-      "steering_capacity": 33.333333329999995,
-      "clean_elections_index": 0,
-      "election_free_and_fair": 44,
-      "opposition_parties_autonomy": 74.75,
-      "share_population_suffrage": 100,
-      "election_other_electoral_violence": 86,
-      "election_losers_accept_results": 29.5,
-      "election_government_intimidation": 59.25,
-      "truth_commission": 0,
-      "reparatory_policies": 0,
-      "amnesty_law": 0,
-      "domestic_trials": 10
-    },
     "Cuba": {
       "equal_protection_index": 68,
       "rule_of_law_index": 12,
@@ -1915,6 +1879,42 @@ window.__DGW__ = {
       "reparatory_policies": 0,
       "amnesty_law": 0,
       "domestic_trials": 32
+    },
+    "Guinea-Bissau": {
+      "equal_protection_index": 71,
+      "rule_of_law_index": 17,
+      "civil_liberties": 23.5,
+      "access_to_justice": 33,
+      "division_of_power_index": 30,
+      "high_court_independence": 15,
+      "control_of_corruption": 20.61,
+      "corruption_perception_index": 21,
+      "diagonal_accountability_index": 62,
+      "government_censorship_effort": 22.5,
+      "social_safety_nets": 40,
+      "educational_equality": 30.5,
+      "health_equality": 25,
+      "access_public_services_social_group": 22.25,
+      "hdi": 51.4,
+      "infant_mortality_rate": 57.99999999999999,
+      "freedom_academic_cultural_expression": 47.75,
+      "gini_coefficient": 66.60000000000001,
+      "power_distributed_socioeconomic": 38.25,
+      "poverty_headcount_ratio": 49.5,
+      "deliberative_component_index": 32,
+      "reasoned_justification": 16,
+      "steering_capacity": 33.333333329999995,
+      "clean_elections_index": 0,
+      "election_free_and_fair": 44,
+      "opposition_parties_autonomy": 74.75,
+      "share_population_suffrage": 100,
+      "election_other_electoral_violence": 86,
+      "election_losers_accept_results": 29.5,
+      "election_government_intimidation": 59.25,
+      "truth_commission": 0,
+      "reparatory_policies": 0,
+      "amnesty_law": 0,
+      "domestic_trials": 10
     },
     "Guinea": {
       "equal_protection_index": 63,
@@ -2075,21 +2075,6 @@ window.__DGW__ = {
       "reparations": 0,
       "legal": 3.2
     },
-    "Ghana": {
-      "rule_of_law": 1.4315,
-      "separation_of_powers": 78.5,
-      "accountability": 59.129,
-      "transparency": 62.3,
-      "welfare_frameworks": 53.075,
-      "living_standards": 71.75,
-      "distribution_of_resources": 60.775,
-      "discourse": 79.60000000000001,
-      "policies_and_legitimacy": 68,
-      "free_and_fair_elections": 81.475,
-      "peaceful_transition_of_power": 81.125,
-      "reparations": 66.5,
-      "legal": 15.2
-    },
     "Brasil": {
       "rule_of_law": 78.925,
       "separation_of_powers": 81.2,
@@ -2134,6 +2119,21 @@ window.__DGW__ = {
       "peaceful_transition_of_power": 91.14999999999999,
       "reparations": 100,
       "legal": 40
+    },
+    "Ghana": {
+      "rule_of_law": 63.77,
+      "separation_of_powers": 78.5,
+      "accountability": 59.129,
+      "transparency": 62.3,
+      "welfare_frameworks": 53.075,
+      "living_standards": 71.75,
+      "distribution_of_resources": 60.775,
+      "discourse": 79.60000000000001,
+      "policies_and_legitimacy": 68,
+      "free_and_fair_elections": 81.475,
+      "peaceful_transition_of_power": 81.125,
+      "reparations": 66.5,
+      "legal": 15.2
     },
     "The Gambia": {
       "rule_of_law": 75.13,
@@ -2508,21 +2508,6 @@ window.__DGW__ = {
       "peaceful_transition_of_power": 59.425,
       "legal": 3.5999999999999996
     },
-    "Guinea-Bissau": {
-      "rule_of_law": 61,
-      "separation_of_powers": 25.5,
-      "accountability": 35.213499999999996,
-      "transparency": 9,
-      "welfare_frameworks": 29.775000000000002,
-      "living_standards": 52.65,
-      "distribution_of_resources": 48.15,
-      "discourse": 25.6,
-      "policies_and_legitimacy": 20,
-      "free_and_fair_elections": 41.612500000000004,
-      "peaceful_transition_of_power": 58.35,
-      "reparations": 0,
-      "legal": 4
-    },
     "Cuba": {
       "rule_of_law": 22.41,
       "separation_of_powers": 14.35,
@@ -2552,6 +2537,21 @@ window.__DGW__ = {
       "peaceful_transition_of_power": 0,
       "reparations": 50,
       "legal": 12.8
+    },
+    "Guinea-Bissau": {
+      "rule_of_law": 29.275000000000002,
+      "separation_of_powers": 25.5,
+      "accountability": 35.213499999999996,
+      "transparency": 9,
+      "welfare_frameworks": 29.775000000000002,
+      "living_standards": 52.65,
+      "distribution_of_resources": 48.15,
+      "discourse": 25.6,
+      "policies_and_legitimacy": 20,
+      "free_and_fair_elections": 41.612500000000004,
+      "peaceful_transition_of_power": 58.35,
+      "reparations": 0,
+      "legal": 4
     },
     "Guinea": {
       "rule_of_law": 23.64,
@@ -2603,10 +2603,10 @@ window.__DGW__ = {
     "Uruguay": {},
     "Chile": {},
     "Costa Rica": {},
-    "Ghana": {},
     "Brasil": {},
     "Colombia": {},
     "Argentina": {},
+    "Ghana": {},
     "The Gambia": {},
     "Dominican Republic": {},
     "Panama": {},
@@ -2632,9 +2632,9 @@ window.__DGW__ = {
     "El Salvador": {},
     "Togo": {},
     "Mauritania": {},
-    "Guinea-Bissau": {},
     "Cuba": {},
     "Haiti": {},
+    "Guinea-Bissau": {},
     "Guinea": {},
     "Nicaragua": {},
     "Venezuela": {}
@@ -2643,12 +2643,12 @@ window.__DGW__ = {
     "Uruguay": {},
     "Chile": {},
     "Costa Rica": {},
-    "Ghana": {},
     "Brasil": {
       "poverty_headcount_ratio": true
     },
     "Colombia": {},
     "Argentina": {},
+    "Ghana": {},
     "The Gambia": {},
     "Dominican Republic": {},
     "Panama": {},
@@ -2715,10 +2715,6 @@ window.__DGW__ = {
       "truth_commission": true,
       "reparatory_policies": true
     },
-    "Guinea-Bissau": {
-      "open_government_index": true,
-      "political_culture": true
-    },
     "Cuba": {
       "political_culture": true,
       "poverty_headcount_ratio": true
@@ -2726,6 +2722,10 @@ window.__DGW__ = {
     "Haiti": {
       "political_culture": true,
       "election_free_and_fair": true
+    },
+    "Guinea-Bissau": {
+      "open_government_index": true,
+      "political_culture": true
     },
     "Guinea": {
       "political_culture": true

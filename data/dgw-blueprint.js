@@ -216,10 +216,10 @@
     "Nicaragua": { region: "Latin America", wbPop: 6916140, capital: "Leal Villa de Santiago de Managua", iso2: "NI", president: "Daniel Ortega y Rosario Murillo (copresidencia)", capitalLon: -86.2514, capitalLat: 12.1364 },
     "Venezuela": { region: "Latin America", wbPop: 28405543, capital: "Santiago de León de Caracas", iso2: "VE", president: "Delcy Rodríguez (presidenta encargada)", capitalLon: -66.9036, capitalLat: 10.4806 },
 
-    "Benin": { region: "West Africa", wbPop: null, capital: "Porto-Novo", iso2: "BJ", president: "", capitalLon: 2.6249, capitalLat: 6.4969 },
+    "Benin": { region: "West Africa", wbPop: null, capital: "Porto-Novo (capital constitucional); Cotonou (sede de gobierno)", iso2: "BJ", president: "", capitalLon: 2.6249, capitalLat: 6.4969 },
     "Burkina Faso": { region: "West Africa", wbPop: null, capital: "Ouagadougou", iso2: "BF", president: "", capitalLon: -1.5197, capitalLat: 12.3714 },
     "Cape Verde": { region: "West Africa", wbPop: null, capital: "Praia", iso2: "CV", president: "", capitalLon: -23.5133, capitalLat: 14.9177 },
-    "Côte d'Ivoire": { region: "West Africa", wbPop: null, capital: "Yamoussoukro", iso2: "CI", president: "", capitalLon: -5.2767, capitalLat: 6.8276 },
+    "Côte d'Ivoire": { region: "West Africa", wbPop: null, capital: "Yamoussoukro (capital constitucional); Abidjan (capital económica)", iso2: "CI", president: "", capitalLon: -5.2767, capitalLat: 6.8276 },
     "The Gambia": { region: "West Africa", wbPop: null, capital: "Banjul", iso2: "GM", president: "", capitalLon: -16.5775, capitalLat: 13.4549 },
     "Ghana": { region: "West Africa", wbPop: null, capital: "Accra", iso2: "GH", president: "", capitalLon: -0.1870, capitalLat: 5.6037 },
     "Guinea": { region: "West Africa", wbPop: null, capital: "Conakry", iso2: "GN", president: "", capitalLon: -13.7122, capitalLat: 9.6412 },

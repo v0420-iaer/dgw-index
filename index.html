@@ -510,7 +510,7 @@
 <div class="w-full flex-1 min-h-0 flex flex-col bg-surface-container-lowest border border-outline-variant/20 p-2.5 sm:p-4 relative group shadow-[0_28px_56px_-16px_rgba(27,28,27,0.14),0_10px_22px_-12px_rgba(27,28,27,0.08),0_2px_6px_-2px_rgba(27,28,27,0.05)] max-lg:min-h-[min(78svh,34rem)] sm:max-lg:min-h-[min(76svh,36rem)] md:max-lg:min-h-[min(74svh,38rem)] lg:min-h-0 lg:h-full">
 <header class="map-mode-header shrink-0 mb-2 sm:mb-4 px-0 sm:px-0.5 pb-2 sm:pb-4 border-b border-outline-variant/15">
 <p class="font-label text-[9px] sm:text-[11px] uppercase tracking-[0.2em] text-on-surface-variant/90 max-lg:mb-0">How to read this map</p>
-<p id="map-region-label" class="font-label text-[10px] sm:text-[11px] text-primary font-medium tracking-[0.06em] mt-1.5 mb-0">Latin America</p>
+<p id="map-region-label" class="font-label text-[10px] sm:text-[11px] text-primary font-medium tracking-[0.06em] mt-1.5 mb-0">Both regions</p>
 <div class="mt-2 sm:mt-3 flex flex-wrap items-center gap-2">
 <span class="font-label text-[9px] uppercase tracking-[0.18em] text-on-surface-variant/75">Region</span>
 <div class="region-track flex p-1 rounded-sm bg-surface-container-low/90 border border-outline-variant/25 gap-1" role="group" aria-label="Choose which region to focus on">
@@ -593,7 +593,7 @@
 <!-- Footer -->
 <footer class="bg-surface-container text-primary font-label text-xs uppercase tracking-widest w-full layout-gutter py-12 sm:p-16 mt-12 sm:mt-20 transition-all duration-500 ease-in-out supports-[padding:max(0px)]:pb-[max(3rem,env(safe-area-inset-bottom))]">
 <div class="grid grid-cols-1 md:grid-cols-2 items-end gap-x-8 gap-y-6 w-full max-w-screen-2xl mx-auto">
-<div class="text-lg font-serif italic text-primary font-headline normal-case tracking-normal min-w-0">Democracy Index for Latin America</div>
+<div class="text-lg font-serif italic text-primary font-headline normal-case tracking-normal min-w-0">Democracy Index</div>
 <div class="text-on-background/50 normal-case text-right md:max-w-xl md:ml-auto md:justify-self-end flex flex-col items-end gap-0">
 <div class="font-label not-italic">© COPYRIGHT APRIL 2026 ALL RIGHTS RESERVED.</div>
 <div class="italic font-serif text-on-background/60">Designed and engineered by Ari's group</div>
@@ -875,6 +875,7 @@
                 d3.select(this).attr("fill", landFill(d));
             });
         }
+        if (typeof window.__updateFallbackDots === "function") window.__updateFallbackDots();
     }
 
     const linkCls = "text-primary font-medium underline decoration-primary/30 underline-offset-2 hover:decoration-primary";
@@ -979,6 +980,7 @@
             if (landPaths) landPaths.attr("d", path);
             applyAllLandFills({ animate: !reduceMotion, duration: 600 });
         }
+        applyRevealUi();
     }
 
     function setupRegionToggle() {
@@ -1171,6 +1173,7 @@
         graticulePath.attr("d", path(graticule()));
         outlinePath.attr("d", path({ type: "Sphere" }));
         if (landPaths) landPaths.attr("d", path);
+        if (typeof window.__updateFallbackDots === "function") window.__updateFallbackDots();
     }
 
     function updateTableLinkedHighlight() {
@@ -1226,21 +1229,22 @@
     function applyRevealUi() {
         const mapEl = document.getElementById("map-container");
         const heading = document.getElementById("ranking-heading-text");
+        const regionName = REGION_KEY_TO_LABEL[activeRegion] || "Both regions";
         if (revealed) {
             if (mapEl) {
                 if (mapColorMode === "category") {
                     mapEl.setAttribute(
                         "aria-label",
-                        "Globe centred on Latin America; index countries are coloured by regime category (four flat colours)."
+                        "Globe centred on " + regionName + "; index countries are coloured by regime category (four flat colours)."
                     );
                 } else {
                     mapEl.setAttribute(
                         "aria-label",
-                        "Globe centred on Latin America; index countries are coloured by exact score on the 0–100 democracy scale."
+                        "Globe centred on " + regionName + "; index countries are coloured by exact score on the 0–100 democracy scale."
                     );
                 }
             }
-            if (heading) heading.textContent = "Latin America — Results";
+            if (heading) heading.textContent = regionName + " — Results";
         } else {
             if (mapEl) mapEl.setAttribute("aria-label", "Animated globe of world land masses");
             if (heading) heading.textContent = "Results";
@@ -1321,6 +1325,73 @@
         }
         window.__recomputeIndexedFeatures = recomputeIndexedFeatures;
         recomputeIndexedFeatures();
+
+        /** Countries in our index that have no land feature in the basemap (e.g. Cape Verde in holtzy's geojson). */
+        const profileMeta = (window.DGWBlueprint && window.DGWBlueprint.profileMeta) || {};
+        const geoFeatureNames = new Set(world.features.map(f => dgwDataKey(featureName(f))));
+        const fallbackPoints = Object.keys(countryData)
+            .filter(n => !geoFeatureNames.has(n) && profileMeta[n] && typeof profileMeta[n].capitalLon === "number")
+            .map(n => ({ name: n, lon: profileMeta[n].capitalLon, lat: profileMeta[n].capitalLat }));
+
+        const fallbackG = gMain.append("g").attr("class", "map-fallback-points");
+        const fallbackDots = fallbackG.selectAll("circle.fallback-dot")
+            .data(fallbackPoints, d => d.name)
+            .join("circle")
+            .attr("class", "fallback-dot")
+            .attr("r", 5.5)
+            .attr("stroke", "#fbf9f7")
+            .attr("stroke-width", 1.2)
+            .style("cursor", "pointer")
+            .style("pointer-events", "all")
+            .on("mouseover", function (event, d) {
+                const row = countryData[d.name];
+                if (!row || !tooltip) return;
+                tooltipCountry.textContent = "Country: " + d.name;
+                if (typeof row.score === "number") {
+                    tooltipScore.innerHTML = formatIndexPointScoreHtml(row.score);
+                } else {
+                    tooltipScore.textContent = String(row.score);
+                }
+                tooltip.style.opacity = "1";
+                tooltip.style.visibility = "visible";
+            })
+            .on("mouseleave", function () {
+                if (!tooltip) return;
+                tooltip.style.opacity = "0";
+                tooltip.style.visibility = "hidden";
+            })
+            .on("click", function (event, d) {
+                window.location.href = "country-profiles.html?country=" + encodeURIComponent(d.name);
+            });
+
+        function updateFallbackDots() {
+            if (!projection || !fallbackDots) return;
+            const rot = projection.rotate();
+            const cameraLon = -rot[0];
+            const cameraLat = -rot[1];
+            fallbackDots
+                .attr("transform", function (d) {
+                    const p = projection([d.lon, d.lat]);
+                    return p ? "translate(" + p[0] + "," + p[1] + ")" : "translate(-9999,-9999)";
+                })
+                .attr("fill", function (d) {
+                    const row = countryData[d.name];
+                    if (!revealed || !row || !passesRegionFilter(d.name)) return NEUTRAL;
+                    if (mapColorMode === "category" && row.category && window.DGWScale) {
+                        return window.DGWScale.flatCategoryColor(row.category);
+                    }
+                    return window.DGWScale ? window.DGWScale.colorFromScore(row.score) : row.color;
+                })
+                .style("opacity", function (d) {
+                    const visible = d3.geoDistance([d.lon, d.lat], [cameraLon, cameraLat]) < Math.PI / 2 - 0.02;
+                    return visible ? 1 : 0;
+                })
+                .style("pointer-events", function (d) {
+                    return passesRegionFilter(d.name) ? "all" : "none";
+                });
+        }
+        window.__updateFallbackDots = updateFallbackDots;
+        updateFallbackDots();
 
         outlinePath = gMain.append("path")
             .datum({ type: "Sphere" })
